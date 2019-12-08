@@ -1,0 +1,77 @@
+{
+	"TRANSLUCENT_COLOR" : "0xF2",
+	"TILE_WIDTH"        : 8     ,
+	"TILE_HEIGHT"       : 8     ,
+	"VRAM_TILES_H"      : 28    ,
+	"VRAM_TILES_V"      : 28    ,
+	"RAM_TILES_COUNT"   : 0     ,
+
+	"videokernel"       : "cores/videoMode_A/videomode_A.js",
+	"soundkernel"       : "cores/soundMode_A/soundMode_A.js",
+	"fonts"              : {
+		"fonts1" : { "tileset":"tilesTX1" },
+		"fonts2" : { "tileset":"tilesTX1" }
+	},
+
+	"js_files": [
+		"js/MAIN.js",
+		"js/GAMESTATES.js"
+	],
+
+	"links":[
+		{ "text":"Instructions", "href":"links/instructions.txt", "target":"_blank" },
+		{ "text":"Credits"     , "href":"links/credits.txt"     , "target":"_blank" },
+		{ "text":"Github"      , "href":"https://github.com/nicksen782/UzeboxGamepadTranslator", "target":"_blank" }
+	],
+
+	"mp3_files": [
+		{ "key":"tick"     , "fileurl":"snd/tick.mp3"     , "type":"mp3_sfx", "names":["cursorTick1"] }
+	],
+	"midi_bin": "UAM/MUSIC/test1.bin.txt",
+
+	"midi_synths": {
+		"music1" : {
+			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		} ,
+		"music2" : {
+			"synthOptions": { "quality":1, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		} ,
+		"sound1" : {
+			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		} ,
+		"sound2" : {
+			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		} ,
+		"sound3" : {
+			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		} ,
+		"sound4" : {
+			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"options"     : { "loop":false, "masterVol":1.0 }
+		}
+	},
+
+	"graphics_files": [
+		"UAM/PROGMEM/_min_combined_alltilegraphics.txt"
+	],
+
+	"graphics_conversionSettings": [
+		{"tileset":"tilesBG1", "handleTransparency":false , "type":"canvas"},
+		{"tileset":"tilesTX1", "handleTransparency":true  , "type":"canvas"},
+		{"tileset":"tilesSP1", "handleTransparency":true  , "type":"canvas"}
+	],
+
+	"typeGamepads"      : "nes" ,
+	"numGamepads"       : 1     ,
+	"fps"               : 30    ,
+
+	"OLDcanvas_scaleFactor" : 2.4 ,
+	"canvas_scaleFactor" : 1.9 ,
+
+	"ENDOFFILE" : ""
+}

@@ -1,0 +1,5 @@
+Credits:
+
+// Canvas performance data.
+Daniel Baulig: https://stackoverflow.com/a/6003174
+Daniel Baulig: http://www.danielbaulig.de/ba-thesis/ (This can be translated with https://docwordcounter.com/en/wordcounttranslation .)

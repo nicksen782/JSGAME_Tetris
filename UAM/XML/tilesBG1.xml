@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<gfx-xform version="SINGLE_TS">
+ <input file="/web/ACTIVE/J/JS_GAMES/Tetris/UAM/IMG/tiles.png" type="png" tile-width="8" tile-height="8" />
+ <output file="UAM/PROGMEM/tilesBG1.inc">
+ <tiles var-name="tilesBG1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" />
+ <maps pointers-size="8">
+  <map var-name="tile0" left="2" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
+  <map var-name="tile1" left="1" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
+  <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
+  <map var-name="empty_square" left="1" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="T_bgtile" left="6" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="J_bgtile" left="7" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="Z_bgtile" left="8" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="O_bgtile" left="9" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="S_bgtile" left="10" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="L_bgtile" left="11" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="I_bgtile" left="12" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="T_map" left="25" top="1" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="J_map" left="25" top="16" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="Z_map" left="25" top="7" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="O_map" left="25" top="10" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="S_map" left="25" top="13" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="L_map" left="25" top="4" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="I_map" left="25" top="19" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="boardborder" left="13" top="1" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="testscreen1" left="2" top="30" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="testscreen2" left="2" top="61" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="testscreen3" left="2" top="92" width="28" height="28" mapOutputTo="PROGMEM" /> 
+ </maps> 
+ </output> 
+</gfx-xform> 

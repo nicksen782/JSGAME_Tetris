@@ -1,0 +1,82 @@
+/* ************************* */
+/* Affects the framework DOM */
+/* ************************* */
+#siteContainerDiv.debugModeOn{
+	display:inline-block;
+}
+
+/* ************************** */
+/* Affects the game debug DOM */
+/* ************************** */
+
+/* The main debug div */
+#DEBUG_DIV {
+	display: inline-block;
+	vertical-align: top;
+	background-color: green;
+	width: 500px;
+	min-height: 250px;
+	text-align: left;
+}
+#DEBUG_DIV.hidden {
+	display:none;
+}
+
+#DEBUG_DIV.notActive{
+	opacity:0.50;
+}
+
+/* debug div menu/panels */
+#DEBUG_DIV #DEBUG_DIV_MENU {
+	text-align: center;
+	border-bottom: 2px dotted black;
+}
+#DEBUG_DIV .debugPanelButtons {
+	display: inline-block;
+	/* float: left; */
+	width: 110px;
+	margin: 2px;
+	background-color: skyblue;
+	border-radius: 5px;
+	padding: 5px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+#DEBUG_DIV .debugPanelButtons:hover { background-color:blue;}
+#DEBUG_DIV .debugPanelButtons:active{ background-color:skyblue;}
+#DEBUG_DIV .debugPanelButtons.active{ background-color:greenyellow;}
+#DEBUG_DIV #DEBUG_DIV_MENU_DIVS .DEBUG_DIV_MENU_DIVS{
+	display:none;
+}
+#DEBUG_DIV #DEBUG_DIV_MENU_DIVS .DEBUG_DIV_MENU_DIVS.active{
+	display:block;
+}
+
+/* debug div tables */
+#DEBUG_DIV .debugTable1{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable1 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable1 th{ text-decoration:underline; font-weight:bold; text-align:center; }
+#DEBUG_DIV .debugTable1 td{ text-align:center; }
+
+#DEBUG_DIV .debugTable2{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable2 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable2 th{ text-decoration:underline; font-weight:bold; text-align:left; }
+#DEBUG_DIV .debugTable2 td:nth-child(1){ width:25%; text-align:left; }
+#DEBUG_DIV .debugTable2 td:nth-child(2){ width:75%; text-align:left; }
+
+/* debug div - individual elements */
+#DEBUG_DIV #DEBUG_DIV_MENU_DIVS .DEBUG_DIV_MENU_DIVS.active button{
+	font-size: 12px;
+	margin:2px;
+	padding:2px;
+}
+textarea#debug_gameVars {
+    width: 100%;
+    height: 34em;
+    overflow: scroll;
+    white-space: pre;
+    font-family: monospace;
+    font-size: 12px;
+    color: gainsboro;
+    background-color: black;
+}
