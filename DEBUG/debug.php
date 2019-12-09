@@ -224,6 +224,7 @@
 							<button onclick="core.FUNCS.audio.stop_midi ('sound2', false);">P S2</button>
 							<button onclick="core.FUNCS.audio.stop_midi ('sound3', false);">P S3</button>
 							<button onclick="core.FUNCS.audio.stop_midi ('sound4', false);">P S4</button>
+							<button onclick="core.FUNCS.audio.stopAllSounds_midi(false);">ALL</button>
 						</td>
 					</tr>
 
@@ -236,24 +237,7 @@
 							<button onclick="core.FUNCS.audio.stop_midi ('sound2', true);">S S2</button>
 							<button onclick="core.FUNCS.audio.stop_midi ('sound3', true);">S S3</button>
 							<button onclick="core.FUNCS.audio.stop_midi ('sound4', true);">S S4</button>
-						</td>
-					</tr>
-					<tr>
-						<td>PAUSE ALL MIDI</td>
-						<td>
-							<button onclick="core.FUNCS.audio.stopAllSounds_midi(false);">Pause</button>
-						</td>
-					</tr>
-					<tr>
-						<td>STOP ALL MIDI</td>
-						<td>
-							<button onclick="core.FUNCS.audio.stopAllSounds_midi(true);">Stop</button>
-						</td>
-					</tr>
-					<tr>
-						<td>RESUME ALL MIDI</td>
-						<td>
-							<button onclick="core.FUNCS.audio.stopAllSounds_midi(true);">Stop</button>
+							<button onclick="core.FUNCS.audio.stopAllSounds_midi(true);">ALL</button>
 						</td>
 					</tr>
 

@@ -147,11 +147,17 @@ game.firstLoop = function(){
 				"S_bgtile" , // 1 tile.
 				"L_bgtile" , // 1 tile.
 				"I_bgtile" , // 1 tile.
-
-				// Border for the game grid.
-				"boardborder", // 8 tiles
+				// "tile0"    , // 1 tile.
 			];
-
+			let skipTheseTiles = [
+				core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2],
+				// core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2],
+			]
 			// Clear
 			game.solidBg1Tiles    = [];
 
@@ -163,10 +169,18 @@ game.firstLoop = function(){
 				let width  = map[0];
 				let height = map[1];
 				let numTiles = width*height;
+
+				// Populate game.solidBg1Tiles.
 				for(let ii=0; ii<numTiles; ii+=1){
 					let tileid = map[ii+2];
-					if(game.solidBg1Tiles.indexOf(tileid) == -1){
-						game.solidBg1Tiles.push( tileid );
+
+					// Is this a skipped tile?
+					if(skipTheseTiles.indexOf(tileid) == -1){
+						// Is this a solid tile?
+						if(game.solidBg1Tiles.indexOf(tileid) == -1){
+							// Add the tile to the list.
+							game.solidBg1Tiles.push( tileid );
+						}
 					}
 				}
 			}

@@ -32,27 +32,27 @@
 	"midi_synths": {
 		"music1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		} ,
 		"music2" : {
 			"synthOptions": { "quality":1, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		} ,
 		"sound1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		} ,
 		"sound2" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		} ,
 		"sound3" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		} ,
 		"sound4" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":1.0 }
+			"options"     : { "loop":false, "masterVol":"" }
 		}
 	},
 
@@ -70,7 +70,6 @@
 	"numGamepads"       : 1     ,
 	"fps"               : 30    ,
 
-	"OLDcanvas_scaleFactor" : 2.4 ,
 	"canvas_scaleFactor" : 1.9 ,
 
 	"ENDOFFILE" : ""

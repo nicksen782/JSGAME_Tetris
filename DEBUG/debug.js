@@ -143,12 +143,15 @@ game.DEBUG.init = function(){
 			let intKey = rec.key;
 			let type   = rec.type;
 
-			temp_td1.innerHTML="PLAY MP3";
+			temp_td1.innerHTML=type.toUpperCase();
 			temp_td2.innerHTML="<button onclick='core.FUNCS.audio.playSound_mp3(\""+extKey+"\", true, 1.0);' >"+intKey+", ("+type+")</button>";
 
 			// Add this row to the DOM fragment.
 			frag.appendChild(temp_tr);
 		}
+
+		// mid_bgm
+		// mid_sfx
 
 		for(let i=0; i<mid_keys.length; i+=1){
 			let key = mid_keys[i];
@@ -163,7 +166,7 @@ game.DEBUG.init = function(){
 			let intKey = rec.key;
 			let type   = rec.type;
 
-			temp_td1.innerHTML="PLAY MIDI";
+			temp_td1.innerHTML=type.toUpperCase();
 			temp_td2.innerHTML="<button onclick='core.FUNCS.audio.play_midi(\"music1\", \""+extKey+"\", true, 1.0);' >"+intKey+", ("+type+")</button>";
 
 			// Add this row to the DOM fragment.
@@ -180,7 +183,8 @@ game.DEBUG.init = function(){
 
 	// Set the normal site container to inline-block.
 	// Remove the hidden and noSelect classes from the debug DOM.
-	JSGAME.DOM["siteContainerDiv"].classList.add("debugModeOn");
+	JSGAME.DOM["siteContainerDiv"].classList.add("inline_block");
+	JSGAME.DOM["sideDiv"].classList.remove("hide");
 	game.DEBUG.DOM["DEBUG_DIV"].classList.remove("hidden");
 	game.DEBUG.DOM["DEBUG_DIV"].classList.remove("noSelect");
 

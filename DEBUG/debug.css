@@ -1,22 +1,17 @@
-/* ************************* */
-/* Affects the framework DOM */
-/* ************************* */
-#siteContainerDiv.debugModeOn{
-	display:inline-block;
-}
-
 /* ************************** */
 /* Affects the game debug DOM */
 /* ************************** */
 
 /* The main debug div */
 #DEBUG_DIV {
-	display: inline-block;
+	/* display: inline-block; */
 	vertical-align: top;
 	background-color: green;
 	width: 500px;
-	min-height: 250px;
+	height: 476px;
+	max-height: 476px;
 	text-align: left;
+	overflow: auto;
 }
 #DEBUG_DIV.hidden {
 	display:none;
@@ -34,13 +29,14 @@
 #DEBUG_DIV .debugPanelButtons {
 	display: inline-block;
 	/* float: left; */
-	width: 110px;
+	width: 85px;
 	margin: 2px;
-	background-color: skyblue;
+	background-color: deepskyblue;
 	border-radius: 5px;
 	padding: 5px;
 	white-space: nowrap;
 	overflow: hidden;
+	font-size: 12px;
 }
 #DEBUG_DIV .debugPanelButtons:hover { background-color:blue;}
 #DEBUG_DIV .debugPanelButtons:active{ background-color:skyblue;}
@@ -53,12 +49,12 @@
 }
 
 /* debug div tables */
-#DEBUG_DIV .debugTable1{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable1{width: 100%;background-color: rgba(255, 255, 255, 0.1);border-collapse: collapse;}
 #DEBUG_DIV .debugTable1 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
 #DEBUG_DIV .debugTable1 th{ text-decoration:underline; font-weight:bold; text-align:center; }
 #DEBUG_DIV .debugTable1 td{ text-align:center; }
 
-#DEBUG_DIV .debugTable2{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable2{width:100%;background-color: rgba(255, 255, 255, 0.1); border-collapse: collapse;}
 #DEBUG_DIV .debugTable2 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
 #DEBUG_DIV .debugTable2 th{ text-decoration:underline; font-weight:bold; text-align:left; }
 #DEBUG_DIV .debugTable2 td:nth-child(1){ width:25%; text-align:left; }
@@ -72,7 +68,8 @@
 }
 textarea#debug_gameVars {
     width: 100%;
-    height: 34em;
+    height: 26em;
+    /* height: 100%; */
     overflow: scroll;
     white-space: pre;
     font-family: monospace;

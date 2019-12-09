@@ -1,5 +1,10 @@
 // *** GAMESTATE FUNCTIONS ***
 
+/*
+ISSUES:
+
+*/
+
 //
 game.gs.PLAY_A = {
 	vars         : {
@@ -93,6 +98,18 @@ game.gs.PLAY_A = {
 		vars.lines = 9;
 		vars.score = 0;
 		vars.level = 0;
+
+		// Line clearing.
+		vars.linesBeingCleared            = false;
+		vars.linesBeingCleared_speed      = ((1000/core.SETTINGS.fps) * 0.05 );
+		vars.linesBeingCleared_flashes    = 4;
+		vars.linesBeingCleared_flashesCnt = 0;
+		vars.linesBeingCleared_cnt        = 0;
+
+		vars.oldFields_org = []; // Field before clearing
+		vars.oldFields_adj = []; // Field before clearing but with full lines replaced.
+		vars.newFields     = []; // New field.
+
 	},
 	main         : function(){
 		let gs    = this;
@@ -140,8 +157,42 @@ game.gs.PLAY_A = {
 
 		// Run.
 		if(vars.init){
-			// Do we move the piece down (auto-decend?)
+			// Is a piece in the process of being removed?
+			if(vars.linesBeingCleared){
+				// Ready for the next animation?
+				if(vars.linesBeingCleared_cnt >= vars.linesBeingCleared_speed){
+					vars.linesBeingCleared_cnt  = 0;
 
+					// Flashed enough times? Stop the animation.
+					if(vars.linesBeingCleared_flashesCnt >= vars.linesBeingCleared_flashes){
+						// Clear the flag.
+						vars.linesBeingCleared=false;
+
+						// Draw the new field.
+						core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.newFields );
+					}
+					else{
+						// if(vars.linesBeingCleared_flashesCnt%2==0 && vars.linesBeingCleared_flashesCnt !=0){
+						if(vars.linesBeingCleared_flashesCnt%2==0){
+							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_adj );
+						}
+						else{
+							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_org );
+						}
+
+						vars.linesBeingCleared_flashesCnt +=1 ;
+						vars.linesBeingCleared_cnt += 1;
+					}
+
+				}
+				else{
+					vars.linesBeingCleared_cnt += 1;
+				}
+
+				return;
+			}
+
+			// Do we move the piece down (auto-decend?)
 			if(vars.dropSpeed_cnt >= vars.dropSpeed){
 				// Can the piece move down?
 				if( gs.canThePieceBeDrawn("DOWN") ){
@@ -172,7 +223,7 @@ game.gs.PLAY_A = {
 						gs.detectCompletedLines();
 
 						// Determine the next piece.
-						let newIndex = game.getRandomInt_inRange(0, vars.validPieces.length-1) ;
+						// let newIndex = game.getRandomInt_inRange(0, vars.validPieces.length-1) ;
 
 						// Spawn a piece.
 						gs.spawnPiece( vars.nextPiece );
@@ -275,7 +326,11 @@ game.gs.PLAY_A = {
 		let gs    = this;
 		let vars  = gs.vars;
 
-		let fields = gs.playboardVramToArray();
+		let X_tile = core.ASSETS.graphics.tilemaps[ "X_tile" ][2];
+
+		vars.oldFields_org = gs.playboardVramToArray()["twoD"];
+		let oldFields = gs.playboardVramToArray()["twoD"];
+		let newFields = [];
 
 		// The playboard has 20 lines all 10 tiles wide.
 		let rowsToClear = [];
@@ -285,7 +340,7 @@ game.gs.PLAY_A = {
 			let completedLine=true;
 
 			for(let x=0; x<10; x+=1){
-				let thisTile = fields["twoD"][y][x];
+				let thisTile = oldFields[y][x];
 				// console.log("y", y, "x", x, " -- ", thisTile);
 				// Is the tile solid?
 				if(game.solidBg1Tiles.indexOf( thisTile ) == -1){
@@ -293,31 +348,81 @@ game.gs.PLAY_A = {
 					completedLine=false;
 					break;
 				}
-
 			}
 
-			if(completedLine){ rowsToClear.push(y); }
+			// If a line is completed, clear the line and then reset y and scan again.
+			if(completedLine){
+				rowsToClear.push(y);
 
+				// newFields[y]=[];
+				// newFields[y].push( oldFields[y].slice() );
+
+				// Remove the row.
+				// oldFields.splice( y , 1 );
+
+				// Replace the row with X.
+				// oldFields[y] = [0,0,0,0,0,0,0,0,0,0] ;
+				oldFields[y] = [X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile] ;
+				// newFields = oldFields[y] ;
+
+				// Add blank row to the top.
+				// oldFields.unshift( [1,1,1,1,1,1,1,1,1,1] );
+
+				// y=0;
+			}
+			else{
+				newFields.push( oldFields[y].map(function(d){ return d; }) );
+			}
 		}
 
 		if(rowsToClear.length){
+			// Recreate the fields array.
+
 			// Remove the rows.
+			// for(let i=0; i<rowsToClear.length; i+=1){
+				// 	fields.splice( rowsToClear[i] , 1 );
+			// }
+			// // Add blank rows to the top.
+			// for(let i=0; i<rowsToClear.length; i+=1){
+				// 	fields.unshift( [1,1,1,1,1,1,1,1,1,1] );
+			// }
+
+			// Shift to the top the number of rows removed.
 			for(let i=0; i<rowsToClear.length; i+=1){
-				fields["twoD"].splice( rowsToClear[i] , 1 );
-			}
-			// Add blank rows to the top.
-			for(let i=0; i<rowsToClear.length; i+=1){
-				fields["twoD"].unshift( [1,1,1,1,1,1,1,1,1,1] );
+				newFields.unshift( [1,1,1,1,1,1,1,1,1,1] );
 			}
 
 			// Update VRAM1 with fields oneD as a tilemap.
-			fields["oneD"] = gs.convert2dTo1d(fields["twoD"]);
-			fields["oneD"].unshift( 0 );
-			fields["oneD"].unshift( 0 );
-			fields["oneD"][0] = 10;
-			fields["oneD"][1] = 20;
+			// oldFields["oneD"] = gs.convert2dTo1d(fields);
+			// oldFields["oneD"].unshift( 0 );
+			// oldFields["oneD"].unshift( 0 );
+			// oldFields["oneD"][0] = 10;
+			// oldFields["oneD"][1] = 20;
 
-			core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, fields["oneD"] );
+
+			// Update VRAM1 with oldFields oneD as a tilemap.
+			oldFields = gs.convert2dTo1d(oldFields);
+			newFields = gs.convert2dTo1d(newFields);
+
+			vars.oldFields_org = gs.convert2dTo1d(vars.oldFields_org) ;
+			vars.oldFields_org.unshift( 0 );
+			vars.oldFields_org.unshift( 0 );
+			vars.oldFields_org[0] = 10;
+			vars.oldFields_org[1] = 20;
+
+			oldFields.unshift( 0 );
+			oldFields.unshift( 0 );
+			oldFields[0] = 10;
+			oldFields[1] = 20;
+
+			// Update VRAM1 with oldFields oneD as a tilemap.
+			newFields.unshift( 0 );
+			newFields.unshift( 0 );
+			newFields[0] = 10;
+			newFields[1] = 20;
+
+			vars.oldFields_adj = oldFields ;
+			vars.newFields     = newFields ;
 
 			// Add to the line count.
 			vars.lines += rowsToClear.length;
@@ -341,6 +446,14 @@ game.gs.PLAY_A = {
 			let old_level = vars.level;
 			gs.updateLevel();
 			if(old_level != vars.level){ gs.setNextDropSpeed("UP"); }
+
+			// Start the flash animation.
+			vars.linesBeingCleared            = true;
+			vars.linesBeingCleared_flashesCnt = 0;
+			vars.linesBeingCleared_cnt        = 0;
+			vars.linesBeingCleared_cnt = vars.linesBeingCleared_speed;
+
+			// core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_adj );
 		}
 	},
 	updateLineCount       : function(){
