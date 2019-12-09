@@ -22,6 +22,7 @@
   <map var-name="S_map" left="25" top="13" width="4" height="2" mapOutputTo="PROGMEM" /> 
   <map var-name="L_map" left="25" top="4" width="4" height="2" mapOutputTo="PROGMEM" /> 
   <map var-name="I_map" left="25" top="19" width="4" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="boardborder_ALL" left="13" top="1" width="4" height="2" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_top" left="15" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_topL" left="13" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_topR" left="14" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 

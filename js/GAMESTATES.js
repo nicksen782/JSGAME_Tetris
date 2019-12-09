@@ -242,8 +242,9 @@ game.gs.PLAY_A = {
 			if(vars.inputSpeed_cnt >= vars.inputSpeed){
 				let reset=false;
 
-				if     ( game.chkBtn("BTN_UP"    , "btnHeld1") ){ if( gs.canThePieceBeDrawn("UP"   )   ) {game.gs.PLAY_A.vars.matrix_y-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
-				else if( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
+				// if     ( game.chkBtn("BTN_UP"    , "btnHeld1") ){ if( gs.canThePieceBeDrawn("UP"   )   ) {game.gs.PLAY_A.vars.matrix_y-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
+
+				if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
 				else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
 				else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
 

@@ -140,14 +140,15 @@ game.firstLoop = function(){
 			// Used to populate game.solidBgTiles.
 			let solidBg1Tilemaps = [
 				// Background Tetris pieces.
-				"T_bgtile" , // 1 tile.
-				"J_bgtile" , // 1 tile.
-				"Z_bgtile" , // 1 tile.
-				"O_bgtile" , // 1 tile.
-				"S_bgtile" , // 1 tile.
-				"L_bgtile" , // 1 tile.
-				"I_bgtile" , // 1 tile.
-				// "tile0"    , // 1 tile.
+				"T_bgtile"        , // 1 tile.
+				"J_bgtile"        , // 1 tile.
+				"Z_bgtile"        , // 1 tile.
+				"O_bgtile"        , // 1 tile.
+				"S_bgtile"        , // 1 tile.
+				"L_bgtile"        , // 1 tile.
+				"I_bgtile"        , // 1 tile.
+				"boardborder_ALL" , // 8 tiles.
+				// "tile0"           , // 1 tile.
 			];
 			let skipTheseTiles = [
 				core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
@@ -179,11 +180,17 @@ game.firstLoop = function(){
 						// Is this a solid tile?
 						if(game.solidBg1Tiles.indexOf(tileid) == -1){
 							// Add the tile to the list.
+							console.log("Adding:", tileid);
 							game.solidBg1Tiles.push( tileid );
 						}
 					}
+					else{
+						console.log("Skipping:", tileid);
+					}
 				}
 			}
+
+			console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
 
 		};
 		populate_solidBg1Tiles();
