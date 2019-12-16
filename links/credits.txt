@@ -1,5 +1,15 @@
 Credits:
 
-// Canvas performance data.
-Daniel Baulig: https://stackoverflow.com/a/6003174
-Daniel Baulig: http://www.danielbaulig.de/ba-thesis/ (This can be translated with https://docwordcounter.com/en/wordcounttranslation .)
+Game Code      : Nickolas Andersen (nicksen782)
+Game Graphics  : Nickolas Andersen (nicksen782)
+Game Music/SFX :
+
+Helpful websites:
+* https://meatfighter.com/nintendotetrisai/
+	A great breakdown of the game logic, rotations, AI, etc.
+
+* https://gamedevelopment.tutsplus.com/tutorials/implementing-tetris-clearing-lines--gamedev-1197
+	Line clearing advice.
+
+* http://oopsilon.com/06/texts/tetris.html
+	A great breakdown of the game logic basics.

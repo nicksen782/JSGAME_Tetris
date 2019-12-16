@@ -82,6 +82,7 @@ game.runOnce = function(){
 		let proms1 = [
 			core.FUNCS.graphics.init(), // Comes from the selected video kernel.
 			core.FUNCS.audio   .init(), // Comes from the selected sound kernel.
+			// core.FUNCS.audio.NEW2init(), //
 		];
 
 		Promise.all(proms1).then(function(){
@@ -109,7 +110,8 @@ game.runOnce = function(){
 
 			// Resolve the promise and allow the program to continue.
 			resolve();
-		});
+		}
+		,function(err){ console.log("ERROR: runOnce: ", err);  } );
 
 	});
 };
@@ -180,17 +182,17 @@ game.firstLoop = function(){
 						// Is this a solid tile?
 						if(game.solidBg1Tiles.indexOf(tileid) == -1){
 							// Add the tile to the list.
-							console.log("Adding:", tileid);
+							// console.log("Adding:", tileid);
 							game.solidBg1Tiles.push( tileid );
 						}
 					}
 					else{
-						console.log("Skipping:", tileid);
+						// console.log("Skipping:", tileid);
 					}
 				}
 			}
 
-			console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
+			// console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
 
 		};
 		populate_solidBg1Tiles();
@@ -315,7 +317,7 @@ game.loop = function(){
 	let logic_start;
 	if(JSGAME.SHARED.debug){
 		logic_start=performance.now();
-		game.logic_timings.unshift();
+		game.logic_timings.shift();
 	}
 
 	// *** Get inputs ***
@@ -325,14 +327,6 @@ game.loop = function(){
 	// *** Run the current game state. ***
 
 	game.stateManager();
-
-	// ACTORS: Update sprites data arrays?
-	if( game.actorsUpdated ){
-		game.actorsUpdated=false;
-
-		// Re-write the core.GRAPHICS.sprites array based on data from the actors array.
-		//
-	}
 
 	// Debug: Performance check.
 	if(JSGAME.SHARED.debug){
@@ -346,10 +340,11 @@ game.loop = function(){
 };
 //
 game.gameloop = function(timestamp){
+
 	// *** Update the timing data. ***
 
-	JSGAME.SHARED.timing.now   = performance.now();
-	// JSGAME.SHARED.timing.now   = timestamp;
+	// JSGAME.SHARED.timing.now   = performance.now();
+	JSGAME.SHARED.timing.now   = timestamp;
 	JSGAME.SHARED.timing.delta = JSGAME.SHARED.timing.now - JSGAME.SHARED.timing._then;
 
 	// *** Does the gameloop run this time? ***
@@ -366,9 +361,11 @@ game.gameloop = function(timestamp){
 
 		// Should the gameloop run or be skipped?
 		if(
-			JSGAME.FLAGS.windowIsFocused  &&  // Window not in focus?
-			!JSGAME.FLAGS.paused          &&  // Game paused?
-			!JSGAME.FLAGS.manuallyPaused      // Game paused?
+			! JSGAME.FLAGS.windowIsFocused      || // Window not in focus?
+			! core.GRAPHICS.flags.INLAYERUPDATE || // Still in a graphics update?
+			JSGAME.FLAGS.paused                 || // Game paused? (Automatic.)
+			JSGAME.FLAGS.manuallyPaused         || // Game paused? (By user.)
+			core.GRAPHICS.FADER.blocking           // Fader set to block?
 		){
 			game.loop();
 		}
@@ -382,9 +379,9 @@ game.gameloop = function(timestamp){
 		if(JSGAME.SHARED.debug){
 			// Control how often the debug display is updated.
 			// NOTE: Time includes the last frame drawn.
-			let last = game.DEBUG.VALS.lastDebugDisplay;
-			let timeSince = performance.now() - last;
-			let secondsToWait_debugDisplay = game.DEBUG.VALS.secondsToWait_debugDisplay;
+			let last                       = game.DEBUG.VALS.lastDebugDisplay           ;
+			let timeSince                  = performance.now() - last                   ;
+			let secondsToWait_debugDisplay = game.DEBUG.VALS.secondsToWait_debugDisplay ;
 
 			// Update the debug display?
 			if(timeSince >= (JSGAME.SHARED.timing.interval * core.SETTINGS.fps) * secondsToWait_debugDisplay ){
@@ -414,25 +411,3 @@ game.stateManager = function(){
 		throw str + " " + game.gamestate;
 	}
 };
-
-/*
-	// core.FUNCS.audio.playSound_mp3("cursorSelect1"    , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("cursorSelect2"    , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("diceRoll1"        , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("diceShake1"       , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("moneyRainDown"    , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("payfee1"          , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("tokenMove1"       , true, 1.0);
-	// core.FUNCS.audio.playSound_mp3("visitOccupiedJail", true, 1.0);
-
-	game.clearPlayboard = function(){
-		// Clear the playboard.
-		game.playBoard=[];
-		for(let y=0; y<22; y+=1){
-			game.playBoard[y]=[];
-			for(let x=0; x<10; x+=1){
-				game.playBoard[y][x]=0;
-			}
-		}
-	};
-*/

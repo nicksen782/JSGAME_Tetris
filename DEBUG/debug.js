@@ -31,9 +31,6 @@ game.DEBUG.init = function(){
 	game.DEBUG.DOM["sprite_test2_on"]    = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#sprite_test2_on");
 	game.DEBUG.DOM["sprite_test2_off"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#sprite_test2_off");
 	game.DEBUG.DOM["restartGamestate"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#restartGamestate");
-	// game.DEBUG.DOM["restartGame"]        = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#restartGame");
-	game.DEBUG.DOM["debug_fadeIn"]       = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_fadeIn");
-	game.DEBUG.DOM["debug_fadeOut"]      = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_fadeOut");
 	game.DEBUG.DOM["debug_ClearVram1"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearVram1");
 	game.DEBUG.DOM["debug_ClearVram2"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearVram2");
 	game.DEBUG.DOM["debug_ClearSprites"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearSprites");
@@ -53,23 +50,24 @@ game.DEBUG.init = function(){
 	});
 
 	// Test - Video mode overrides:
-	game.DEBUG.DOM["debug_layerDrawDiv"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_layerDrawDiv");
-	let debugKeys = Object.keys(core.GRAPHICS.debug.flags);
-	debugKeys.forEach(function(d){
-		let rec = core.GRAPHICS.debug.flags[d] ;
-		let button = document.createElement("button");
-		let space = document.createElement("span");
-		space.innerText=" ";
-		button.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
-		button.style['font-size']="10px";
-		button.onclick=function(){
-			core.GRAPHICS.debug.flags[d] = !core.GRAPHICS.debug.flags[d] ;
-			this.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
-			core.GRAPHICS.flags.OUTPUT_force = true ;
-		};
-		game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(button);
-		game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(space);
-	});
+	// game.DEBUG.DOM["debug_layerDrawDiv"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_layerDrawDiv");
+	// game.DEBUG.DOM["debug_layerDrawDiv"].innerHTML="";
+	// let debugKeys = Object.keys(core.GRAPHICS.debug.flags);
+	// debugKeys.forEach(function(d){
+	// 	let rec = core.GRAPHICS.debug.flags[d] ;
+	// 	let button = document.createElement("button");
+	// 	let space = document.createElement("span");
+	// 	space.innerText=" ";
+	// 	button.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
+	// 	button.style['font-size']="10px";
+	// 	button.onclick=function(){
+	// 		core.GRAPHICS.debug.flags[d] = !core.GRAPHICS.debug.flags[d] ;
+	// 		this.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
+	// 		core.GRAPHICS.flags.OUTPUT_force = true ;
+	// 	};
+	// 	game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(button);
+	// 	game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(space);
+	// });
 
 	// GAME VARS
 	game.DEBUG.DOM["DEBUG_MENU_DIV_3"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#DEBUG_MENU_DIV_3");
@@ -89,9 +87,6 @@ game.DEBUG.init = function(){
 	game.DEBUG.DOM["sprite_test2_off"].addEventListener("click", function(){game.DEBUG.TESTS.timedTests(this.id);    }, false);
 
 	game.DEBUG.DOM["restartGamestate"].addEventListener("click", function(){game.DEBUG.restartGamestate();           }, false);
-	// game.DEBUG.DOM["restartGame"]     .addEventListener("click", function(){game.DEBUG.restartGame();                }, false);
-	game.DEBUG.DOM["debug_fadeIn"]    .addEventListener("click", function(){core.FUNCS.graphics.FADER.FadeIn();      }, false);
-	game.DEBUG.DOM["debug_fadeOut"]   .addEventListener("click", function(){core.FUNCS.graphics.FADER.FadeOut();     }, false);
 	game.DEBUG.DOM["debug_ClearVram1"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM1"); }, false);
 	game.DEBUG.DOM["debug_ClearVram2"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM2"); }, false);
 	game.DEBUG.DOM["debug_ClearSprites"].addEventListener("click", function(){core.FUNCS.graphics.clearSprites();    }, false);
@@ -103,8 +98,9 @@ game.DEBUG.init = function(){
 	game.DEBUG.VALS.vram2_test1_id  = null;              //
 	game.DEBUG.VALS.sprite_test1_id = null;              //
 	game.DEBUG.VALS.sprite_test2_id = null;              //
-	// game.DEBUG.VALS.secondsToWait_debugDisplay = 1.0; //
-	game.DEBUG.VALS.secondsToWait_debugDisplay = 0.25;   //
+	// game.DEBUG.VALS.secondsToWait_debugDisplay = 1.0;  //
+	// game.DEBUG.VALS.secondsToWait_debugDisplay = 0.25; //
+	game.DEBUG.VALS.secondsToWait_debugDisplay = 0.10;   //
 
 	// Allow activing or de-activating the debug functions.
 	game.DEBUG.DOM["debug_mode_chk"].addEventListener("change", function(){
@@ -126,8 +122,11 @@ game.DEBUG.init = function(){
 	let populateSoundTest = function(){
 		let elem = game.DEBUG.DOM["debugSounds"] ;
 
-		let mp3_keys = Object.keys(core.ASSETS.audio.lookups);
-		let mid_keys = Object.keys(core.AUDIO.midiData); // [soundKey]["data"]
+		let mp3_keys;
+		let mid_keys;
+
+		try{ mp3_keys = Object.keys(core.ASSETS.audio.lookups); } catch(e){ mp3_keys = []; }
+		try{ mid_keys = Object.keys(core.AUDIO.midiData);       } catch(e){ mid_keys = []; }
 
 		var frag = document.createDocumentFragment();
 
@@ -233,6 +232,36 @@ game.DEBUG.NAV.debug_hidePanels = function(){
 };
 
 // *** DEBUG FUNCTIONS ***
+
+game.DEBUG.drawFlagsToConsole = function(){
+	console.log(
+		""  , ( core.GRAPHICS.flags.BG         == true ? 'BG         : TRUE' :'BG         :     ' ),
+		"\n", ( core.GRAPHICS.flags.SPRITE     == true ? 'SPRITE     : TRUE' :'SPRITE     :     ' ),
+		"\n", ( core.GRAPHICS.flags.TEXT       == true ? 'TEXT       : TRUE' :'TEXT       :     ' ),
+		"\n", ( core.GRAPHICS.flags.FADE       == true ? 'FADE       : TRUE' :'FADE       :     ' ),
+		"\n", ( core.GRAPHICS.flags.OUTPUT     == true ? 'OUTPUT     : TRUE' :'OUTPUT     :     ' ),
+		"\n", ( core.GRAPHICS.FADER.fadeActive == true ? 'fadeActive : TRUE' :'fadeActive :     ' ),
+		""
+		);
+	};
+
+game.DEBUG.fadeValuesToConsole = function(){
+	console.log(
+		"\n old values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.prevFadeStep],
+		"\n new values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.fadeStep],
+		// "\n " ,
+		"\n prevFadeStep :" , core.GRAPHICS.FADER.prevFadeStep  ,
+		"\n fadeStep     :" , core.GRAPHICS.FADER.fadeStep      ,
+		"\n fadeSpeed    :" , core.GRAPHICS.FADER.fadeSpeed     ,
+		"\n currFadeFrame:" , core.GRAPHICS.FADER.currFadeFrame ,
+		"\n fadeDir      :" , core.GRAPHICS.FADER.fadeDir       ,
+		"\n fadeActive   :" , core.GRAPHICS.FADER.fadeActive    ,
+		"\n blocking     :" , core.GRAPHICS.FADER.blocking      ,
+		"\n stayDark     :" , core.GRAPHICS.FADER.stayDark      ,
+		"\n lastFadeFrame:" , core.GRAPHICS.FADER.lastFadeFrame ,
+		"\n"
+	);
+};
 
 // Fills VRAM1 with random tiles from the layer's active tileset.
 game.DEBUG.fillVram1_random = function(){
@@ -409,11 +438,17 @@ game.DEBUG.updateDebugDisplay_funcs = {
 		let sum = function(a,c){ return a + c; }
 
 		// Get new averages.
-		let new_avg_BG     = (core.GRAPHICS.performance.BG     .reduce(sum) / core.GRAPHICS.performance.BG    .length);
-		let new_avg_SPRITE = (core.GRAPHICS.performance.SPRITE .reduce(sum) / core.GRAPHICS.performance.SPRITE.length);
-		let new_avg_TEXT   = (core.GRAPHICS.performance.TEXT   .reduce(sum) / core.GRAPHICS.performance.TEXT  .length);
-		let new_avg_FADE   = (core.GRAPHICS.performance.FADE   .reduce(sum) / core.GRAPHICS.performance.FADE  .length);
-		let new_avg_OUTPUT = (core.GRAPHICS.performance.OUTPUT .reduce(sum) / core.GRAPHICS.performance.OUTPUT.length);
+		let new_avg_BG    ;
+		let new_avg_SPRITE;
+		let new_avg_TEXT  ;
+		let new_avg_FADE  ;
+		let new_avg_OUTPUT;
+
+		try{ new_avg_BG     = (core.GRAPHICS.performance.BG     .reduce(sum) / core.GRAPHICS.performance.BG    .length); } catch(e){ return; }
+		try{ new_avg_SPRITE = (core.GRAPHICS.performance.SPRITE .reduce(sum) / core.GRAPHICS.performance.SPRITE.length); } catch(e){ return; }
+		try{ new_avg_TEXT   = (core.GRAPHICS.performance.TEXT   .reduce(sum) / core.GRAPHICS.performance.TEXT  .length); } catch(e){ return; }
+		try{ new_avg_FADE   = (core.GRAPHICS.performance.FADE   .reduce(sum) / core.GRAPHICS.performance.FADE  .length); } catch(e){ return; }
+		try{ new_avg_OUTPUT = (core.GRAPHICS.performance.OUTPUT .reduce(sum) / core.GRAPHICS.performance.OUTPUT.length); } catch(e){ return; }
 
 		// toFixed and then parseFloat.
 		let new_avg_TOTAL  = (

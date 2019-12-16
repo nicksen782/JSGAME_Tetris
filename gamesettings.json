@@ -21,13 +21,13 @@
 	"links":[
 		{ "text":"Instructions", "href":"links/instructions.txt", "target":"_blank" },
 		{ "text":"Credits"     , "href":"links/credits.txt"     , "target":"_blank" },
-		{ "text":"Github"      , "href":"https://github.com/nicksen782/UzeboxGamepadTranslator", "target":"_blank" }
+		{ "text":"Github"      , "href":"https://github.com/nicksen782/JSGAME_Tetris", "target":"_blank" }
 	],
 
 	"mp3_files": [
 		{ "key":"tick"     , "fileurl":"snd/tick.mp3"     , "type":"mp3_sfx", "names":["cursorTick1"] }
 	],
-	"midi_bin": "UAM/MUSIC/test1.bin.txt",
+	"midi_bin": "UAM/MUSIC/Tetris.txt",
 
 	"midi_synths": {
 		"music1" : {
@@ -68,7 +68,7 @@
 
 	"typeGamepads"      : "nes" ,
 	"numGamepads"       : 1     ,
-	"fps"               : 30    ,
+	"fps"               : 60    ,
 
 	"canvas_scaleFactor" : 1.9 ,
 

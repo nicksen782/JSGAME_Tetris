@@ -7,8 +7,10 @@ ISSUES:
 
 //
 game.gs.PLAY_A = {
+	//
 	vars         : {
 	},
+	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
@@ -57,17 +59,17 @@ game.gs.PLAY_A = {
 
 		// Variables.
 		vars.dropSpeeds         = [
-			( (1000/core.SETTINGS.fps) * 1.00 ) , // 0
-			( (1000/core.SETTINGS.fps) * 0.90 ) , // 1
-			( (1000/core.SETTINGS.fps) * 0.80 ) , // 2
-			( (1000/core.SETTINGS.fps) * 0.70 ) , // 3
-			( (1000/core.SETTINGS.fps) * 0.60 ) , // 4
-			( (1000/core.SETTINGS.fps) * 0.50 ) , // 5
-			( (1000/core.SETTINGS.fps) * 0.40 ) , // 6
-			( (1000/core.SETTINGS.fps) * 0.30 ) , // 7
-			( (1000/core.SETTINGS.fps) * 0.20 ) , // 8
-			( (1000/core.SETTINGS.fps) * 0.10 ) , // 9
-			( (1000/core.SETTINGS.fps) * 0.05 ) , // 10
+			( (core.SETTINGS.fps) * 1.00 ) , // 0
+			( (core.SETTINGS.fps) * 0.90 ) , // 1
+			( (core.SETTINGS.fps) * 0.80 ) , // 2
+			( (core.SETTINGS.fps) * 0.70 ) , // 3
+			( (core.SETTINGS.fps) * 0.60 ) , // 4
+			( (core.SETTINGS.fps) * 0.50 ) , // 5
+			( (core.SETTINGS.fps) * 0.40 ) , // 6
+			( (core.SETTINGS.fps) * 0.30 ) , // 7
+			( (core.SETTINGS.fps) * 0.20 ) , // 8
+			( (core.SETTINGS.fps) * 0.10 ) , // 9
+			( (core.SETTINGS.fps) * 0.05 ) , // 10
 		];
 		vars.validPieces = ["T"  ,"J"  ,"Z"  ,"O"  ,"S"  ,"L"  ,"I"];
 
@@ -79,7 +81,8 @@ game.gs.PLAY_A = {
 		vars.dropSpeed_cnt      = 0                               ;
 
 		// Input speed/delay
-		vars.inputSpeed     = vars.dropSpeeds[ 10 ];
+		// vars.inputSpeed     = vars.dropSpeeds[ 10 ];
+		vars.inputSpeed     = (core.SETTINGS.fps) * 0.075;
 		vars.inputSpeed_cnt = 0 ;
 
 		vars.END                = false           ;
@@ -89,28 +92,32 @@ game.gs.PLAY_A = {
 		vars.currentMap         = ""              ;
 		vars.gameOver           = false           ;
 		vars.rotationIndex      = 0               ;
-		vars.matrix_x           = vars.min_x_tile ;
-		vars.matrix_y           = vars.min_y_tile ;
+		vars.matrix_x           = vars.min_x_tile ; // Position of the falling piece.
+		vars.matrix_y           = vars.min_y_tile ; // Position of the falling piece.
 
-		vars.nextPiece ;
+		vars.nextPiece ; // Next piece.
 
 		// Scoring
-		vars.lines = 9;
+		vars.lines = 0;
 		vars.score = 0;
 		vars.level = 0;
 
 		// Line clearing.
 		vars.linesBeingCleared            = false;
-		vars.linesBeingCleared_speed      = ((1000/core.SETTINGS.fps) * 0.05 );
-		vars.linesBeingCleared_flashes    = 4;
+		vars.linesBeingCleared_speed      = ((core.SETTINGS.fps) * 0.075 );
+		vars.linesBeingCleared_flashes    = 5;
 		vars.linesBeingCleared_flashesCnt = 0;
 		vars.linesBeingCleared_cnt        = 0;
 
-		vars.oldFields_org = []; // Field before clearing
-		vars.oldFields_adj = []; // Field before clearing but with full lines replaced.
-		vars.newFields     = []; // New field.
+		vars.field = {
+			"org" : [] , // Before line clear.
+			"adj" : [] , // During line clear.
+			"new" : [] , // After line clear.
+		};
 
+		vars.instantDrop = false;
 	},
+	//
 	main         : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -119,6 +126,8 @@ game.gs.PLAY_A = {
 		if(vars.END){
 			return;
 		}
+
+		// Game over?
 		else if(vars.gameOver){
 			console.log("yup, game over!");
 			if(JSGAME.SHARED.debug){ game.DEBUG.updateDebugDisplay(); }
@@ -150,121 +159,132 @@ game.gs.PLAY_A = {
 			gs.updateNextPiece();
 
 			// Start the theme music!
-			// core.FUNCS.audio.play_midi  ( "music1", "A_THEME", true, 1.0 );
-			// core.FUNCS.audio.play_midi  ( "music1", "B_THEME", true, 1.0 );
-			core.FUNCS.audio.play_midi  ( "music1", "C_THEME", true, 1.0 );
+			// core.FUNCS.audio.play_midi  ( "music1", "TETRIS_A_THEME_MID", true, 1.0 );
+			core.FUNCS.audio.play_midi  ( "music1", "TETRIS_B_THEME_MID", true, 1.0 );
+			// core.FUNCS.audio.play_midi  ( "music1", "TETRIS_C_THEME_MID", true, 1.0 );
 		}
 
 		// Run.
 		if(vars.init){
-			// Is a piece in the process of being removed?
-			if(vars.linesBeingCleared){
-				// Ready for the next animation?
-				if(vars.linesBeingCleared_cnt >= vars.linesBeingCleared_speed){
-					vars.linesBeingCleared_cnt  = 0;
+			// // Handle user-input: pause (start).
+			// if     ( game.chkBtn("BTN_START"     , "btnPressed1") ){ console.log("START"); }
 
-					// Flashed enough times? Stop the animation.
-					if(vars.linesBeingCleared_flashesCnt >= vars.linesBeingCleared_flashes){
-						// Clear the flag.
-						vars.linesBeingCleared=false;
+			// // Handle user-input: menu (select).
+			// if     ( game.chkBtn("BTN_SELECT"     , "btnPressed1") ){ console.log("SELECT"); }
 
-						// Draw the new field.
-						core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.newFields );
-					}
-					else{
-						// if(vars.linesBeingCleared_flashesCnt%2==0 && vars.linesBeingCleared_flashesCnt !=0){
-						if(vars.linesBeingCleared_flashesCnt%2==0){
-							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_adj );
+			if(0){
+			}
+			else {
+				// Is a piece in the process of being removed?
+				if(vars.linesBeingCleared){
+					// Ready for the next animation?
+					if(vars.linesBeingCleared_cnt >= vars.linesBeingCleared_speed){
+						vars.linesBeingCleared_cnt  = 0;
+
+						// Flashed enough times? Stop the animation.
+						if(vars.linesBeingCleared_flashesCnt >= vars.linesBeingCleared_flashes){
+							// Clear the flag.
+							vars.linesBeingCleared=false;
+
+							// Draw the new field.
+							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.new );
 						}
 						else{
-							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_org );
+							// if(vars.linesBeingCleared_flashesCnt%2==0 && vars.linesBeingCleared_flashesCnt !=0){
+							if(vars.linesBeingCleared_flashesCnt%2==0){
+								core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.adj );
+							}
+							else{
+								core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.org );
+							}
+
+							vars.linesBeingCleared_flashesCnt +=1 ;
+							vars.linesBeingCleared_cnt += 1;
 						}
 
-						vars.linesBeingCleared_flashesCnt +=1 ;
+					}
+					else{
 						vars.linesBeingCleared_cnt += 1;
 					}
 
+					return;
 				}
+
+				// Do we move the piece down (auto-decend?)
+				if( vars.instantDrop || (vars.dropSpeed_cnt >= vars.dropSpeed) ){
+					// Can the piece move down?
+					if( gs.canThePieceBeDrawn("DOWN") ){
+						// YES: Drop the piece one tile down after a certain time.
+						game.gs.PLAY_A.vars.matrix_y+=1;
+						game.gs.PLAY_A.drawCurrentPiece();
+						vars.dropSpeed_cnt=0;
+						vars.inputSpeed_cnt=0;
+					}
+					else{
+						// 1 NO:  If at the top then game over.
+						if( vars.matrix_y == vars.max_y_tile ){
+							if(vars.instantDrop){ vars.instantDrop = false ; }
+							gs.clearBoard(0);
+							// vars.gameOver=true;
+							// gs.gameOver();
+						}
+						// 2 NO:  Else, next piece.
+						else{
+							if(vars.instantDrop){ vars.instantDrop = false ; }
+
+							gs.updatePieceCounts(vars.currentPiece);
+
+							// Save the sprite as VRAM tiles at their present location.
+							gs.currentPiecetoVRAM1();
+
+							// Clear the sprites.
+							core.FUNCS.graphics.clearSprites();
+
+							// Detect completed lines!
+							gs.detectCompletedLines();
+
+							// Determine the next piece.
+							// let newIndex = game.getRandomInt_inRange(0, vars.validPieces.length-1) ;
+
+							// Spawn a piece.
+							gs.spawnPiece( vars.nextPiece );
+
+							// Set the next piece.
+							vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+							gs.updateNextPiece();
+						}
+					}
+				}
+				// Increment the dropSpeed_cnt.
 				else{
-					vars.linesBeingCleared_cnt += 1;
+					vars.dropSpeed_cnt  += 1;
 				}
 
-				return;
-			}
-
-			// Do we move the piece down (auto-decend?)
-			if(vars.dropSpeed_cnt >= vars.dropSpeed){
-				// Can the piece move down?
-				if( gs.canThePieceBeDrawn("DOWN") ){
-					// YES: Drop the piece one tile down after a certain time.
-					game.gs.PLAY_A.vars.matrix_y+=1;
-					game.gs.PLAY_A.drawCurrentPiece();
-					vars.dropSpeed_cnt=0;
+				// Instant drop?
+				if     ( game.chkBtn("BTN_UP"    , "btnPressed1") ){
+					vars.instantDrop=true;
 					vars.inputSpeed_cnt=0;
 				}
-				else{
-					// 1 NO:  If at the top then game over.
-					if( vars.matrix_y == vars.max_y_tile ){
-						gs.clearBoard(0);
-						// vars.gameOver=true;
-						// gs.gameOver();
-					}
-					// 2 NO:  Else, next piece.
-					else{
-						gs.updatePieceCounts(vars.currentPiece);
+				// Move the piece DOWN, LEFT, or RIGHT?
+				else if(vars.inputSpeed_cnt >= vars.inputSpeed){
+					let reset=false;
 
-						// Save the sprite as VRAM tiles at their present location.
-						gs.currentPiecetoVRAM1();
+					// Handle directional user input.
+					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
+					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
+					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
 
-						// Clear the sprites.
-						core.FUNCS.graphics.clearSprites();
+					if(reset){ vars.inputSpeed_cnt=0; }
+					// else     { vars.inputSpeed_cnt += 1; }
+				}
+				else{ vars.inputSpeed_cnt += 1; }
 
-						// Detect completed lines!
-						gs.detectCompletedLines();
-
-						// Determine the next piece.
-						// let newIndex = game.getRandomInt_inRange(0, vars.validPieces.length-1) ;
-
-						// Spawn a piece.
-						gs.spawnPiece( vars.nextPiece );
-
-						// Set the next piece.
-						vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
-						gs.updateNextPiece();
-					}
+				// Rotate the piece LEFT or RIGHT?
+				if(vars.inputSpeed_cnt != 0 && ! vars.instantDrop){
+					if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
+					else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
 				}
 			}
-			else{
-				vars.dropSpeed_cnt  += 1;
-			}
-
-			// Handle directional user input.
-			if(vars.inputSpeed_cnt >= vars.inputSpeed){
-				let reset=false;
-
-				// if     ( game.chkBtn("BTN_UP"    , "btnHeld1") ){ if( gs.canThePieceBeDrawn("UP"   )   ) {game.gs.PLAY_A.vars.matrix_y-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
-
-				if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
-				else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
-				else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
-
-				if(reset){ vars.inputSpeed_cnt=0; }
-				else     { vars.inputSpeed_cnt += 1; }
-			}
-			else{ vars.inputSpeed_cnt += 1; }
-
-			// Handle user-input: rotation.
-			if(vars.inputSpeed_cnt != 0){
-				if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); gs.drawCurrentPiece(); vars.dropSpeed_cnt=0; } }
-				else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; gs.drawCurrentPiece(); vars.dropSpeed_cnt=0; } }
-			}
-
-			// Handle user-input: pause (start).
-			//
-
-			// Handle user-input: menu (select).
-			//
-
 		}
 	},
 
@@ -272,6 +292,7 @@ game.gs.PLAY_A = {
 
 	// TESTING
 
+	//
 	gameOver              : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -285,6 +306,7 @@ game.gs.PLAY_A = {
 
 	// WORKING
 
+	//
 	convert2dTo1d         : function(arr){
 		let new_arr = [];
 
@@ -294,6 +316,7 @@ game.gs.PLAY_A = {
 
 		return new_arr;
 	},
+	//
 	playboardVramToArray  : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -318,23 +341,21 @@ game.gs.PLAY_A = {
 			field.push(newRow);
 		}
 
-		return {
-			// "oneD" : gs.convert2dTo1d(field) ,
-			"twoD" : field                   ,
-		};
+		return field;
 	},
+	//
 	detectCompletedLines  : function(){
 		let gs    = this;
 		let vars  = gs.vars;
 
 		let X_tile = core.ASSETS.graphics.tilemaps[ "X_tile" ][2];
 
-		vars.oldFields_org = gs.playboardVramToArray()["twoD"];
-		let oldFields = gs.playboardVramToArray()["twoD"];
+		vars.field.org = gs.playboardVramToArray();
+		let oldFields  = gs.playboardVramToArray();
 		let newFields = [];
 
 		// The playboard has 20 lines all 10 tiles wide.
-		let rowsToClear = [];
+		let linesCleared = 0;
 
 		// Determine all lines that are complete.
 		for(let y=0; y<20; y+=1){
@@ -342,7 +363,6 @@ game.gs.PLAY_A = {
 
 			for(let x=0; x<10; x+=1){
 				let thisTile = oldFields[y][x];
-				// console.log("y", y, "x", x, " -- ", thisTile);
 				// Is the tile solid?
 				if(game.solidBg1Tiles.indexOf( thisTile ) == -1){
 					// No? Clear flag and break.
@@ -353,91 +373,64 @@ game.gs.PLAY_A = {
 
 			// If a line is completed, clear the line and then reset y and scan again.
 			if(completedLine){
-				rowsToClear.push(y);
-
-				// newFields[y]=[];
-				// newFields[y].push( oldFields[y].slice() );
-
-				// Remove the row.
-				// oldFields.splice( y , 1 );
+				linesCleared+=1;
 
 				// Replace the row with X.
-				// oldFields[y] = [0,0,0,0,0,0,0,0,0,0] ;
 				oldFields[y] = [X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile,X_tile] ;
-				// newFields = oldFields[y] ;
-
-				// Add blank row to the top.
-				// oldFields.unshift( [1,1,1,1,1,1,1,1,1,1] );
-
-				// y=0;
 			}
 			else{
 				newFields.push( oldFields[y].map(function(d){ return d; }) );
 			}
 		}
 
-		if(rowsToClear.length){
+		if(linesCleared){
 			// Recreate the fields array.
 
-			// Remove the rows.
-			// for(let i=0; i<rowsToClear.length; i+=1){
-				// 	fields.splice( rowsToClear[i] , 1 );
-			// }
-			// // Add blank rows to the top.
-			// for(let i=0; i<rowsToClear.length; i+=1){
-				// 	fields.unshift( [1,1,1,1,1,1,1,1,1,1] );
-			// }
-
 			// Shift to the top the number of rows removed.
-			for(let i=0; i<rowsToClear.length; i+=1){
+			for(let i=0; i<linesCleared; i+=1){
 				newFields.unshift( [1,1,1,1,1,1,1,1,1,1] );
 			}
 
-			// Update VRAM1 with fields oneD as a tilemap.
-			// oldFields["oneD"] = gs.convert2dTo1d(fields);
-			// oldFields["oneD"].unshift( 0 );
-			// oldFields["oneD"].unshift( 0 );
-			// oldFields["oneD"][0] = 10;
-			// oldFields["oneD"][1] = 20;
+			//
+			oldFields      = gs.convert2dTo1d(oldFields);
+			newFields      = gs.convert2dTo1d(newFields);
+			vars.field.org = gs.convert2dTo1d(vars.field.org) ;
 
+			//
+			vars.field.org.unshift( 0 );
+			vars.field.org.unshift( 0 );
+			vars.field.org[0] = 10;
+			vars.field.org[1] = 20;
 
-			// Update VRAM1 with oldFields oneD as a tilemap.
-			oldFields = gs.convert2dTo1d(oldFields);
-			newFields = gs.convert2dTo1d(newFields);
-
-			vars.oldFields_org = gs.convert2dTo1d(vars.oldFields_org) ;
-			vars.oldFields_org.unshift( 0 );
-			vars.oldFields_org.unshift( 0 );
-			vars.oldFields_org[0] = 10;
-			vars.oldFields_org[1] = 20;
-
+			//
 			oldFields.unshift( 0 );
 			oldFields.unshift( 0 );
 			oldFields[0] = 10;
 			oldFields[1] = 20;
 
-			// Update VRAM1 with oldFields oneD as a tilemap.
+			//
 			newFields.unshift( 0 );
 			newFields.unshift( 0 );
 			newFields[0] = 10;
 			newFields[1] = 20;
 
-			vars.oldFields_adj = oldFields ;
-			vars.newFields     = newFields ;
+			//
+			vars.field.adj = oldFields ;
+			vars.field.new = newFields ;
 
 			// Add to the line count.
-			vars.lines += rowsToClear.length;
+			vars.lines += linesCleared;
 			gs.updateLineCount();
 
 			// Add to the score.
-			switch(rowsToClear.length){
+			switch(linesCleared){
 				case 1 : { vars.score += ( 40   + (vars.level*40  ) ); break; } // Single
 				case 2 : { vars.score += ( 100  + (vars.level*100 ) ); break; } // Double
 				case 3 : { vars.score += ( 300  + (vars.level*300 ) ); break; } // Triple
 				case 4 : { vars.score += ( 1200 + (vars.level*1200) ); break; } // Tetris
 				default : {
 					vars.score += 0 ;
-					console.log("this should not have happened. rowsToClear.length:", rowsToClear.length);
+					console.log("this should not have happened. linesCleared:", linesCleared);
 					break;
 				}
 			}
@@ -453,10 +446,9 @@ game.gs.PLAY_A = {
 			vars.linesBeingCleared_flashesCnt = 0;
 			vars.linesBeingCleared_cnt        = 0;
 			vars.linesBeingCleared_cnt = vars.linesBeingCleared_speed;
-
-			// core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.oldFields_adj );
 		}
 	},
+	//
 	updateLineCount       : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -469,6 +461,7 @@ game.gs.PLAY_A = {
 		str=vars.lines.toString().padStart(5, " ");
 		core.FUNCS.graphics.Print(15, 19, str, "VRAM2");
 	},
+	//
 	updateScore           : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -481,6 +474,7 @@ game.gs.PLAY_A = {
 		str=vars.score.toString().padStart(5, " ");
 		core.FUNCS.graphics.Print(21, 22, str, "VRAM2");
 	},
+	//
 	updateLevel           : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -496,6 +490,7 @@ game.gs.PLAY_A = {
 		str=vars.level.toString().padStart(5, " ");
 		core.FUNCS.graphics.Print(21, 19, str, "VRAM2");
 	},
+	//
 	updateNextPiece       : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -518,6 +513,7 @@ game.gs.PLAY_A = {
 		core.FUNCS.graphics.DrawMap2(20,6, map, "VRAM1");
 
 	},
+	//
 	clearPieceCounts      : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -528,6 +524,7 @@ game.gs.PLAY_A = {
 			vars.pieceCounts[key]=0;
 		}
 		let str;
+
 		core.FUNCS.graphics.Fill(17, 13, 3,1, 2, "VRAM1");
 		str=vars.pieceCounts[ keys[0] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(17, 13, str, "VRAM2");
@@ -556,6 +553,7 @@ game.gs.PLAY_A = {
 		str=vars.pieceCounts[ keys[6] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(23, 15, str, "VRAM2");
 	},
+	//
 	updatePieceCounts     : function(type){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -584,16 +582,16 @@ game.gs.PLAY_A = {
 		let str = vars.pieceCounts[type].toString().padStart(3, "0") ;
 		core.FUNCS.graphics.Print(x, y, str, "VRAM2");
 	},
+	//
 	clearBoard            : function(){
 		// Clears the VRAM of the playing board.
 
-		// game.gs[game.gamestate].clearBoard();
 		let gs    = this;
 		let vars  = gs.vars;
 
-		// core.FUNCS.graphics.Fill(2,4,10,20,1,"VRAM1");
 		core.FUNCS.graphics.Fill(vars.min_x_tile, vars.min_y_tile, 10, 20, 1, "VRAM1");
 	},
+	//
 	setDropSpeed          : function(index){
 		// game.gs[game.gamestate].setDropSpeed(0);
 		// game.gs[game.gamestate].setNextDropSpeed("UP");
@@ -606,12 +604,13 @@ game.gs.PLAY_A = {
 			vars.dropSpeed     = vars.dropSpeeds[index] ;
 			vars.dropSpeed_cnt = 0                  ;
 
-			console.log("Speed has been set to index:", index);
+			// console.log("Speed has been set to index:", index);
 		}
 		else{
 			console.log("Invalid drop speed index was specified!");
 		}
 	},
+	//
 	setNextDropSpeed      : function(dir){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -630,6 +629,7 @@ game.gs.PLAY_A = {
 
 		gs.setDropSpeed( vars.dropSpeedIndex );
 	},
+	//
 	currentPiecetoVRAM1   : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -693,6 +693,7 @@ game.gs.PLAY_A = {
 
 		}
 	},
+	//
 	spawnPiece            : function( type ){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -721,6 +722,7 @@ game.gs.PLAY_A = {
 		vars.dropSpeed_cnt=0;
 
 	},
+	//
 	canThePieceBeDrawn    : function(movement){
 		// Check game.playBoard and the current rotation matrix for the current piece.
 		let gs    = this;
@@ -825,6 +827,7 @@ game.gs.PLAY_A = {
 		// console.log("CAN draw");
 		return true;
 	},
+	//
 	drawCurrentPiece      : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -870,6 +873,7 @@ game.gs.PLAY_A = {
 		}
 
 	},
+	//
 	rotatePiece           : function(dir){
 		let gs   = this;
 		let vars = gs.vars;
@@ -892,14 +896,17 @@ game.gs.PLAY_A = {
 };
 //
 game.gs.TITLE1 = {
+	//
 	vars         : {
 	},
+	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
 
 		vars.END = false;
 	},
+	//
 	main : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -931,24 +938,28 @@ game.gs.TITLE1 = {
 
 	// *** SUPPORT FUNCTIONS ***
 
-	EXAMPLE : function( VALUE ){
-		let gs    = this;
-		let vars  = gs.vars;
-	},
+	//
+	// EXAMPLE : function( VALUE ){
+	// 	let gs    = this;
+	// 	let vars  = gs.vars;
+	// },
 };
 
 // *** TEMPLATE GAMESTATE FUNCTION ***
 
 // GAMESTATE TEMPLATE
 game.gs.TEMPLATE = {
+	//
 	vars         : {
 	},
+	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
 
 		vars.END = false;
 	},
+	//
 	main : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -972,6 +983,7 @@ game.gs.TEMPLATE = {
 
 	// *** SUPPORT FUNCTIONS ***
 
+	//
 	EXAMPLE : function( VALUE ){
 		let gs    = this;
 		let vars  = gs.vars;

@@ -4,12 +4,9 @@
 
 /* The main debug div */
 #DEBUG_DIV {
-	/* display: inline-block; */
 	vertical-align: top;
-	background-color: green;
 	width: 500px;
-	height: 476px;
-	max-height: 476px;
+	height: 480px;
 	text-align: left;
 	overflow: auto;
 }
@@ -24,11 +21,9 @@
 /* debug div menu/panels */
 #DEBUG_DIV #DEBUG_DIV_MENU {
 	text-align: center;
-	border-bottom: 2px dotted black;
 }
 #DEBUG_DIV .debugPanelButtons {
 	display: inline-block;
-	/* float: left; */
 	width: 85px;
 	margin: 2px;
 	background-color: deepskyblue;
@@ -49,13 +44,13 @@
 }
 
 /* debug div tables */
-#DEBUG_DIV .debugTable1{width: 100%;background-color: rgba(255, 255, 255, 0.1);border-collapse: collapse;}
-#DEBUG_DIV .debugTable1 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable1{width: 100%;border-collapse: collapse;border-top: 2px dotted black;border-bottom: 2px dotted black;}
+#DEBUG_DIV .debugTable1 caption{width:100%;}
 #DEBUG_DIV .debugTable1 th{ text-decoration:underline; font-weight:bold; text-align:center; }
 #DEBUG_DIV .debugTable1 td{ text-align:center; }
 
-#DEBUG_DIV .debugTable2{width:100%;background-color: rgba(255, 255, 255, 0.1); border-collapse: collapse;}
-#DEBUG_DIV .debugTable2 caption{width:100%;background-color: rgba(255, 255, 255, 0.1);}
+#DEBUG_DIV .debugTable2{width:100%;border-collapse: collapse;}
+#DEBUG_DIV .debugTable2 caption{width:100%;}
 #DEBUG_DIV .debugTable2 th{ text-decoration:underline; font-weight:bold; text-align:left; }
 #DEBUG_DIV .debugTable2 td:nth-child(1){ width:25%; text-align:left; }
 #DEBUG_DIV .debugTable2 td:nth-child(2){ width:75%; text-align:left; }
@@ -68,12 +63,11 @@
 }
 textarea#debug_gameVars {
     width: 100%;
-    height: 26em;
-    /* height: 100%; */
+    height: 39em;
     overflow: scroll;
     white-space: pre;
     font-family: monospace;
-    font-size: 12px;
+    font-size: 10px;
     color: gainsboro;
     background-color: black;
 }

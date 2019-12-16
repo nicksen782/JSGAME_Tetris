@@ -2,15 +2,15 @@
 	<!-- DEBUG NAVIGATION -->
 	<div id="DEBUG_DIV_MENU">
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_1',this);">CORE</div>
-		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_2',this);">VID TESTS</div>
+		<div class="active debugPanelButtons" onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_2',this);">VID TESTS</div>
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_3',this);">GAME VARS</div>
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_4',this);">GAME FUNCS</div>
-		<div class="active debugPanelButtons" onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_5',this);">SOUND</div>
+		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_5',this);">SOUND</div>
 
 	</div>
 
 	<table class="debugTable1">
-		<caption>AVG TIMINGS</caption>
+		<!-- <caption>AVG TIMINGS</caption> -->
 		<thead>
 			<tr>
 				<th>LOGIC</th>
@@ -24,22 +24,22 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td> <span id="avg_LOGIC"></span>  </td>
-				<td> <span id="avg_BG"></span>     </td>
-				<td> <span id="avg_SPRITE"></span> </td>
-				<td> <span id="avg_TEXT"></span>   </td>
-				<td> <span id="avg_FADE"></span>   </td>
-				<td> <span id="avg_OUTPUT"></span> </td>
-				<td> <span id="avg_TOTAL"></span>  </td>
+				<td> <span id="avg_LOGIC" >0.00%</span> </td>
+				<td> <span id="avg_BG"    >0.00%</span> </td>
+				<td> <span id="avg_SPRITE">0.00%</span> </td>
+				<td> <span id="avg_TEXT"  >0.00%</span> </td>
+				<td> <span id="avg_FADE"  >0.00%</span> </td>
+				<td> <span id="avg_OUTPUT">0.00%</span> </td>
+				<td> <span id="avg_TOTAL" >0.00%</span> </td>
 			</tr>
 		</tbody>
 	</table>
 
-	<br>
+	<!-- <br> -->
 
 	<div id="DEBUG_DIV_MENU_DIVS">
 
-		<div id="DEBUG_MENU_DIV_1" class="DEBUG_DIV_MENU_DIVS ">
+		<div id="DEBUG_MENU_DIV_1" class="DEBUG_DIV_MENU_DIVS">
 			<table class="debugTable2">
 				<caption>Test functions</caption>
 				<thead>
@@ -53,7 +53,6 @@
 						<td>RESTARTS</td>
 						<td>
 							<button title="restartGamestate"  id="restartGamestate">GAMESTATE</button>
-							<!-- <button title="restartGame"       id="restartGame"     >GAME</button> -->
 						</td>
 					</tr>
 				</tbody>
@@ -64,7 +63,7 @@
 
 		</div>
 
-		<div id="DEBUG_MENU_DIV_2" class="DEBUG_DIV_MENU_DIVS ">
+		<div id="DEBUG_MENU_DIV_2" class="DEBUG_DIV_MENU_DIVS active">
 			<table class="debugTable2">
 				<caption>Test functions</caption>
 				<thead>
@@ -105,8 +104,24 @@
 					<tr>
 						<td>FADE TEST</td>
 						<td>
-							<button title="debug_fadeIn"  id="debug_fadeIn" >In&nbsp;</button>
-							<button title="debug_fadeOut" id="debug_fadeOut">Out</button>
+							<!-- (speed, blocking) -->
+
+							<!-- NON-BLOCKING -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false);">FadeIn (3, 0)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false);">FadeOut(3, 0)</button>
+							<!-- BLOCKING -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true);">FadeIn (3, 1)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true);">FadeOut(3, 1)</button>
+							<br>
+
+							<!-- IMMEDIATE NON-BLOCKING -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (0, false);">FadeIn (0, 0)</button> -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(0, false);">FadeOut(0, 0)</button> -->
+							<!-- IMMEDIATE BLOCKING -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (0, true);">FadeIn (0, 1)</button> -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(0, true);">FadeOut(0, 1)</button> -->
+							<br>
+
 						</td>
 					</tr>
 					<tr>
@@ -118,7 +133,7 @@
 					<tr>
 						<td>LAYER DISP</td>
 						<td>
-							<div id="debug_layerDrawDiv"></div>
+							<div id="debug_layerDrawDiv">-----</div>
 						</td>
 					</tr>
 					<tr>
@@ -129,11 +144,32 @@
 							<button title="debug_ClearSprites" id="debug_ClearSprites">SPRITES</button>
 						</td>
 					</tr>
+
+					<tr>
+						<td>DRAW FLAGS</td>
+						<td>
+							<button onclick="core.GRAPHICS.flags.BG    =true;game.DEBUG.drawFlagsToConsole();">BG    =true</button>
+							<button onclick="core.GRAPHICS.flags.SPRITE=true;game.DEBUG.drawFlagsToConsole();">SPRITE=true</button>
+							<button onclick="core.GRAPHICS.flags.TEXT  =true;game.DEBUG.drawFlagsToConsole();">TEXT  =true</button>
+							<button onclick="core.GRAPHICS.flags.FADE  =true;game.DEBUG.drawFlagsToConsole();">FADE  =true</button>
+							<button onclick="core.GRAPHICS.flags.OUTPUT=true;game.DEBUG.drawFlagsToConsole();">OUTPUT=true</button>
+						</td>
+					</tr>
+
+					<tr>
+						<td>DISP FLAGS</td>
+						<td>
+							<button onclick="game.DEBUG.drawFlagsToConsole();">DISP #1</button>
+							<button onclick="game.DEBUG.fadeValuesToConsole();">DISP #2</button>
+
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			<br>
 			<br>
 		</div>
+
 		<div id="DEBUG_MENU_DIV_3" class="DEBUG_DIV_MENU_DIVS">
 			<textarea contenteditable="false" spellcheck="false" readonly id="debug_gameVars"></textarea>
 			<br>
@@ -145,16 +181,16 @@
 
 		<div id="DEBUG_MENU_DIV_4" class="DEBUG_DIV_MENU_DIVS">
 			<table class="debugTable1">
-				<caption>Set Next Piece</caption>
+				<!-- <caption>Set Next Piece</caption> -->
 				<thead>
 					<tr>
-						<th>J</th>
-						<th>T</th>
-						<th>Z</th>
-						<th>O</th>
-						<th>S</th>
-						<th>L</th>
-						<th>I</th>
+						<th>Set J</th>
+						<th>Set T</th>
+						<th>Set Z</th>
+						<th>Set O</th>
+						<th>Set S</th>
+						<th>Set L</th>
+						<th>Set I</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -192,7 +228,7 @@
 
 		</div>
 
-		<div id="DEBUG_MENU_DIV_5" class="DEBUG_DIV_MENU_DIVS active">
+		<div id="DEBUG_MENU_DIV_5" class="DEBUG_DIV_MENU_DIVS">
 
 			<table class="debugTable2">
 				<caption>MIDI</caption>
