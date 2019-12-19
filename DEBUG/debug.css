@@ -52,7 +52,7 @@
 #DEBUG_DIV .debugTable2{width:100%;border-collapse: collapse;}
 #DEBUG_DIV .debugTable2 caption{width:100%;}
 #DEBUG_DIV .debugTable2 th{ text-decoration:underline; font-weight:bold; text-align:left; }
-#DEBUG_DIV .debugTable2 td:nth-child(1){ width:25%; text-align:left; }
+#DEBUG_DIV .debugTable2 td:nth-child(1){width:25%;text-align:left;vertical-align: top;}
 #DEBUG_DIV .debugTable2 td:nth-child(2){ width:75%; text-align:left; }
 
 /* debug div - individual elements */

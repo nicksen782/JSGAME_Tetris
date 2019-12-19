@@ -5,9 +5,14 @@
 	"VRAM_TILES_H"      : 28    ,
 	"VRAM_TILES_V"      : 28    ,
 	"RAM_TILES_COUNT"   : 0     ,
+	"INTRO_LOGO"        : 0     ,
 
-	"videokernel"       : "cores/videoMode_A/videomode_A.js",
+	"custom_videokernel" : false,
+	"custom_soundkernel" : false,
+
+	"videokernel"       : "cores/videoMode_A/videoMode_A.js",
 	"soundkernel"       : "cores/soundMode_A/soundMode_A.js",
+
 	"fonts"              : {
 		"fonts1" : { "tileset":"tilesTX1" },
 		"fonts2" : { "tileset":"tilesTX1" }
@@ -19,38 +24,39 @@
 	],
 
 	"links":[
-		{ "text":"Instructions", "href":"links/instructions.txt", "target":"_blank" },
-		{ "text":"Credits"     , "href":"links/credits.txt"     , "target":"_blank" },
+		{ "text":"Instructions", "href":"links/instructions.txt"                     , "target":"_blank" },
+		{ "text":"Credits"     , "href":"links/credits.txt"                          , "target":"_blank" },
 		{ "text":"Github"      , "href":"https://github.com/nicksen782/JSGAME_Tetris", "target":"_blank" }
 	],
 
 	"mp3_files": [
 		{ "key":"tick"     , "fileurl":"snd/tick.mp3"     , "type":"mp3_sfx", "names":["cursorTick1"] }
 	],
+
 	"midi_bin": "UAM/MUSIC/Tetris.txt",
 
 	"midi_synths": {
-		"music1" : {
+		"BGM1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		} ,
-		"music2" : {
+		"BGM2" : {
 			"synthOptions": { "quality":1, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		} ,
-		"sound1" : {
+		"SFX1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		} ,
-		"sound2" : {
+		"SFX2" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		} ,
-		"sound3" : {
+		"SFX3" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		} ,
-		"sound4" : {
+		"SFX4" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" }
 		}

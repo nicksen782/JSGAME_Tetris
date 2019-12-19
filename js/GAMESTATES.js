@@ -1,11 +1,317 @@
 // *** GAMESTATE FUNCTIONS ***
 
 /*
-ISSUES:
+ISSUES / TO DO:
+	TITLE0           : DONE
+	TITLE1           : DONE
+	TITLE2           : DONE
+	SETUP1           :
+	SETUP2           :
+	PLAY_A           : Still needs pause menu, gameover, more sound effects. Next piece comes too soon after a line clear.
+	PLAY_B           :
+	ENTER_HIGH_SCORE :
 
 */
 
-//
+// (TODO) ---- NICKSEN782 ANIMATION
+game.gs.TITLE0 = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+
+			game.setGamestate1("TITLE1", true);
+			vars.END = true;
+
+			// vars.END = true;
+		}
+
+		// Run.
+		if(vars.init){
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// COPYRIGHT SCREEN
+game.gs.TITLE1 = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+		vars.text1 = [
+			// WIDTH: 28, HEIGHT: 18
+			'       TM AND C 1987        ' , // 0
+			'                            ' , // 1
+			'  V/O ELECTRONORGTECHNICA   ' , // 2
+			'                            ' , // 3
+			'         ("ELORG")          ' , // 4
+			'                            ' , // 5
+			'  ORIGINAL CONCEPT, DESIGN  ' , // 6
+			'                            ' , // 7
+			'        AND PROGRAM         ' , // 8
+			'                            ' , // 9
+			'    BY ALEXEY PAZHITNOV     ' , // 10
+			'                            ' , // 11
+			' -------------------------- ' , // 12
+			' -------------------------- ' , // 13
+			'                            ' , // 14
+			'        JSGAME PORT:        ' , // 15
+			'                            ' , // 16
+			' NICK ANDERSEN (NICKSEN782) ' , // 17
+		];
+
+		vars.framesUntilDone       = game.secondsToFrames(3.0) ; // x % of max.
+		vars.framesUntilDone_cnt   = 0;
+
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+			let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+			core.FUNCS.graphics.ClearVram();
+			core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
+
+			// vars.END = true;
+			let xOffset = 0;
+			let yOffset = 5;
+			for(let y=0; y<vars.text1.length; y+=1){
+				core.FUNCS.graphics.Print(xOffset, (y+yOffset), vars.text1[y], "VRAM2");
+			}
+		}
+
+		// Run.
+		if(vars.init){
+			if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
+				core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, false);
+
+				game.setGamestate1("TITLE2", true);
+				vars.END = true;
+			}
+			else{
+				vars.framesUntilDone_cnt+=1;
+			}
+
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// MAIN TITLE SCREEN
+game.gs.TITLE2 = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+		vars.text1 = ["PRESS START!"];
+		vars.text2 = ["            "];
+
+		vars.xOffset_text               = 8;
+		vars.yOffset_text               = 22;
+		vars.framesBetweenFlashes       = game.secondsToFrames(0.40) ; // x % of max.
+		vars.framesBetweenFlashes_cnt   = 0;
+		vars.framesBetweenFlashes_state = false;
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+
+			let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+			core.FUNCS.graphics.ClearVram();
+			core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
+			core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen3"], "VRAM1"); // TITLE
+
+			// vars.END = true;
+
+			for(let y=0; y<vars.text1.length; y+=1){
+				core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
+			}
+
+			core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);
+
+		}
+
+		// Run.
+		if(vars.init){
+			// Dismiss this screen when the user presses start.
+			if( game.chkBtn("BTN_START" , "btnPressed1") ){
+				game.setGamestate1("PLAY_A", true);
+				vars.END = true;
+			}
+
+			if(vars.framesBetweenFlashes_cnt >= vars.framesBetweenFlashes){
+				if(vars.framesBetweenFlashes_state){
+					core.FUNCS.graphics.Print(vars.xOffset_text, (vars.yOffset_text), vars.text2[0], "VRAM2");
+				}
+				else{
+					core.FUNCS.graphics.Print(vars.xOffset_text, (vars.yOffset_text), vars.text1[0], "VRAM2");
+				}
+
+				vars.framesBetweenFlashes_state = !vars.framesBetweenFlashes_state;
+
+				vars.framesBetweenFlashes_cnt=0;
+			}
+			else{
+				vars.framesBetweenFlashes_cnt+=1;
+			}
+
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	// EXAMPLE : function( VALUE ){
+	// 	let gs    = this;
+	// 	let vars  = gs.vars;
+	// },
+};
+// (TODO) ---- SETUP FOR: MUSIC, GAME TYPE
+game.gs.SETUP1 = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+
+			// vars.END = true;
+		}
+
+		// Run.
+		if(vars.init){
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// (TODO) ---- LEVEL SELECTION, HIGH SCORES (A TYPE: LEVELS, HIGHSCORE, B TYPE: LEVELS, HIGH SCORE, HEIGHT.)
+game.gs.SETUP2 = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+
+			// vars.END = true;
+		}
+
+		// Run.
+		if(vars.init){
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// MAIN GAME: TYPE A
 game.gs.PLAY_A = {
 	//
 	vars         : {
@@ -59,17 +365,17 @@ game.gs.PLAY_A = {
 
 		// Variables.
 		vars.dropSpeeds         = [
-			( (core.SETTINGS.fps) * 1.00 ) , // 0
-			( (core.SETTINGS.fps) * 0.90 ) , // 1
-			( (core.SETTINGS.fps) * 0.80 ) , // 2
-			( (core.SETTINGS.fps) * 0.70 ) , // 3
-			( (core.SETTINGS.fps) * 0.60 ) , // 4
-			( (core.SETTINGS.fps) * 0.50 ) , // 5
-			( (core.SETTINGS.fps) * 0.40 ) , // 6
-			( (core.SETTINGS.fps) * 0.30 ) , // 7
-			( (core.SETTINGS.fps) * 0.20 ) , // 8
-			( (core.SETTINGS.fps) * 0.10 ) , // 9
-			( (core.SETTINGS.fps) * 0.05 ) , // 10
+			game.secondsToFrames(1.00) , // 0
+			game.secondsToFrames(0.90) , // 1
+			game.secondsToFrames(0.80) , // 2
+			game.secondsToFrames(0.70) , // 3
+			game.secondsToFrames(0.60) , // 4
+			game.secondsToFrames(0.50) , // 5
+			game.secondsToFrames(0.40) , // 6
+			game.secondsToFrames(0.30) , // 7
+			game.secondsToFrames(0.20) , // 8
+			game.secondsToFrames(0.10) , // 9
+			game.secondsToFrames(0.05) , // 10
 		];
 		vars.validPieces = ["T"  ,"J"  ,"Z"  ,"O"  ,"S"  ,"L"  ,"I"];
 
@@ -81,8 +387,7 @@ game.gs.PLAY_A = {
 		vars.dropSpeed_cnt      = 0                               ;
 
 		// Input speed/delay
-		// vars.inputSpeed     = vars.dropSpeeds[ 10 ];
-		vars.inputSpeed     = (core.SETTINGS.fps) * 0.075;
+		vars.inputSpeed     = game.secondsToFrames(0.075);
 		vars.inputSpeed_cnt = 0 ;
 
 		vars.END                = false           ;
@@ -101,10 +406,11 @@ game.gs.PLAY_A = {
 		vars.lines = 0;
 		vars.score = 0;
 		vars.level = 0;
+		vars.type = "A";
 
 		// Line clearing.
 		vars.linesBeingCleared            = false;
-		vars.linesBeingCleared_speed      = ((core.SETTINGS.fps) * 0.075 );
+		vars.linesBeingCleared_speed      = game.secondsToFrames(0.075);
 		vars.linesBeingCleared_flashes    = 5;
 		vars.linesBeingCleared_flashesCnt = 0;
 		vars.linesBeingCleared_cnt        = 0;
@@ -138,14 +444,13 @@ game.gs.PLAY_A = {
 		if(!vars.init){
 			vars.init=true;
 
+			core.FUNCS.graphics.ClearVram();
+
 			core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen1"], "VRAM1"); // PLAY
 			// vars.END = true;
 
 			// Clears.
-			gs.updateLineCount();
-			gs.updateScore();
-			gs.updateLevel();
-			gs.clearPieceCounts();
+			gs.updateStats();
 
 			// Determine the next piece.
 			vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
@@ -159,9 +464,9 @@ game.gs.PLAY_A = {
 			gs.updateNextPiece();
 
 			// Start the theme music!
-			// core.FUNCS.audio.play_midi  ( "music1", "TETRIS_A_THEME_MID", true, 1.0 );
-			core.FUNCS.audio.play_midi  ( "music1", "TETRIS_B_THEME_MID", true, 1.0 );
-			// core.FUNCS.audio.play_midi  ( "music1", "TETRIS_C_THEME_MID", true, 1.0 );
+			// core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_A_THEME_MID", true, 1.0 );
+			core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_B_THEME_MID", true, 1.0 );
+			// core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_C_THEME_MID", true, 1.0 );
 		}
 
 		// Run.
@@ -388,7 +693,11 @@ game.gs.PLAY_A = {
 
 			// Shift to the top the number of rows removed.
 			for(let i=0; i<linesCleared; i+=1){
-				newFields.unshift( [1,1,1,1,1,1,1,1,1,1] );
+				let empty_square = core.ASSETS.graphics.tilemaps[ "empty_square" ][2];
+				newFields.unshift( [
+					empty_square,empty_square,empty_square,empty_square,empty_square,
+					empty_square,empty_square,empty_square,empty_square,empty_square
+				] );
 			}
 
 			//
@@ -448,18 +757,50 @@ game.gs.PLAY_A = {
 			vars.linesBeingCleared_cnt = vars.linesBeingCleared_speed;
 		}
 	},
+	// Updates ALL stats (convenience function.)
+	updateStats           : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		gs.updateLineCount();
+		gs.updateScore();
+		gs.updateLevel();
+		gs.clearPieceCounts();
+		gs.updateType();
+		gs.updateNextPiece();
+
+		core.FUNCS.graphics.Print(17, 11, "-STATS-", "VRAM2");
+	},
 	//
 	updateLineCount       : function(){
 		let gs    = this;
 		let vars  = gs.vars;
 
 		// Clear the area.
-		core.FUNCS.graphics.Fill(15, 19, 5,1, 2, "VRAM1");
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(15, 19, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.lines.toString().padStart(5, " ");
+		core.FUNCS.graphics.Print(15, 19-1, "LINES", "VRAM2");
 		core.FUNCS.graphics.Print(15, 19, str, "VRAM2");
+	},
+	//
+	updateType       : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Clear the area.
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(15, 22, 5,1, blacktile, "VRAM1");
+
+		// Write the value.
+		let str;
+		str=vars.type.toString().padStart(5, " ");
+		core.FUNCS.graphics.Print(15, 22-1, "TYPE "   , "VRAM2");
+		core.FUNCS.graphics.Print(15, 22, str, "VRAM2");
+
 	},
 	//
 	updateScore           : function(){
@@ -467,11 +808,13 @@ game.gs.PLAY_A = {
 		let vars  = gs.vars;
 
 		// Clear the area.
-		core.FUNCS.graphics.Fill(21, 22, 5,1, 2, "VRAM1");
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(21, 22, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.score.toString().padStart(5, " ");
+		core.FUNCS.graphics.Print(21, 22-1, "SCORE", "VRAM2");
 		core.FUNCS.graphics.Print(21, 22, str, "VRAM2");
 	},
 	//
@@ -483,11 +826,13 @@ game.gs.PLAY_A = {
 		vars.level = parseInt( (vars.lines / 10),10);
 
 		// Clear the area.
-		core.FUNCS.graphics.Fill(21, 19, 5,1, 2, "VRAM1");
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(21, 19, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.level.toString().padStart(5, " ");
+		core.FUNCS.graphics.Print(21, 19-1, "LEVEL", "VRAM2");
 		core.FUNCS.graphics.Print(21, 19, str, "VRAM2");
 	},
 	//
@@ -507,10 +852,17 @@ game.gs.PLAY_A = {
 		if(!map){ console.log("updateNextPiece: map not found!"); return; }
 
 		// Clear the area.
-		core.FUNCS.graphics.Fill(19, 5, 5, 4, 2, "VRAM1");
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(19, 5, 5, 4, blacktile, "VRAM1");
 
 		// Draw the tile map.
 		core.FUNCS.graphics.DrawMap2(20,6, map, "VRAM1");
+
+		// Draw the "NEXT".
+		core.FUNCS.graphics.Print(18, 5 , "N"      , "VRAM2");
+		core.FUNCS.graphics.Print(18, 6 , "E"      , "VRAM2");
+		core.FUNCS.graphics.Print(18, 7 , "X"      , "VRAM2");
+		core.FUNCS.graphics.Print(18, 8 , "T"      , "VRAM2");
 
 	},
 	//
@@ -524,32 +876,33 @@ game.gs.PLAY_A = {
 			vars.pieceCounts[key]=0;
 		}
 		let str;
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
 
-		core.FUNCS.graphics.Fill(17, 13, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(17, 13, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[0] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(17, 13, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 14, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(17, 14, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[1] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(17, 14, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 15, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(17, 15, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[2] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(17, 15, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 16, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(17, 16, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[3] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(17, 16, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 14, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(23, 14, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[4] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(23, 14, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 13, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(23, 13, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[5] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(23, 13, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 15, 3,1, 2, "VRAM1");
+		core.FUNCS.graphics.Fill(23, 15, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[6] ].toString().padStart(3, "0");
 		core.FUNCS.graphics.Print(23, 15, str, "VRAM2");
 	},
@@ -576,7 +929,8 @@ game.gs.PLAY_A = {
 		vars.pieceCounts[type]+=1;
 
 		// Clear the area.
-		core.FUNCS.graphics.Fill(x, y, 3,1, 2, "VRAM1");
+		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(x, y, 3,1, blacktile, "VRAM1");
 
 		// Draw the count text.
 		let str = vars.pieceCounts[type].toString().padStart(3, "0") ;
@@ -589,7 +943,8 @@ game.gs.PLAY_A = {
 		let gs    = this;
 		let vars  = gs.vars;
 
-		core.FUNCS.graphics.Fill(vars.min_x_tile, vars.min_y_tile, 10, 20, 1, "VRAM1");
+		let empty_square = core.ASSETS.graphics.tilemaps[ "empty_square" ][2];
+		core.FUNCS.graphics.Fill(vars.min_x_tile, vars.min_y_tile, 10, 20, empty_square, "VRAM1");
 	},
 	//
 	setDropSpeed          : function(index){
@@ -894,8 +1249,8 @@ game.gs.PLAY_A = {
 		vars.currentMatrix = game.pieces[ vars.currentPiece ][ vars.rotationIndex ];
 	},
 };
-//
-game.gs.TITLE1 = {
+// (TODO) ---- MAIN GAME: TYPE B
+game.gs.PLAY_B = {
 	//
 	vars         : {
 	},
@@ -920,29 +1275,63 @@ game.gs.TITLE1 = {
 		if(!vars.init){
 			vars.init=true;
 
-			// core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["gameboard1"], "VRAM1");
-			// core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen1"], "VRAM1"); // PLAY
-			// core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen2"], "VRAM1"); // CREDITS
-			core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen3"], "VRAM1"); // TITLE
-			// core.FUNCS.graphics.Print(0,0, "LOOK AT ME! I AM TEST!", "VRAM2");
+			// vars.END = true;
 		}
 
 		// Run.
 		if(vars.init){
-			if( game.chkBtn("BTN_START" , "btnHeld1") ){
-				game.setGamestate1("PLAY_A", true);
-				vars.END = true;
-			}
 		}
 	},
 
 	// *** SUPPORT FUNCTIONS ***
 
 	//
-	// EXAMPLE : function( VALUE ){
-	// 	let gs    = this;
-	// 	let vars  = gs.vars;
-	// },
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// (TODO) ---- HIGH SCORE ENTRY SCREEN
+game.gs.ENTER_HIGH_SCORE = {
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		vars.END = false;
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){
+			return;
+		}
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+
+			// vars.END = true;
+		}
+
+		// Run.
+		if(vars.init){
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
 };
 
 // *** TEMPLATE GAMESTATE FUNCTION ***

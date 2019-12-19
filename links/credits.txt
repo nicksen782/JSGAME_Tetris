@@ -13,3 +13,10 @@ Helpful websites:
 
 * http://oopsilon.com/06/texts/tetris.html
 	A great breakdown of the game logic basics.
+
+TM AND C 1987
+V/O ELECTRONORGTECHNICA
+("ELORG")
+ORIGINAL CONCEPT,DESIGN
+AND PROGRAM
+BY ALEXEY PAZHITNOV

@@ -49,26 +49,6 @@ game.DEBUG.init = function(){
 		game.DEBUG.DOM["debug_fontChangeDiv"].appendChild(space);
 	});
 
-	// Test - Video mode overrides:
-	// game.DEBUG.DOM["debug_layerDrawDiv"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_layerDrawDiv");
-	// game.DEBUG.DOM["debug_layerDrawDiv"].innerHTML="";
-	// let debugKeys = Object.keys(core.GRAPHICS.debug.flags);
-	// debugKeys.forEach(function(d){
-	// 	let rec = core.GRAPHICS.debug.flags[d] ;
-	// 	let button = document.createElement("button");
-	// 	let space = document.createElement("span");
-	// 	space.innerText=" ";
-	// 	button.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
-	// 	button.style['font-size']="10px";
-	// 	button.onclick=function(){
-	// 		core.GRAPHICS.debug.flags[d] = !core.GRAPHICS.debug.flags[d] ;
-	// 		this.innerText = d + (core.GRAPHICS.debug.flags[d] ? "(1)" : "(0)");
-	// 		core.GRAPHICS.flags.OUTPUT_force = true ;
-	// 	};
-	// 	game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(button);
-	// 	game.DEBUG.DOM["debug_layerDrawDiv"].appendChild(space);
-	// });
-
 	// GAME VARS
 	game.DEBUG.DOM["DEBUG_MENU_DIV_3"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#DEBUG_MENU_DIV_3");
 	game.DEBUG.DOM["debug_gameVars"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_gameVars");
@@ -155,7 +135,7 @@ game.DEBUG.init = function(){
 		for(let i=0; i<mid_keys.length; i+=1){
 			let key = mid_keys[i];
 			let rec = core.AUDIO.midiData[key];
-			// core.FUNCS.audio.play_midi  ( "music1", "C_THEME" );
+			// core.FUNCS.audio.play_midi  ( "BGM1", "C_THEME" );
 
 			var temp_tr   = document.createElement("tr");
 			var temp_td1  = document.createElement("td"); temp_tr.appendChild(temp_td1); //
@@ -166,7 +146,7 @@ game.DEBUG.init = function(){
 			let type   = rec.type;
 
 			temp_td1.innerHTML=type.toUpperCase();
-			temp_td2.innerHTML="<button onclick='core.FUNCS.audio.play_midi(\"music1\", \""+extKey+"\", true, 1.0);' >"+intKey+", ("+type+")</button>";
+			temp_td2.innerHTML="<button onclick='core.FUNCS.audio.play_midi(\"BGM1\", \""+extKey+"\", true, 1.0);' >"+intKey+", ("+type+")</button>";
 
 			// Add this row to the DOM fragment.
 			frag.appendChild(temp_tr);
@@ -380,6 +360,7 @@ game.DEBUG.spriteStressTest2 = function(){
 };
 // Runs prepareState again on the current gamestate which should restart it.
 game.DEBUG.restartGamestate = function(){
+	game.gs[game.gamestate].vars={};
 	game.gs[game.gamestate].prepareState();
 };
 // Various tests that use timed intervals.

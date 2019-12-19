@@ -4,10 +4,10 @@
  <output file="UAM/PROGMEM/tilesBG1.inc">
  <tiles var-name="tilesBG1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" />
  <maps pointers-size="8">
-  <map var-name="tile0" left="2" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
-  <map var-name="tile1" left="1" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
-  <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
+  <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg1_tile" left="2" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
   <map var-name="empty_square" left="1" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="X_tile" left="18" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="T_bgtile" left="6" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="J_bgtile" left="7" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="Z_bgtile" left="8" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
@@ -33,7 +33,20 @@
   <map var-name="testscreen1" left="2" top="30" width="28" height="28" mapOutputTo="PROGMEM" /> 
   <map var-name="testscreen2" left="2" top="61" width="28" height="28" mapOutputTo="PROGMEM" /> 
   <map var-name="testscreen3" left="2" top="92" width="28" height="28" mapOutputTo="PROGMEM" /> 
-  <map var-name="X_tile" left="18" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_flare_f1" left="36" top="3" width="7" height="5" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_flare_f2" left="36" top="9" width="7" height="5" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_flare_f3" left="36" top="15" width="7" height="5" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_flare_f4" left="36" top="21" width="7" height="5" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_flare_f5" left="36" top="27" width="7" height="5" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f1" left="44" top="3" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f2" left="44" top="7" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f3" left="44" top="11" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f4" left="44" top="15" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f5" left="44" top="19" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f6" left="44" top="23" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f7" left="44" top="27" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f8" left="44" top="31" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="n782_text_f9" left="44" top="35" width="7" height="3" mapOutputTo="PROGMEM" /> 
  </maps> 
  </output> 
 </gfx-xform> 

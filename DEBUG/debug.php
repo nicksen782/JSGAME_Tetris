@@ -53,6 +53,7 @@
 						<td>RESTARTS</td>
 						<td>
 							<button title="restartGamestate"  id="restartGamestate">GAMESTATE</button>
+							<button onclick="game.game_full_restart();">WHOLE GAME</button>
 						</td>
 					</tr>
 				</tbody>
@@ -102,24 +103,31 @@
 						</td>
 					</tr>
 					<tr>
-						<td>FADE TEST</td>
+						<td>FADE TESTS</td>
 						<td>
-							<!-- (speed, blocking) -->
-
-							<!-- NON-BLOCKING -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false);">FadeIn (3, 0)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false);">FadeOut(3, 0)</button>
-							<!-- BLOCKING -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true);">FadeIn (3, 1)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true);">FadeOut(3, 1)</button>
+							<!-- NON-BLOCKING -- DON'T BLOCK LOGIC WHEN DONE -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, false);">FadeIn (3, false, false)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, false);">FadeOut(3, false, false)</button>
 							<br>
 
-							<!-- IMMEDIATE NON-BLOCKING -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (0, false);">FadeIn (0, 0)</button> -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(0, false);">FadeOut(0, 0)</button> -->
-							<!-- IMMEDIATE BLOCKING -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (0, true);">FadeIn (0, 1)</button> -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(0, true);">FadeOut(0, 1)</button> -->
+							<!-- BLOCKING -- DON'T BLOCK LOGIC WHEN DONE -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);">FadeIn (3, true, false)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, false);">FadeOut(3, true, false)</button>
+							<br>
+
+							<!-- NON-BLOCKING -- BLOCK LOGIC WHEN DONE -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, true);">FadeIn (3, false, true)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, true);">FadeOut(3, false, true)</button>
+							<br>
+
+							<!-- BLOCKING -- BLOCK LOGIC WHEN DONE -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, true);">FadeIn (3, true, true)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, true);">FadeOut(3, true, true)</button>
+							<br>
+
+							<!-- OVERRIDE LOGIC BLOCK -->
+							<button onclick="core.GRAPHICS.FADER.FUNCS.blockLogic(false);">blockLogic(false)</button>
+							<button onclick="core.GRAPHICS.FADER.FUNCS.blockLogic(true);" >blockLogic(true)</button>
 							<br>
 
 						</td>
@@ -242,24 +250,24 @@
 					<tr>
 						<td>RESUME</td>
 						<td>
-							<button onclick="core.FUNCS.audio.resume_midi('music1');">R M1</button>
-							<button onclick="core.FUNCS.audio.resume_midi('music2');">R M2</button>
-							<button onclick="core.FUNCS.audio.resume_midi('sound1');">R S1</button>
-							<button onclick="core.FUNCS.audio.resume_midi('sound2');">R S1</button>
-							<button onclick="core.FUNCS.audio.resume_midi('sound3');">R S3</button>
-							<button onclick="core.FUNCS.audio.resume_midi('sound4');">R S4</button>
+							<button onclick="core.FUNCS.audio.resume_midi('BGM1');">R M1</button>
+							<button onclick="core.FUNCS.audio.resume_midi('BGM2');">R M2</button>
+							<button onclick="core.FUNCS.audio.resume_midi('SFX1');">R S1</button>
+							<button onclick="core.FUNCS.audio.resume_midi('SFX2');">R S1</button>
+							<button onclick="core.FUNCS.audio.resume_midi('SFX3');">R S3</button>
+							<button onclick="core.FUNCS.audio.resume_midi('SFX4');">R S4</button>
 						</td>
 					</tr>
 
 					<tr>
 						<td>PAUSE</td>
 						<td>
-							<button onclick="core.FUNCS.audio.stop_midi ('music1', false);">P M1</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('music2', false);">P M2</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound1', false);">P S1</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound2', false);">P S2</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound3', false);">P S3</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound4', false);">P S4</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('BGM1', false);">P M1</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('BGM2', false);">P M2</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX1', false);">P S1</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX2', false);">P S2</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX3', false);">P S3</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX4', false);">P S4</button>
 							<button onclick="core.FUNCS.audio.stopAllSounds_midi(false);">ALL</button>
 						</td>
 					</tr>
@@ -267,12 +275,12 @@
 					<tr>
 						<td>STOP</td>
 						<td>
-							<button onclick="core.FUNCS.audio.stop_midi ('music1', true);">S M1</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('music2', true);">S M2</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound1', true);">S S1</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound2', true);">S S2</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound3', true);">S S3</button>
-							<button onclick="core.FUNCS.audio.stop_midi ('sound4', true);">S S4</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('BGM1', true);">S M1</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('BGM2', true);">S M2</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX1', true);">S S1</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX2', true);">S S2</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX3', true);">S S3</button>
+							<button onclick="core.FUNCS.audio.stop_midi ('SFX4', true);">S S4</button>
 							<button onclick="core.FUNCS.audio.stopAllSounds_midi(true);">ALL</button>
 						</td>
 					</tr>
