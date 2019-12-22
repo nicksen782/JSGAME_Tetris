@@ -6,7 +6,8 @@
 #DEBUG_DIV {
 	vertical-align: top;
 	width: 500px;
-	height: 480px;
+	/* height: 480px; */
+	max-height: 575px;
 	text-align: left;
 	overflow: auto;
 }

@@ -112,12 +112,16 @@ game.gs.TITLE1 = {
 			core.FUNCS.graphics.ClearVram();
 			core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
 
+
 			// vars.END = true;
 			let xOffset = 0;
 			let yOffset = 5;
 			for(let y=0; y<vars.text1.length; y+=1){
 				core.FUNCS.graphics.Print(xOffset, (y+yOffset), vars.text1[y], "VRAM2");
 			}
+
+			// Fade this in.
+			core.GRAPHICS.FADER.FUNCS.FadeIn(2, true, false);
 		}
 
 		// Run.

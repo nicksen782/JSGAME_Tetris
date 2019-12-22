@@ -56,6 +56,12 @@
 							<button onclick="game.game_full_restart();">WHOLE GAME</button>
 						</td>
 					</tr>
+					<tr>
+						<td>LOGO</td>
+						<td>
+							<button onclick="core.FUNCS.graphics.logo();">logo</button>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 

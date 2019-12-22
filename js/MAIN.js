@@ -86,11 +86,13 @@ game.logic_timings = [0,0,0,0,0];
 game.runOnce = function(){
 	return new Promise(function(resolve,reject){
 		// These functions may run async.
-		let proms1 = [
-			core.FUNCS.graphics.init(), // Comes from the selected video kernel.
-			core.FUNCS.audio   .init(), // Comes from the selected sound kernel.
-			// core.FUNCS.graphics.logo(), // Display the logo?
-		];
+		let proms1 = [];
+
+		// *** DEBUG ***
+		if(JSGAME.SHARED.debug && game.DEBUG.init){ proms1.push( game.DEBUG.init() ); }
+
+		proms1.push( core.FUNCS.graphics.init() ) ; // Comes from the selected video kernel.
+		proms1.push( core.FUNCS.audio   .init() ) ; // Comes from the selected sound kernel.
 
 		Promise.all(proms1).then(function(){
 			// POPULATE solidBg1Tiles.
@@ -155,9 +157,6 @@ game.runOnce = function(){
 			// Whole image graphics processors.
 			// core.EXTERNAL.GRAPHICS = game.graphicsPostProcessor_shake ;
 
-			// *** DEBUG ***
-			if(JSGAME.SHARED.debug && game.DEBUG.init){ game.DEBUG.init(); }
-
 			// DEBUG ONLY: Combine all the core objects into one.
 			app = {
 				"JSGAME" : JSGAME ,
@@ -218,8 +217,9 @@ game.firstLoop = function(){
 		// Set the volume.
 		core.FUNCS.audio.changeMasterVolume(75);
 
-		// Set the debug volume:
-		if(JSGAME.SHARED.debug)       {
+		// Set the volume:
+		if( JSGAME.PRELOAD.PHP_VARS.queryString.mastervol != undefined)       {
+			// console.log("Setting volume.");
 			// Set the volume (within range.)
 			if( !isNaN( JSGAME.PRELOAD.PHP_VARS.queryString.mastervol ) ){
 				core.FUNCS.audio.changeMasterVolume( Math.min(Math.max(JSGAME.PRELOAD.PHP_VARS.queryString.mastervol, 0), 100) );
@@ -253,6 +253,7 @@ game.firstLoop = function(){
 
 		// Make sure all canvases are cleared.
 		core.FUNCS.graphics.clearAllCanvases();
+
 		// core.FUNCS.graphics.update_allLayers();
 
 		// Resolve this since we are done.
@@ -265,6 +266,8 @@ game.firstLoop = function(){
 
 				resolve(
 					function(){
+						outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
+
 						// *** REQUEST FIRST GAME LOOP ***
 						core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
 

@@ -5,7 +5,7 @@
 	"VRAM_TILES_H"      : 28    ,
 	"VRAM_TILES_V"      : 28    ,
 	"RAM_TILES_COUNT"   : 0     ,
-	"INTRO_LOGO"        : 0     ,
+	"INTRO_LOGO"        : 1     ,
 
 	"custom_videokernel" : false,
 	"custom_soundkernel" : false,
