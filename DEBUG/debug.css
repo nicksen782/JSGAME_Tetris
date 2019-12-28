@@ -7,7 +7,8 @@
 	vertical-align: top;
 	width: 500px;
 	/* height: 480px; */
-	max-height: 575px;
+	height: 750px;
+	/* max-height: 575px; */
 	text-align: left;
 	overflow: auto;
 }

@@ -11,10 +11,20 @@ ISSUES / TO DO:
 	PLAY_B           :
 	ENTER_HIGH_SCORE :
 
+	One or two players
+
+	Game type : A - Type, B - type
+	Music type: A, B, C
+
+	Pick level (A-type)
+
+	Pick level and Height (B-type)
 */
 
 // (TODO) ---- NICKSEN782 ANIMATION
 game.gs.TITLE0 = {
+	//
+	temp : {},
 	//
 	vars         : {
 	},
@@ -22,6 +32,9 @@ game.gs.TITLE0 = {
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
 	},
@@ -61,12 +74,17 @@ game.gs.TITLE0 = {
 // COPYRIGHT SCREEN
 game.gs.TITLE1 = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		// core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
 		vars.text1 = [
@@ -93,7 +111,6 @@ game.gs.TITLE1 = {
 
 		vars.framesUntilDone       = game.secondsToFrames(3.0) ; // x % of max.
 		vars.framesUntilDone_cnt   = 0;
-
 	},
 	//
 	main : function(){
@@ -150,22 +167,47 @@ game.gs.TITLE1 = {
 // MAIN TITLE SCREEN
 game.gs.TITLE2 = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		// core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
 		vars.text1 = ["PRESS START!"];
 		vars.text2 = ["            "];
 
 		vars.xOffset_text               = 8;
-		vars.yOffset_text               = 22;
+		vars.yOffset_text               = 23;
 		vars.framesBetweenFlashes       = game.secondsToFrames(0.40) ; // x % of max.
 		vars.framesBetweenFlashes_cnt   = 0;
 		vars.framesBetweenFlashes_state = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+		core.FUNCS.graphics.ClearVram();
+
+		core.FUNCS.audio.stopAllSounds_midi(true);
+		core.FUNCS.audio.cancelAllSounds_mp3("all");
+
+		let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
+		core.FUNCS.graphics.DrawMap2(1,6, core.ASSETS.graphics.tilemaps["title_tetris"], "VRAM1"); // TITLE
+
+		// vars.END = true;
+
+		for(let y=0; y<vars.text1.length; y+=1){
+			core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
+		}
+
+		core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);
 	},
 	//
 	main : function(){
@@ -174,33 +216,22 @@ game.gs.TITLE2 = {
 
 		// Don't run if we are done.
 		if(vars.END){
+			console.log("END");
 			return;
 		}
 
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
-
-			let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-			core.FUNCS.graphics.ClearVram();
-			core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
-			core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen3"], "VRAM1"); // TITLE
-
-			// vars.END = true;
-
-			for(let y=0; y<vars.text1.length; y+=1){
-				core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
-			}
-
-			core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);
-
+			gs.init();
+			return;
 		}
 
 		// Run.
 		if(vars.init){
 			// Dismiss this screen when the user presses start.
 			if( game.chkBtn("BTN_START" , "btnPressed1") ){
-				game.setGamestate1("PLAY_A", true);
+				game.setGamestate1("SETUP1", true);
 				vars.END = true;
 			}
 
@@ -234,14 +265,160 @@ game.gs.TITLE2 = {
 // (TODO) ---- SETUP FOR: MUSIC, GAME TYPE
 game.gs.SETUP1 = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		// core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
+
+		vars.menus = {
+			"game"   : {
+				"TITLE": { "text":"GAME TYPE", "x":3,"y":6 },
+				"CURSOR":"cursor1",
+				"OPTIONS"    : [
+					{"cx":6-2,"cy":8,  "text":"A-TYPE", "tx":6,"ty":8},
+					{"cx":6-2,"cy":9,  "text":"B-TYPE", "tx":6,"ty":9},
+				]
+			},
+			"music"  : {
+				"TITLE": { "text":"MUSIC TYPE","x":15,"y":6 },
+				"CURSOR":"cursor1",
+				"OPTIONS" : [
+					{"cx":18-2,"cy":8,  "text":"A-TYPE", "tx":18,"ty":8},
+					{"cx":18-2,"cy":9,  "text":"B-TYPE", "tx":18,"ty":9},
+					{"cx":18-2,"cy":10, "text":"C-TYPE", "tx":18,"ty":10},
+				]
+			},
+			"level"  : {
+				"TITLE": { "text":"LEVEL","x":3,"y":13 },
+				"CURSOR":"cursor1",
+				"OPTIONS" : [
+					{"cx":2+3-2 ,"cy":15, "text":"0", "tx":3 +2,"ty":15},
+					{"cx":2+7-2 ,"cy":15, "text":"1", "tx":7 +2,"ty":15},
+					{"cx":2+11-2,"cy":15, "text":"2", "tx":11+2,"ty":15},
+					{"cx":2+15-2,"cy":15, "text":"3", "tx":15+2,"ty":15},
+					{"cx":2+19-2,"cy":15, "text":"4", "tx":19+2,"ty":15},
+					{"cx":2+3-2 ,"cy":17, "text":"5", "tx":3 +2,"ty":17},
+					{"cx":2+7-2 ,"cy":17, "text":"6", "tx":7 +2,"ty":17},
+					{"cx":2+11-2,"cy":17, "text":"7", "tx":11+2,"ty":17},
+					{"cx":2+15-2,"cy":17, "text":"8", "tx":15+2,"ty":17},
+					{"cx":2+19-2,"cy":17, "text":"9", "tx":19+2,"ty":17},
+				]
+			},
+			"height" : {
+				"TITLE": { "text":"HEIGHT","x":3,"y":20 },
+				"CURSOR":"cursor1",
+				"OPTIONS" : [
+					{"cx":2+3-2 ,"cy":22, "text":"0", "tx":3+2 ,"ty":22},
+					{"cx":2+7-2 ,"cy":22, "text":"1", "tx":7+2 ,"ty":22},
+					{"cx":2+11-2,"cy":22, "text":"2", "tx":11+2,"ty":22},
+					{"cx":2+3-2 ,"cy":22, "text":"3", "tx":3+2 ,"ty":24},
+					{"cx":2+7-2 ,"cy":22, "text":"4", "tx":7+2 ,"ty":24},
+					{"cx":2+11-2,"cy":22, "text":"5", "tx":11+2,"ty":24},
+				]
+			},
+		};
+		vars.menu_keys = Object.keys(vars.menus);
+
+		// Text positions
+		vars.x_mainmenu    = 3; vars.y_mainmenu    = 3;
+
+		// Cursors
+		// vars.x_cur_gametype  = vars.menus["game"]  .OPTIONS[0].cx; vars.y_cur_gametype  = vars.menus["game"]  .OPTIONS[0].cy;
+		// vars.x_cur_musictype = vars.menus["music"] .OPTIONS[0].cx; vars.y_cur_musictype = vars.menus["music"] .OPTIONS[0].cy;
+		// vars.x_cur_level     = vars.menus["level"] .OPTIONS[0].cx; vars.y_cur_level     = vars.menus["level"] .OPTIONS[0].cy;
+		// vars.x_cur_height    = vars.menus["height"].OPTIONS[0].cx; vars.y_cur_height    = vars.menus["height"].OPTIONS[0].cy;
+
+		vars.bg1_tile     = core.ASSETS.graphics.tilemaps["bg1_tile"][2];
+		vars.bg2_tile     = core.ASSETS.graphics.tilemaps["bg2_tile"][2];
+		vars.empty_square = core.ASSETS.graphics.tilemaps["empty_square"][2];
+
+		vars.music = [
+			"TETRIS_A_THEME_MID",
+			"TETRIS_B_THEME_MID",
+			"TETRIS_C_THEME_MID",
+		];
+
+		// vars.menuSettings.game.option=1;
+		// vars.menuSettings.game.len=1;
+		vars.currentMenuKey = "game";
+
+		vars.menuSettings = {
+			"game"  : {"option":0, "len":vars.menus["game"]  .OPTIONS.length},
+			"music" : {"option":0, "len":vars.menus["music"] .OPTIONS.length},
+			"level" : {"option":0, "len":vars.menus["level"] .OPTIONS.length},
+			"height": {"option":0, "len":vars.menus["height"].OPTIONS.length},
+		};
+
+		// Holds the indexs for the cursor sprites.
+		vars.currSprite_indexes = {};
 
 		vars.END = false;
+		vars.configComplete=false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// vars.END = true;
+
+		// let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
+		// core.FUNCS.graphics.ClearVram();
+		core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["setup_oneplayer"], "VRAM1"); // PLAY
+
+		core.FUNCS.graphics.Print(vars.x_mainmenu    , (vars.y_mainmenu    ) , "MAIN MENU - ONE PLAYER", "VRAM2");
+
+		let spriteNum=0;
+		vars.currSprite_indexes = {};
+		core.FUNCS.graphics.clearSprites();
+		// gs.heightMenu("OFF");
+
+		for(let i=0; i<vars.menu_keys.length; i+=1){
+			// Get the core values.
+			let key            = vars.menu_keys[i];
+			let menu           = vars.menus[key];
+			let TITLE          = menu.TITLE;
+			let title_text     = TITLE.text;
+			let title_x        = TITLE.x;
+			let title_y        = TITLE.y;
+			let OPTIONS        = menu.OPTIONS;
+			let CURSOR         = menu.CURSOR;
+			let cursor_x       = OPTIONS[0].cx * core.SETTINGS.TILE_WIDTH ;
+			let cursor_y       = OPTIONS[0].cy * core.SETTINGS.TILE_HEIGHT ;
+			let cursor_tilemap = core.ASSETS.graphics.tilemaps[ CURSOR ] ;
+			let cursor_width   = cursor_tilemap[0];
+			let cursor_height  = cursor_tilemap[1];
+
+			// Print the title text.
+			core.FUNCS.graphics.Print(title_x, title_y , title_text, "VRAM2");
+
+			// Print the options text.
+			for(let i2=0; i2<OPTIONS.length; i2+=1){
+				let option = OPTIONS[i2];
+				let text = option.text;
+				let tx   = option.tx  ;
+				let ty   = option.ty  ;
+				core.FUNCS.graphics.Print(tx, ty , text, "VRAM2");
+			}
+
+			// Show the cursor on the first option.
+			core.FUNCS.graphics.MapSprite2( spriteNum, cursor_tilemap, 0 | core.CONSTS["SPRITE_BANK0"] );
+			core.FUNCS.graphics.MoveSprite( spriteNum, cursor_x , cursor_y , cursor_width, cursor_height );
+			vars.currSprite_indexes[key]=spriteNum;
+			spriteNum+=(cursor_width*cursor_height);
+		}
+		// gs.heightMenu("OFF");
+
+		gs.blink_menu("game" , "ON");
+
+		// Play the first song.
+		core.FUNCS.audio.play_midi  ( "BGM1", vars.music[ vars.menuSettings.music.option ], true, 1.0 );
 	},
 	//
 	main : function(){
@@ -249,32 +426,181 @@ game.gs.SETUP1 = {
 		let vars  = gs.vars;
 
 		// Don't run if we are done.
-		if(vars.END){
-			return;
-		}
+		if(vars.END){ return; }
 
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
-
-			// vars.END = true;
+			gs.init();
+			return;
 		}
 
 		// Run.
 		if(vars.init){
+			// DONE?
+			if(vars.configComplete){
+				// Set game type.
+				game.gs.PLAY_A.temp.type           = vars.menuSettings.game.option == 0 ? "A" : "B" ;
+
+				// Set song.
+				game.gs.PLAY_A.temp.music = vars.music[ vars.menuSettings.music.option ] ;
+
+				// Set level.
+				game.gs.PLAY_A.temp.level          = vars.menuSettings.level.option ;
+				game.gs.PLAY_A.temp.dropSpeedIndex = vars.menuSettings.level.option ;
+
+				if(game.gs.PLAY_A.temp.type=="A"){
+					game.setGamestate1("PLAY_A", true);
+				}
+				else                             {
+					// Set height.
+					game.gs.PLAY_B.temp.height = vars.menuSettings.height.option ;
+					game.setGamestate1("PLAY_B", true);
+				}
+
+				vars.END=true;
+
+				return;
+			}
+
+			// Handle cursor movements.
+			if     ( game.chkBtn("BTN_DOWN"   , "btnPressed1") || game.chkBtn("BTN_RIGHT"   , "btnPressed1") ){
+				// In bounds?
+				if(! (vars.menuSettings[vars.currentMenuKey].option==vars.menuSettings[vars.currentMenuKey].len-1)){
+					// Adjust the option index.
+					vars.menuSettings[vars.currentMenuKey].option+=1;
+					gs.redrawCursor();
+
+					if(vars.currentMenuKey=="music"){
+						core.FUNCS.audio.play_midi  ( "BGM1", vars.music[ vars.menuSettings.music.option ], true, 1.0 );
+					}
+
+					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
+				}
+			}
+
+			else if( game.chkBtn("BTN_UP" , "btnPressed1") || game.chkBtn("BTN_LEFT"   , "btnPressed1") ){
+				// In bounds?
+				if(! (vars.menuSettings[vars.currentMenuKey].option==0)){
+					// Adjust the option index.
+					vars.menuSettings[vars.currentMenuKey].option-=1;
+					gs.redrawCursor();
+
+					if(vars.currentMenuKey=="music"){
+						core.FUNCS.audio.play_midi  ( "BGM1", vars.music[ vars.menuSettings.music.option ], true, 1.0 );
+					}
+
+					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
+				}
+			}
+
+			// Pressed A? (confirm)gs.blink_menu("music" , "ON");
+			else if( game.chkBtn("BTN_A"    , "btnPressed1") ){
+				switch(vars.currentMenuKey){
+					case "game"   : { vars.currentMenuKey="music"       ; gs.blink_menu("music" , "ON"); break; }
+					case "music"  : { vars.currentMenuKey="level"       ; gs.blink_menu("level" , "ON"); break; }
+					case "level"  : { vars.currentMenuKey="height"      ; gs.blink_menu("height", "ON"); break; }
+					case "height" : { vars.configComplete=true          ;                                break; }
+					default : { break; }
+				}
+
+				gs.redrawCursor();
+			}
+
+			// Pressed B? (go back)
+			else if( game.chkBtn("BTN_B"    , "btnPressed1") ){
+				switch(vars.currentMenuKey){
+					case "game"   : { game.setGamestate1("TITLE2", true); vars.END=true; return;        break; }
+					case "music"  : { vars.currentMenuKey="game"        ; gs.blink_menu("game" , "ON"); break; }
+					case "level"  : { vars.currentMenuKey="music"       ; gs.blink_menu("music", "ON"); break; }
+					case "height" : { vars.currentMenuKey="level"       ; gs.blink_menu("level", "ON"); break; }
+					default : { break; }
+				}
+
+				gs.redrawCursor();
+			}
+
 		}
 	},
 
 	// *** SUPPORT FUNCTIONS ***
 
 	//
-	EXAMPLE : function( VALUE ){
+	redrawCursor : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+
+		// Redraw the sprite.
+		let spriteNum = vars.currSprite_indexes[vars.currentMenuKey];
+
+		// What is the current menu?
+		let menu      = vars.menus[ vars.currentMenuKey ];
+		let cursor    = menu.CURSOR;
+		let newOption = menu.OPTIONS[ vars.menuSettings[ vars.currentMenuKey ].option ];
+
+		let cursor_tilemap = core.ASSETS.graphics.tilemaps[cursor];
+		let cursor_width   = cursor_tilemap[0];
+		let cursor_height  = cursor_tilemap[1];
+		let cursor_x       = newOption.cx * core.SETTINGS.TILE_WIDTH  ;
+		let cursor_y       = newOption.cy * core.SETTINGS.TILE_HEIGHT ;
+
+		core.FUNCS.graphics.MapSprite2( spriteNum, cursor_tilemap, 0 | core.CONSTS["SPRITE_BANK0"] );
+		core.FUNCS.graphics.MoveSprite( spriteNum, cursor_x , cursor_y , cursor_width, cursor_height );
+	},
+	//
+	heightMenu : function(newState){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		let tileid;
+		if     (newState=="ON" ){ tileid = vars.bg1_tile;     }
+		else if(newState=="OFF"){ tileid = vars.empty_square; }
+
+		core.FUNCS.graphics.Fill(2 ,19,14,7,tileid, "VRAM1");
+		core.FUNCS.graphics.Fill(2 ,19,14,7,0, "VRAM2");
+	},
+	//
+	blink_menus_allOff : function( which, state ){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Force to off state (clears previous.)
+		core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,vars.bg1_tile, "VRAM1");
+		core.FUNCS.graphics.Fill(15,6 ,10,5,vars.bg1_tile, "VRAM1");
+		core.FUNCS.graphics.Fill(3 ,13,20,5,vars.bg1_tile, "VRAM1");
+		core.FUNCS.graphics.Fill(3 ,20,12,5,vars.bg1_tile, "VRAM1");
+	},
+	//
+	blink_menu : function( which, state ){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Force to off state (clears previous.)
+		gs.blink_menus_allOff();
+
+		let tileid;
+
+		if     (state=="ON" ){ tileid = vars.bg2_tile; }
+		else if(state=="OFF"){ tileid = vars.bg1_tile; }
+
+		switch(which){
+			// case 0  : { core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,tileid, "VRAM1"); break; }
+			// case 1  : { core.FUNCS.graphics.Fill(15,6 ,10,5,tileid, "VRAM1"); break; }
+			// case 2  : { core.FUNCS.graphics.Fill(3 ,13,20,5,tileid, "VRAM1"); break; }
+			// case 3  : { core.FUNCS.graphics.Fill(3 ,20,12,5,tileid, "VRAM1"); break; }
+			case "game"   : { core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,tileid, "VRAM1"); break; }
+			case "music"  : { core.FUNCS.graphics.Fill(15,6 ,10,5,tileid, "VRAM1"); break; }
+			case "level"  : { core.FUNCS.graphics.Fill(3 ,13,20,5,tileid, "VRAM1"); break; }
+			case "height" : { core.FUNCS.graphics.Fill(3 ,20,12,5,tileid, "VRAM1"); break; }
+			default : { return; break; }
+		};
+
 	},
 };
 // (TODO) ---- LEVEL SELECTION, HIGH SCORES (A TYPE: LEVELS, HIGHSCORE, B TYPE: LEVELS, HIGH SCORE, HEIGHT.)
 game.gs.SETUP2 = {
+	//
+	temp : {},
 	//
 	vars         : {
 	},
@@ -282,8 +608,15 @@ game.gs.SETUP2 = {
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
 	},
 	//
 	main : function(){
@@ -298,7 +631,8 @@ game.gs.SETUP2 = {
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
-
+			gs.init();
+			return;
 			// vars.END = true;
 		}
 
@@ -318,12 +652,17 @@ game.gs.SETUP2 = {
 // MAIN GAME: TYPE A
 game.gs.PLAY_A = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		// Constants.
 		vars.min_x_tile  = 2  ;
@@ -378,20 +717,20 @@ game.gs.PLAY_A = {
 			game.secondsToFrames(0.40) , // 6
 			game.secondsToFrames(0.30) , // 7
 			game.secondsToFrames(0.20) , // 8
-			game.secondsToFrames(0.10) , // 9
-			game.secondsToFrames(0.05) , // 10
+			game.secondsToFrames(0.15) , // 9
+			// game.secondsToFrames(0.05) , // 10 // This was too fast and blocked user input.
 		];
 		vars.validPieces = ["T"  ,"J"  ,"Z"  ,"O"  ,"S"  ,"L"  ,"I"];
 
-		vars.pieceCounts = {"T":0,"J":0,"Z":0,"O":0,"S":0,"L":0,"I":0,};
+		vars.pieceCounts = {"T":0,"J":0,"Z":0,"O":0,"S":0,"L":0,"I":0};
 
 		// Drop speed/delay
-		vars.dropSpeedIndex     = 0 ;
+		vars.dropSpeedIndex     = gs.temp.dropSpeedIndex ;
 		vars.dropSpeed          = vars.dropSpeeds[ vars.dropSpeedIndex ] ;
 		vars.dropSpeed_cnt      = 0                               ;
 
 		// Input speed/delay
-		vars.inputSpeed     = game.secondsToFrames(0.075);
+		vars.inputSpeed     = game.secondsToFrames(0.10);
 		vars.inputSpeed_cnt = 0 ;
 
 		vars.END                = false           ;
@@ -409,8 +748,8 @@ game.gs.PLAY_A = {
 		// Scoring
 		vars.lines = 0;
 		vars.score = 0;
-		vars.level = 0;
-		vars.type = "A";
+		vars.level = gs.temp.level;
+		vars.type  = gs.temp.type;
 
 		// Line clearing.
 		vars.linesBeingCleared            = false;
@@ -426,6 +765,29 @@ game.gs.PLAY_A = {
 		};
 
 		vars.instantDrop = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		core.FUNCS.graphics.ClearVram();
+
+		core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["main_game"], "VRAM1"); // PLAY
+
+		// Determine the first piece.
+		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+
+		// Spawn the piece.
+		gs.spawnPiece( vars.nextPiece );
+
+		// Determine the next piece.
+		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+
+		// Update the stats.
+		gs.updateStats();
+
+		// Start the music!
+		core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 );
 	},
 	//
 	main         : function(){
@@ -447,30 +809,8 @@ game.gs.PLAY_A = {
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
-
-			core.FUNCS.graphics.ClearVram();
-
-			core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["testscreen1"], "VRAM1"); // PLAY
-			// vars.END = true;
-
-			// Clears.
-			gs.updateStats();
-
-			// Determine the next piece.
-			vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
-			gs.updateNextPiece();
-
-			// Spawn a piece.
-			gs.spawnPiece( vars.nextPiece );
-
-			// Determine the next piece.
-			vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
-			gs.updateNextPiece();
-
-			// Start the theme music!
-			// core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_A_THEME_MID", true, 1.0 );
-			core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_B_THEME_MID", true, 1.0 );
-			// core.FUNCS.audio.play_midi  ( "BGM1", "TETRIS_C_THEME_MID", true, 1.0 );
+			gs.init();
+			return;
 		}
 
 		// Run.
@@ -571,6 +911,7 @@ game.gs.PLAY_A = {
 
 				// Instant drop?
 				if     ( game.chkBtn("BTN_UP"    , "btnPressed1") ){
+					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
 					vars.instantDrop=true;
 					vars.inputSpeed_cnt=0;
 				}
@@ -579,9 +920,9 @@ game.gs.PLAY_A = {
 					let reset=false;
 
 					// Handle directional user input.
-					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
-					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
-					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
+					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
+					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
+					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
 
 					if(reset){ vars.inputSpeed_cnt=0; }
 					// else     { vars.inputSpeed_cnt += 1; }
@@ -589,9 +930,10 @@ game.gs.PLAY_A = {
 				else{ vars.inputSpeed_cnt += 1; }
 
 				// Rotate the piece LEFT or RIGHT?
-				if(vars.inputSpeed_cnt != 0 && ! vars.instantDrop){
-					if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
-					else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
+				// if(vars.inputSpeed_cnt != 0 && ! vars.instantDrop){
+				if(! vars.instantDrop){
+					if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
+					else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
 				}
 			}
 		}
@@ -737,10 +1079,10 @@ game.gs.PLAY_A = {
 
 			// Add to the score.
 			switch(linesCleared){
-				case 1 : { vars.score += ( 40   + (vars.level*40  ) ); break; } // Single
-				case 2 : { vars.score += ( 100  + (vars.level*100 ) ); break; } // Double
-				case 3 : { vars.score += ( 300  + (vars.level*300 ) ); break; } // Triple
-				case 4 : { vars.score += ( 1200 + (vars.level*1200) ); break; } // Tetris
+				case 1 : { vars.score += ( 40   + ((vars.level+gs.temp.level)*40  ) ); break; } // Single
+				case 2 : { vars.score += ( 100  + ((vars.level+gs.temp.level)*100 ) ); break; } // Double
+				case 3 : { vars.score += ( 300  + ((vars.level+gs.temp.level)*300 ) ); break; } // Triple
+				case 4 : { vars.score += ( 1200 + ((vars.level+gs.temp.level)*1200) ); break; } // Tetris
 				default : {
 					vars.score += 0 ;
 					console.log("this should not have happened. linesCleared:", linesCleared);
@@ -752,7 +1094,7 @@ game.gs.PLAY_A = {
 			// Change the level?
 			let old_level = vars.level;
 			gs.updateLevel();
-			if(old_level != vars.level){ gs.setNextDropSpeed("UP"); }
+			if(old_level != vars.level && gs.temp.level < vars.level){ gs.setNextDropSpeed("UP"); }
 
 			// Start the flash animation.
 			vars.linesBeingCleared            = true;
@@ -835,7 +1177,7 @@ game.gs.PLAY_A = {
 
 		// Write the value.
 		let str;
-		str=vars.level.toString().padStart(5, " ");
+		str=(vars.level+gs.temp.level).toString().padStart(5, " ");
 		core.FUNCS.graphics.Print(21, 19-1, "LEVEL", "VRAM2");
 		core.FUNCS.graphics.Print(21, 19, str, "VRAM2");
 	},
@@ -1256,14 +1598,23 @@ game.gs.PLAY_A = {
 // (TODO) ---- MAIN GAME: TYPE B
 game.gs.PLAY_B = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
 	},
 	//
 	main : function(){
@@ -1278,6 +1629,8 @@ game.gs.PLAY_B = {
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
+			gs.init();
+			return;
 
 			// vars.END = true;
 		}
@@ -1298,14 +1651,23 @@ game.gs.PLAY_B = {
 // (TODO) ---- HIGH SCORE ENTRY SCREEN
 game.gs.ENTER_HIGH_SCORE = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
 	},
 	//
 	main : function(){
@@ -1320,6 +1682,8 @@ game.gs.ENTER_HIGH_SCORE = {
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
+			gs.init();
+			return;
 
 			// vars.END = true;
 		}
@@ -1343,14 +1707,23 @@ game.gs.ENTER_HIGH_SCORE = {
 // GAMESTATE TEMPLATE
 game.gs.TEMPLATE = {
 	//
+	temp : {},
+	//
 	vars         : {
 	},
 	//
 	prepareState : function(){
 		let gs   = this;
 		let vars = gs.vars;
+		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
 
 		vars.END = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
 	},
 	//
 	main : function(){
@@ -1365,6 +1738,8 @@ game.gs.TEMPLATE = {
 		// Start of this game state?
 		if(!vars.init){
 			vars.init=true;
+			gs.init();
+			return;
 
 			// vars.END = true;
 		}

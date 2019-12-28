@@ -225,7 +225,7 @@
 			<!-- <button onclick="game.gs['PLAY_A'].setNextDropSpeed('DOWN');">Dropspeed DOWN</button> -->
 			<button onclick="game.gs['PLAY_A'].clearBoard();">Clear Board</button>
 			<button onclick="game.gs['PLAY_A'].setDropSpeed(0);">Dropspeed 0</button>
-			<button onclick="game.gs['PLAY_A'].setDropSpeed(10);">Dropspeed 10</button>
+			<button onclick="game.gs['PLAY_A'].setDropSpeed(9);">Dropspeed 9</button>
 			<br>
 
 			<button onclick="game.DEBUG.bottomLines();">bottomLines</button>

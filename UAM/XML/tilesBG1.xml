@@ -5,7 +5,8 @@
  <tiles var-name="tilesBG1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" />
  <maps pointers-size="8">
   <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="bg1_tile" left="2" top="1" width="1" height="1" mapOutputTo="NOWHERE" /> 
+  <map var-name="bg1_tile" left="2" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg2_tile" left="2" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="empty_square" left="1" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="X_tile" left="18" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="T_bgtile" left="6" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
@@ -30,9 +31,9 @@
   <map var-name="boardborder_botR" left="14" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_left" left="15" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_right" left="16" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="testscreen1" left="2" top="30" width="28" height="28" mapOutputTo="PROGMEM" /> 
-  <map var-name="testscreen2" left="2" top="61" width="28" height="28" mapOutputTo="PROGMEM" /> 
-  <map var-name="testscreen3" left="2" top="92" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="main_game" left="2" top="30" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="setup_oneplayer" left="2" top="61" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="title_tetris" left="2" top="92" width="26" height="12" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_flare_f1" left="36" top="3" width="7" height="5" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_flare_f2" left="36" top="9" width="7" height="5" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_flare_f3" left="36" top="15" width="7" height="5" mapOutputTo="PROGMEM" /> 

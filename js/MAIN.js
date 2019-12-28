@@ -61,10 +61,10 @@ game.solidBg1Tiles    = [];
 // game.playBoard=[];
 
 // Holds the button states for the game.
-game.buttons = {
-	btnPrev1 : 0 , btnHeld1 : 0 , btnPressed1 : 0 , btnReleased1 : 0 ,
-	btnPrev2 : 0 , btnHeld2 : 0 , btnPressed2 : 0 , btnReleased2 : 0 ,
-};
+// game.buttons = {
+// 	btnPrev1 : 0 , btnHeld1 : 0 , btnPressed1 : 0 , btnReleased1 : 0 ,
+// 	btnPrev2 : 0 , btnHeld2 : 0 , btnPressed2 : 0 , btnReleased2 : 0 ,
+// };
 
 // Will hold variables that are meant to be shared across the application.
 game.gamestate       = "" ;
@@ -196,7 +196,8 @@ game.firstLoop = function(){
 
 		// *** Aliases ***
 
-		game.chkBtn=JSGAME.SHARED.checkButton; // Alias the JSGAME.SHARED.checkButton function.
+		game.chkBtn  = JSGAME.SHARED.checkButton ; // Alias the JSGAME.SHARED.checkButton function.
+		game.buttons = JSGAME.SHARED.buttons     ; // Alias the JSGAME.SHARED.buttons object.
 
 		// *** TIMING ***
 
@@ -382,7 +383,8 @@ game.loop = function(){
 	){
 		// *** Get inputs ***
 
-		JSGAME.SHARED.getUserInputs( game.buttons );
+		// JSGAME.SHARED.getUserInputs( game.buttons );
+		JSGAME.SHARED.getUserInputs();
 
 		// *** Run the current game state. ***
 

@@ -488,7 +488,7 @@ game.DEBUG.updateDebugDisplay_funcs = {
 			let key = d.padEnd(20, " ");
 			newText+=key+" ::: "+JSON.stringify(game.gs[game.gamestate].vars[d],null,0) + "\n";
 		});
-		game.DEBUG.DOM["debug_gameVars"].innerHTML=newText;
+		game.DEBUG.DOM["debug_gameVars"].innerHTML="GAMESTATE: " + game.gamestate + "\n\n" + newText;
 	},
 };
 // Called periodically to update the displayed debug information.

@@ -76,7 +76,7 @@
 	"numGamepads"       : 1     ,
 	"fps"               : 60    ,
 
-	"canvas_scaleFactor" : 1.9 ,
+	"canvas_scaleFactor" : 2.3 ,
 
 	"ENDOFFILE" : ""
 }
