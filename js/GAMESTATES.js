@@ -1,26 +1,5 @@
 // *** GAMESTATE FUNCTIONS ***
 
-/*
-ISSUES / TO DO:
-	TITLE0           : DONE
-	TITLE1           : DONE
-	TITLE2           : DONE
-	SETUP1           :
-	SETUP2           :
-	PLAY_A           : Still needs pause menu, gameover, more sound effects. Next piece comes too soon after a line clear.
-	PLAY_B           :
-	ENTER_HIGH_SCORE :
-
-	One or two players
-
-	Game type : A - Type, B - type
-	Music type: A, B, C
-
-	Pick level (A-type)
-
-	Pick level and Height (B-type)
-*/
-
 // (TODO) ---- NICKSEN782 ANIMATION
 game.gs.TITLE0 = {
 	//
@@ -139,12 +118,14 @@ game.gs.TITLE1 = {
 
 			// Fade this in.
 			core.GRAPHICS.FADER.FUNCS.FadeIn(2, true, false);
+			// core.GRAPHICS.FADER.FUNCS.FadeIn(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 		}
 
 		// Run.
 		if(vars.init){
 			if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
 				core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, false);
+				// core.GRAPHICS.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 
 				game.setGamestate1("TITLE2", true);
 				vars.END = true;
@@ -208,6 +189,8 @@ game.gs.TITLE2 = {
 		}
 
 		core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);
+		// core.GRAPHICS.FADER.FUNCS.FadeIn (game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
+
 	},
 	//
 	main : function(){
@@ -262,7 +245,7 @@ game.gs.TITLE2 = {
 	// 	let vars  = gs.vars;
 	// },
 };
-// (TODO) ---- SETUP FOR: MUSIC, GAME TYPE
+// (TODO) ---- FIRST MENU. INSTRUCTIONS, GAME SETUP, HIGHSCORES, CREDITS
 game.gs.SETUP1 = {
 	//
 	temp : {},
@@ -274,84 +257,175 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 		vars.init=false;
+		core.FUNCS.graphics.clearSprites();
+		core.FUNCS.graphics.ClearVram();
+
+		vars.END = false;
+	},
+	init : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		console.log("init");
+		core.FUNCS.graphics.SetFont("fonts1"); // White
+		// core.FUNCS.graphics.SetFont("fonts2"); // Dark gray.
+
+		core.FUNCS.graphics.Print(8, 10, "INSTRUCTIONS", "VRAM2"); // INSTRUCTIONS
+		core.FUNCS.graphics.Print(8, 12, "GAME SETUP"  , "VRAM2"); // GAME SETUP
+		core.FUNCS.graphics.Print(8, 14, "HIGH SCORES" , "VRAM2"); // HIGH SCORES
+		core.FUNCS.graphics.Print(8, 16, "CREDITS"     , "VRAM2"); // CREDITS
+
+		vars.END = true;
+		setTimeout(function(){
+			game.setGamestate1("SETUP2"          , true); // Setup screen 2
+		}, 1000);
+	},
+	//
+	main : function(){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		// Don't run if we are done.
+		if(vars.END){ return; }
+
+		// Start of this game state?
+		if(!vars.init){
+			vars.init=true;
+			gs.init();
+			return;
+		}
+
+		// Run.
+		if(vars.init){
+
+		}
+	},
+
+	// *** SUPPORT FUNCTIONS ***
+
+	//
+	EXAMPLE : function( VALUE ){
+		let gs    = this;
+		let vars  = gs.vars;
+	},
+};
+// (TODO) ---- SETUP FOR: MUSIC, GAME TYPE, LEVEL, HEIGHT.
+game.gs.SETUP2 = {
+	//
+	temp : {},
+	//
+	vars         : {
+	},
+	//
+	prepareState : function(){
+		let gs   = this;
+		let vars = gs.vars;
+		vars.init=false;
+
 		// core.FUNCS.graphics.clearSprites();
 		core.FUNCS.graphics.ClearVram();
 
+		vars.menuStyle1 = {
+			"tiles":[
+				core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2], // index: 0
+				core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2], // index: 1
+				core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2], // index: 2
+				core.ASSETS.graphics.tilemaps[ "boardborder_bot"   ][2], // index: 3
+				core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2], // index: 4
+				core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2], // index: 5
+				core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2], // index: 6
+				core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2], // index: 7
+			],
+			"keys":{
+				"top"  :0, "topL" :1, "topR" :2,
+				"bot"  :3, "botL" :4, "botR" :5,
+				"left" :6, "right":7,
+			},
+		};
+
+		//
 		vars.menus = {
 			"game"   : {
-				"TITLE": { "text":"GAME TYPE", "x":3,"y":6 },
+				"MENU":{"mx":2,"my":5,"mw":11,"mh":7,"menu":vars.menuStyle1},
+				"TITLE": { "text":"GAME TYPE", "x":1,"y":1 },
 				"CURSOR":"cursor1",
 				"OPTIONS"    : [
-					{"cx":6-2,"cy":8,  "text":"A-TYPE", "tx":6,"ty":8},
-					{"cx":6-2,"cy":9,  "text":"B-TYPE", "tx":6,"ty":9},
+					{"cx":2,"cy":3,  "text":"A", "tx":4,"ty":3},
+					{"cx":6,"cy":3,  "text":"B", "tx":8,"ty":3},
 				]
 			},
 			"music"  : {
-				"TITLE": { "text":"MUSIC TYPE","x":15,"y":6 },
+				"MENU":{"mx":13,"my":5,"mw":13,"mh":7,"menu":vars.menuStyle1},
+				"TITLE": { "text":"MUSIC TYPE","x":1,"y":1 },
 				"CURSOR":"cursor1",
 				"OPTIONS" : [
-					{"cx":18-2,"cy":8,  "text":"A-TYPE", "tx":18,"ty":8},
-					{"cx":18-2,"cy":9,  "text":"B-TYPE", "tx":18,"ty":9},
-					{"cx":18-2,"cy":10, "text":"C-TYPE", "tx":18,"ty":10},
+					{"cx":2,"cy":3,  "text":"A  ", "tx":4,"ty":3},
+					{"cx":6,"cy":3,  "text":"B  ", "tx":8,"ty":3},
+					{"cx":2,"cy":5,  "text":"C  ", "tx":4,"ty":5},
+					{"cx":6,"cy":5,  "text":"OFF", "tx":8,"ty":5},
 				]
 			},
 			"level"  : {
-				"TITLE": { "text":"LEVEL","x":3,"y":13 },
+				"MENU":{"mx":2,"my":12,"mw":22,"mh":7,"menu":vars.menuStyle1},
+				"TITLE": { "text":"LEVEL","x":1,"y":1 },
 				"CURSOR":"cursor1",
 				"OPTIONS" : [
-					{"cx":2+3-2 ,"cy":15, "text":"0", "tx":3 +2,"ty":15},
-					{"cx":2+7-2 ,"cy":15, "text":"1", "tx":7 +2,"ty":15},
-					{"cx":2+11-2,"cy":15, "text":"2", "tx":11+2,"ty":15},
-					{"cx":2+15-2,"cy":15, "text":"3", "tx":15+2,"ty":15},
-					{"cx":2+19-2,"cy":15, "text":"4", "tx":19+2,"ty":15},
-					{"cx":2+3-2 ,"cy":17, "text":"5", "tx":3 +2,"ty":17},
-					{"cx":2+7-2 ,"cy":17, "text":"6", "tx":7 +2,"ty":17},
-					{"cx":2+11-2,"cy":17, "text":"7", "tx":11+2,"ty":17},
-					{"cx":2+15-2,"cy":17, "text":"8", "tx":15+2,"ty":17},
-					{"cx":2+19-2,"cy":17, "text":"9", "tx":19+2,"ty":17},
+					{"cx":4-2 ,"cy":3, "text":"0", "tx":4 ,"ty":3},
+					{"cx":8-2 ,"cy":3, "text":"1", "tx":8 ,"ty":3},
+					{"cx":12-2,"cy":3, "text":"2", "tx":12,"ty":3},
+					{"cx":16-2,"cy":3, "text":"3", "tx":16,"ty":3},
+					{"cx":20-2,"cy":3, "text":"4", "tx":20,"ty":3},
+					{"cx":4-2 ,"cy":5, "text":"5", "tx":4 ,"ty":5},
+					{"cx":8-2 ,"cy":5, "text":"6", "tx":8 ,"ty":5},
+					{"cx":12-2,"cy":5, "text":"7", "tx":12,"ty":5},
+					{"cx":16-2,"cy":5, "text":"8", "tx":16,"ty":5},
+					{"cx":20-2,"cy":5, "text":"9", "tx":20,"ty":5},
 				]
 			},
 			"height" : {
-				"TITLE": { "text":"HEIGHT","x":3,"y":20 },
+				"MENU":{"mx":2,"my":19,"mw":14,"mh":7,"menu":vars.menuStyle1},
+				"TITLE": { "text":"HEIGHT","x":1,"y":1 },
 				"CURSOR":"cursor1",
 				"OPTIONS" : [
-					{"cx":2+3-2 ,"cy":22, "text":"0", "tx":3+2 ,"ty":22},
-					{"cx":2+7-2 ,"cy":22, "text":"1", "tx":7+2 ,"ty":22},
-					{"cx":2+11-2,"cy":22, "text":"2", "tx":11+2,"ty":22},
-					{"cx":2+3-2 ,"cy":22, "text":"3", "tx":3+2 ,"ty":24},
-					{"cx":2+7-2 ,"cy":22, "text":"4", "tx":7+2 ,"ty":24},
-					{"cx":2+11-2,"cy":22, "text":"5", "tx":11+2,"ty":24},
+					{"cx":4-2 ,"cy":3, "text":"0", "tx":4  ,"ty":3},
+					{"cx":8-2 ,"cy":3, "text":"1", "tx":8  ,"ty":3},
+					{"cx":12-2,"cy":3, "text":"2", "tx":12 ,"ty":3},
+					{"cx":4-2 ,"cy":5, "text":"3", "tx":4  ,"ty":5},
+					{"cx":8-2 ,"cy":5, "text":"4", "tx":8  ,"ty":5},
+					{"cx":12-2,"cy":5, "text":"5", "tx":12 ,"ty":5},
 				]
 			},
 		};
+		//
 		vars.menu_keys = Object.keys(vars.menus);
+		//
+		vars.menu_visibility = {
+			"game"  : true,
+			"music" : true,
+			"level" : true,
+			"height": false,
+		};
 
-		// Text positions
-		vars.x_mainmenu    = 3; vars.y_mainmenu    = 3;
-
-		// Cursors
-		// vars.x_cur_gametype  = vars.menus["game"]  .OPTIONS[0].cx; vars.y_cur_gametype  = vars.menus["game"]  .OPTIONS[0].cy;
-		// vars.x_cur_musictype = vars.menus["music"] .OPTIONS[0].cx; vars.y_cur_musictype = vars.menus["music"] .OPTIONS[0].cy;
-		// vars.x_cur_level     = vars.menus["level"] .OPTIONS[0].cx; vars.y_cur_level     = vars.menus["level"] .OPTIONS[0].cy;
-		// vars.x_cur_height    = vars.menus["height"].OPTIONS[0].cx; vars.y_cur_height    = vars.menus["height"].OPTIONS[0].cy;
-
+		// Tile ids.
 		vars.bg1_tile     = core.ASSETS.graphics.tilemaps["bg1_tile"][2];
 		vars.bg2_tile     = core.ASSETS.graphics.tilemaps["bg2_tile"][2];
 		vars.empty_square = core.ASSETS.graphics.tilemaps["empty_square"][2];
 
+		// Music choices.
 		vars.music = [
 			"TETRIS_A_THEME_MID",
 			"TETRIS_B_THEME_MID",
 			"TETRIS_C_THEME_MID",
+			"",
 		];
 
-		// vars.menuSettings.game.option=1;
-		// vars.menuSettings.game.len=1;
+		//
 		vars.currentMenuKey = "game";
 
+		//
 		vars.menuSettings = {
 			"game"  : {"option":0, "len":vars.menus["game"]  .OPTIONS.length},
-			"music" : {"option":0, "len":vars.menus["music"] .OPTIONS.length},
+			"music" : {"option":2, "len":vars.menus["music"] .OPTIONS.length},
 			"level" : {"option":0, "len":vars.menus["level"] .OPTIONS.length},
 			"height": {"option":0, "len":vars.menus["height"].OPTIONS.length},
 		};
@@ -359,9 +433,17 @@ game.gs.SETUP1 = {
 		// Holds the indexs for the cursor sprites.
 		vars.currSprite_indexes = {};
 
+		//
 		vars.END = false;
 		vars.configComplete=false;
+
+		// Blink speed/delay
+		vars.blinkState=false;
+		vars.blinkSpeed     = game.secondsToFrames(0.50);
+		vars.blinkSpeed_cnt = 0 ;
 	},
+
+	//
 	init : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -370,50 +452,50 @@ game.gs.SETUP1 = {
 
 		// let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
 		// core.FUNCS.graphics.ClearVram();
-		core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["setup_oneplayer"], "VRAM1"); // PLAY
+		core.FUNCS.graphics.clearSprites();
 
-		core.FUNCS.graphics.Print(vars.x_mainmenu    , (vars.y_mainmenu    ) , "MAIN MENU - ONE PLAYER", "VRAM2");
+		// core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["setup_oneplayer"], "VRAM1"); // PLAY
 
+		gs.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, vars.menuStyle1, vars.empty_square);
+		// gs.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, vars.menuStyle1, vars.bg1_tile);
+		// gs.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, vars.menuStyle1, vars.bg2_tile);
+
+
+		// Text positions
+		let x_mainmenu    = 2;
+		let y_mainmenu    = 2;
+		gs.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 26, 3, vars.menuStyle1, null);
+		let text_mainmenu = "-MAIN MENU - ONE PLAYER-";
+		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+
+		// Draw the menus.
 		let spriteNum=0;
 		vars.currSprite_indexes = {};
-		core.FUNCS.graphics.clearSprites();
-		// gs.heightMenu("OFF");
 
 		for(let i=0; i<vars.menu_keys.length; i+=1){
 			// Get the core values.
 			let key            = vars.menu_keys[i];
-			let menu           = vars.menus[key];
-			let TITLE          = menu.TITLE;
-			let title_text     = TITLE.text;
-			let title_x        = TITLE.x;
-			let title_y        = TITLE.y;
-			let OPTIONS        = menu.OPTIONS;
-			let CURSOR         = menu.CURSOR;
-			let cursor_x       = OPTIONS[0].cx * core.SETTINGS.TILE_WIDTH ;
-			let cursor_y       = OPTIONS[0].cy * core.SETTINGS.TILE_HEIGHT ;
-			let cursor_tilemap = core.ASSETS.graphics.tilemaps[ CURSOR ] ;
-			let cursor_width   = cursor_tilemap[0];
-			let cursor_height  = cursor_tilemap[1];
+			let data = gs.getMenuData(key);
 
-			// Print the title text.
-			core.FUNCS.graphics.Print(title_x, title_y , title_text, "VRAM2");
+			// Set bank and also SPRITE_OFF.
+			let flags = core.CONSTS["SPRITE_OFF"] | core.CONSTS["SPRITE_BANK0"] ;
 
-			// Print the options text.
-			for(let i2=0; i2<OPTIONS.length; i2+=1){
-				let option = OPTIONS[i2];
-				let text = option.text;
-				let tx   = option.tx  ;
-				let ty   = option.ty  ;
-				core.FUNCS.graphics.Print(tx, ty , text, "VRAM2");
-			}
+			// Map/Move the sprites.
+			core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+			core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x+(data.mx*core.SETTINGS.TILE_WIDTH) , data.cursor_y+(data.my*core.SETTINGS.TILE_HEIGHT) , data.cursor_width, data.cursor_height );
 
-			// Show the cursor on the first option.
-			core.FUNCS.graphics.MapSprite2( spriteNum, cursor_tilemap, 0 | core.CONSTS["SPRITE_BANK0"] );
-			core.FUNCS.graphics.MoveSprite( spriteNum, cursor_x , cursor_y , cursor_width, cursor_height );
+			// Set the cursor sprite numbers.
 			vars.currSprite_indexes[key]=spriteNum;
-			spriteNum+=(cursor_width*cursor_height);
+			spriteNum+=(data.cursor_width*data.cursor_height);
+
+			// Draw the menu text.
+
+			if(vars.menu_visibility[data.key]==true){ gs.drawMenu(data.key, "ON"  ); }
+			else                                    { gs.drawMenu(data.key, "OFF" ); }
+
+			// Change the cursor state.
+			// gs.changeCursorState(data.key, "ON");
 		}
-		// gs.heightMenu("OFF");
 
 		gs.blink_menu("game" , "ON");
 
@@ -437,25 +519,40 @@ game.gs.SETUP1 = {
 
 		// Run.
 		if(vars.init){
-			// DONE?
+			// Are we done?
 			if(vars.configComplete){
+				// Clear the variables first.
+				game.gs.PLAY.temp.type           = undefined;
+				game.gs.PLAY.temp.height         = undefined;
+				game.gs.PLAY.temp.music          = undefined;
+				game.gs.PLAY.temp.level          = undefined;
+				game.gs.PLAY.temp.dropSpeedIndex = undefined;
+
 				// Set game type.
-				game.gs.PLAY_A.temp.type           = vars.menuSettings.game.option == 0 ? "A" : "B" ;
+				game.gs.PLAY.temp.type           = vars.menuSettings.game.option == 0 ? "A" : "B" ;
+
+				// Stop current song.
+				core.FUNCS.audio.stop_midi("BGM1", true);
 
 				// Set song.
-				game.gs.PLAY_A.temp.music = vars.music[ vars.menuSettings.music.option ] ;
+				game.gs.PLAY.temp.music = vars.music[ vars.menuSettings.music.option ] ;
 
-				// Set level.
-				game.gs.PLAY_A.temp.level          = vars.menuSettings.level.option ;
-				game.gs.PLAY_A.temp.dropSpeedIndex = vars.menuSettings.level.option ;
+				// Set level and drop speed.
+				game.gs.PLAY.temp.level          = vars.menuSettings.level.option ;
+				game.gs.PLAY.temp.dropSpeedIndex = vars.menuSettings.level.option ;
 
-				if(game.gs.PLAY_A.temp.type=="A"){
-					game.setGamestate1("PLAY_A", true);
+				// Start game!
+				if(game.gs.PLAY.temp.type=="A"){
+					// Start Type A.
+					game.setGamestate1("PLAY", true);
 				}
 				else                             {
 					// Set height.
-					game.gs.PLAY_B.temp.height = vars.menuSettings.height.option ;
-					game.setGamestate1("PLAY_B", true);
+					game.gs.PLAY.temp.height = vars.menuSettings.height.option ;
+
+					// Start Type B.
+					game.setGamestate1("PLAY", true);
+					// game.setGamestate1("PLAY", true);
 				}
 
 				vars.END=true;
@@ -463,61 +560,108 @@ game.gs.SETUP1 = {
 				return;
 			}
 
-			// Handle cursor movements.
-			if     ( game.chkBtn("BTN_DOWN"   , "btnPressed1") || game.chkBtn("BTN_RIGHT"   , "btnPressed1") ){
-				// In bounds?
-				if(! (vars.menuSettings[vars.currentMenuKey].option==vars.menuSettings[vars.currentMenuKey].len-1)){
-					// Adjust the option index.
-					vars.menuSettings[vars.currentMenuKey].option+=1;
-					gs.redrawCursor();
+			// Handle user input.
+			else{
+				// Handle cursor movements.
+				if     ( game.chkBtn("BTN_DOWN"   , "btnPressed1") || game.chkBtn("BTN_RIGHT"   , "btnPressed1") ){
+					// In bounds?
+					if(! (vars.menuSettings[vars.currentMenuKey].option==vars.menuSettings[vars.currentMenuKey].len-1)){
+						// Adjust the option index.
+						vars.menuSettings[vars.currentMenuKey].option+=1;
 
-					if(vars.currentMenuKey=="music"){
-						core.FUNCS.audio.play_midi  ( "BGM1", vars.music[ vars.menuSettings.music.option ], true, 1.0 );
+						// Update the cursor position.
+						gs.changeCursorState(vars.currentMenuKey, "ON");
+
+						// If on the "music" key change the song.
+						if(vars.currentMenuKey=="music"){ gs.changeSong(); }
+
+						// If on the "game" key change the height visibility.
+						if(vars.currentMenuKey=="game"){
+							if( vars.menuSettings[vars.currentMenuKey].option == 0 ){ gs.drawMenu("height", "OFF"); }
+							else                                                    { gs.drawMenu("height", "ON" ); }
+						}
+
+						// Play the cursor move sound.
+						core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
+					}
+				}
+
+				else if( game.chkBtn("BTN_UP" , "btnPressed1") || game.chkBtn("BTN_LEFT"   , "btnPressed1") ){
+					// In bounds?
+					if(! (vars.menuSettings[vars.currentMenuKey].option==0)){
+						// Adjust the option index.
+						vars.menuSettings[vars.currentMenuKey].option-=1;
+
+						// Update the cursor position.
+						gs.changeCursorState(vars.currentMenuKey, "ON");
+
+						// If on the "music" key change the song.
+						if(vars.currentMenuKey=="music"){ gs.changeSong(); }
+
+						// If on the "game" key change the height visibility.
+						if(vars.currentMenuKey=="game"){
+							if( vars.menuSettings[vars.currentMenuKey].option == 0 ){ gs.drawMenu("height", "OFF"); }
+							else                                                    { gs.drawMenu("height", "ON" ); }
+						}
+
+						// Play the cursor move sound.
+						core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
+					}
+				}
+
+				// Pressed A? (confirm)
+				else if( game.chkBtn("BTN_A"    , "btnPressed1") ){
+
+					// if( vars.currentMenuKey=="height" && !vars.menu_visibility[key]){}
+
+					switch(vars.currentMenuKey){
+						case "game"   : { vars.currentMenuKey="music"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
+						case "music"  : { vars.currentMenuKey="level"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
+						case "level"  : {
+							// Is this Game Type A?
+							if( vars.menuSettings["game"].option == 0 ){
+								// We are done. No height for Game Type A.
+								vars.configComplete=true;
+							}
+							// Is this Game Type B?
+							else{
+								// Game Type B has the height menu.
+								vars.currentMenuKey="height"      ;
+								vars.blinkState=true;
+								vars.blinkSpeed_cnt = vars.blinkSpeed ;
+							}
+							break;
+						}
+						case "height" : { vars.configComplete=true          ;                                break; }
+						default : { break; }
 					}
 
-					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
+					gs.changeCursorState(vars.currentMenuKey, "ON");
+
 				}
-			}
 
-			else if( game.chkBtn("BTN_UP" , "btnPressed1") || game.chkBtn("BTN_LEFT"   , "btnPressed1") ){
-				// In bounds?
-				if(! (vars.menuSettings[vars.currentMenuKey].option==0)){
-					// Adjust the option index.
-					vars.menuSettings[vars.currentMenuKey].option-=1;
-					gs.redrawCursor();
-
-					if(vars.currentMenuKey=="music"){
-						core.FUNCS.audio.play_midi  ( "BGM1", vars.music[ vars.menuSettings.music.option ], true, 1.0 );
+				// Pressed B? (go back)
+				else if( game.chkBtn("BTN_B"    , "btnPressed1") ){
+					switch(vars.currentMenuKey){
+						case "game"   : { game.setGamestate1("TITLE2", true); vars.END=true; return;        break; }
+						case "music"  : { vars.currentMenuKey="game"        ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
+						case "level"  : { vars.currentMenuKey="music"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
+						case "height" : { vars.currentMenuKey="level"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
+						default : { break; }
 					}
 
-					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
-				}
-			}
-
-			// Pressed A? (confirm)gs.blink_menu("music" , "ON");
-			else if( game.chkBtn("BTN_A"    , "btnPressed1") ){
-				switch(vars.currentMenuKey){
-					case "game"   : { vars.currentMenuKey="music"       ; gs.blink_menu("music" , "ON"); break; }
-					case "music"  : { vars.currentMenuKey="level"       ; gs.blink_menu("level" , "ON"); break; }
-					case "level"  : { vars.currentMenuKey="height"      ; gs.blink_menu("height", "ON"); break; }
-					case "height" : { vars.configComplete=true          ;                                break; }
-					default : { break; }
+					gs.changeCursorState(vars.currentMenuKey, "ON");
 				}
 
-				gs.redrawCursor();
-			}
-
-			// Pressed B? (go back)
-			else if( game.chkBtn("BTN_B"    , "btnPressed1") ){
-				switch(vars.currentMenuKey){
-					case "game"   : { game.setGamestate1("TITLE2", true); vars.END=true; return;        break; }
-					case "music"  : { vars.currentMenuKey="game"        ; gs.blink_menu("game" , "ON"); break; }
-					case "level"  : { vars.currentMenuKey="music"       ; gs.blink_menu("music", "ON"); break; }
-					case "height" : { vars.currentMenuKey="level"       ; gs.blink_menu("level", "ON"); break; }
-					default : { break; }
+				// Handle the blinking indicator.
+				if(vars.blinkSpeed_cnt >= vars.blinkSpeed){
+					vars.blinkSpeed_cnt=0;
+					if(vars.blinkState){ gs.blink_menu(vars.currentMenuKey , "ON");  }
+					else               { gs.blink_menu(vars.currentMenuKey , "OFF"); }
+					vars.blinkState = !vars.blinkState;
 				}
+				else{ vars.blinkSpeed_cnt += 1; }
 
-				gs.redrawCursor();
 			}
 
 		}
@@ -525,52 +669,174 @@ game.gs.SETUP1 = {
 
 	// *** SUPPORT FUNCTIONS ***
 
-	//
-	redrawCursor : function(){
+	// Get all the settings for the specified menu key.
+	getMenuData : function(key){
 		let gs    = this;
 		let vars  = gs.vars;
 
-		// Redraw the sprite.
-		let spriteNum = vars.currSprite_indexes[vars.currentMenuKey];
+		let menu           = vars.menus[key]                                              ;
+		let MENU           = menu.MENU                                                    ;
+		let mw             = MENU.mw                                                      ;
+		let mh             = MENU.mh                                                      ;
+		let mx             = MENU.mx                                                      ;
+		let my             = MENU.my                                                      ;
+		let menuKeys       = MENU.menu.keys                                               ;
+		let menuTiles      = MENU.menu.tiles                                              ;
+		let OPTIONS        = menu.OPTIONS                                                 ;
+		let CURSOR         = menu.CURSOR                                                  ;
+		let selectedIndex  = vars.menuSettings[key].option                                ;
+		let cursor_x       = (OPTIONS[ selectedIndex ].cx+mx) * core.SETTINGS.TILE_WIDTH  ;
+		let cursor_y       = (OPTIONS[ selectedIndex ].cy+my) * core.SETTINGS.TILE_HEIGHT ;
+		let cursor_tilemap = core.ASSETS.graphics.tilemaps[ CURSOR ]                      ;
+		let cursor_width   = cursor_tilemap[0]                                            ;
+		let cursor_height  = cursor_tilemap[1]                                            ;
+		let TITLE          = menu.TITLE                                                   ;
+		let title_text     = TITLE.text                                                   ;
+		let title_x        = TITLE.x                                                      ;
+		let title_y        = TITLE.y                                                      ;
 
-		// What is the current menu?
-		let menu      = vars.menus[ vars.currentMenuKey ];
-		let cursor    = menu.CURSOR;
-		let newOption = menu.OPTIONS[ vars.menuSettings[ vars.currentMenuKey ].option ];
-
-		let cursor_tilemap = core.ASSETS.graphics.tilemaps[cursor];
-		let cursor_width   = cursor_tilemap[0];
-		let cursor_height  = cursor_tilemap[1];
-		let cursor_x       = newOption.cx * core.SETTINGS.TILE_WIDTH  ;
-		let cursor_y       = newOption.cy * core.SETTINGS.TILE_HEIGHT ;
-
-		core.FUNCS.graphics.MapSprite2( spriteNum, cursor_tilemap, 0 | core.CONSTS["SPRITE_BANK0"] );
-		core.FUNCS.graphics.MoveSprite( spriteNum, cursor_x , cursor_y , cursor_width, cursor_height );
+		return{
+			"key"            : key            ,
+			"menu"           : menu           ,
+			"MENU"           : MENU           ,
+			"mw"             : mw             ,
+			"mh"             : mh             ,
+			"mx"             : mx             ,
+			"my"             : my             ,
+			"menuKeys"       : menuKeys       ,
+			"menuTiles"      : menuTiles      ,
+			"OPTIONS"        : OPTIONS        ,
+			"CURSOR"         : CURSOR         ,
+			"selectedIndex"  : selectedIndex  ,
+			"cursor_x"       : cursor_x       ,
+			"cursor_y"       : cursor_y       ,
+			"cursor_tilemap" : cursor_tilemap ,
+			"cursor_width"   : cursor_width   ,
+			"cursor_height"  : cursor_height  ,
+			"TITLE"          : TITLE          ,
+			"title_text"     : title_text     ,
+			"title_x"        : title_x        ,
+			"title_y"        : title_y        ,
+		}
 	},
-	//
-	heightMenu : function(newState){
+	// Show/hide menu, text, and cursor.
+	drawMenu : function(which, newState){
 		let gs    = this;
 		let vars  = gs.vars;
 
-		let tileid;
-		if     (newState=="ON" ){ tileid = vars.bg1_tile;     }
-		else if(newState=="OFF"){ tileid = vars.empty_square; }
+		let data = gs.getMenuData(which);
 
-		core.FUNCS.graphics.Fill(2 ,19,14,7,tileid, "VRAM1");
-		core.FUNCS.graphics.Fill(2 ,19,14,7,0, "VRAM2");
+		if(newState=="ON") {
+			// Update the visibility flag for this menu.
+			vars.menu_visibility[which]=true;
+
+			let fillTile = vars.bg1_tile     ;
+			// let fillTile = vars.bg2_tile     ;
+			// let fillTile = vars.empty_square ;
+
+			// Draw the menu box.
+			gs.drawMenu_box(
+				data.mx        ,
+				data.my        ,
+				data.mw        ,
+				data.mh        ,
+				data.MENU.menu ,
+				fillTile
+			);
+
+			// Print the title text.
+			core.FUNCS.graphics.Print(data.title_x+data.mx, data.title_y+data.my , data.title_text, "VRAM2");
+
+			// Print the options text.
+			for(let i2=0; i2<data.OPTIONS.length; i2+=1){
+				let option = data.OPTIONS[i2];
+				let text = option.text;
+				let tx   = option.tx + data.mx ;
+				let ty   = option.ty + data.my ;
+				core.FUNCS.graphics.Print(tx, ty , text, "VRAM2");
+			}
+
+			// Show the sprite for this menu.
+			gs.changeCursorState(which, newState);
+		}
+		if(newState=="OFF"){
+			// Update the visibility flag for this menu.
+			vars.menu_visibility[which]=false;
+
+			// Which tile will we draw with?
+			let tileid = vars.empty_square;
+
+			// Clear this portion of VRAM1.
+			core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, tileid, "VRAM1");
+
+			// Clear this portion of VRAM2.
+			core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, 0     , "VRAM2");
+
+			// Hide the sprite for this menu.
+			gs.changeCursorState(which, newState);
+		}
+		else{ return; }
+
 	},
-	//
+	// Draws the menu box itself.
+	drawMenu_box : function(mx, my, mw, mh, style, fillTile ){
+		let gs    = this;
+		let vars  = gs.vars;
+
+		let menuTiles = style.tiles;
+		let menuKeys  = style.keys;
+
+		// Fill it (inside)
+		if(fillTile != null){ core.FUNCS.graphics.Fill(mx, my, mw, mh, fillTile, "VRAM1"); }
+
+		// Draw it (borders)
+		for(let y=0; y<mh; y+=1){
+			for(let x=0; x<mw; x+=1){
+				let tileid;
+				let name;
+
+				if     (x==0    && y==0   ) { name = "topL"  ; } // "topL"
+				else if(x==mw-1 && y==0   ) { name = "topR"  ; } // "topR"
+				else if(           y==0   ) { name = "top"   ; } // "top"
+				else if(x==0    && y==mh-1) { name = "botL"  ; } // "botL"
+				else if(x==mw-1 && y==mh-1) { name = "botR"  ; } // "botR"
+				else if(           y==mh-1) { name = "bot"   ; } // "bot"
+				else if(x==0              ) { name = "left"  ; } // "left"
+				else if(x==mw-1           ) { name = "right" ; } // "right"
+				else                        { continue; }
+
+				tileid = menuTiles[ menuKeys[name] ];
+
+				if(tileid==undefined){
+					console.log("tileid was not defined.");
+					continue;
+				}
+
+				core.FUNCS.graphics.SetTile(x+mx, y+my, tileid, "VRAM1");
+			}
+		}
+
+	},
+	// Turns the highlighting for all menus off.
 	blink_menus_allOff : function( which, state ){
 		let gs    = this;
 		let vars  = gs.vars;
 
 		// Force to off state (clears previous.)
-		core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,vars.bg1_tile, "VRAM1");
-		core.FUNCS.graphics.Fill(15,6 ,10,5,vars.bg1_tile, "VRAM1");
-		core.FUNCS.graphics.Fill(3 ,13,20,5,vars.bg1_tile, "VRAM1");
-		core.FUNCS.graphics.Fill(3 ,20,12,5,vars.bg1_tile, "VRAM1");
+		let data;
+		let arrs = vars.menu_keys;
+		for(let i=0; i<arrs.length; i+=1){
+			let key = arrs[i];
+			data = gs.getMenuData(key);
+
+			if(vars.menu_visibility[key]==true){
+				core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, vars.bg1_tile, "VRAM1");
+			}
+			else{
+			}
+		}
 	},
-	//
+	// Turns the highlighting for a specific menu either on or off.
 	blink_menu : function( which, state ){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -580,77 +846,55 @@ game.gs.SETUP1 = {
 
 		let tileid;
 
+		let data = gs.getMenuData(which);
+
 		if     (state=="ON" ){ tileid = vars.bg2_tile; }
 		else if(state=="OFF"){ tileid = vars.bg1_tile; }
 
-		switch(which){
-			// case 0  : { core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,tileid, "VRAM1"); break; }
-			// case 1  : { core.FUNCS.graphics.Fill(15,6 ,10,5,tileid, "VRAM1"); break; }
-			// case 2  : { core.FUNCS.graphics.Fill(3 ,13,20,5,tileid, "VRAM1"); break; }
-			// case 3  : { core.FUNCS.graphics.Fill(3 ,20,12,5,tileid, "VRAM1"); break; }
-			case "game"   : { core.FUNCS.graphics.Fill(3 ,6 ,9 ,5,tileid, "VRAM1"); break; }
-			case "music"  : { core.FUNCS.graphics.Fill(15,6 ,10,5,tileid, "VRAM1"); break; }
-			case "level"  : { core.FUNCS.graphics.Fill(3 ,13,20,5,tileid, "VRAM1"); break; }
-			case "height" : { core.FUNCS.graphics.Fill(3 ,20,12,5,tileid, "VRAM1"); break; }
-			default : { return; break; }
-		};
-
+		core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, tileid, "VRAM1");
 	},
-};
-// (TODO) ---- LEVEL SELECTION, HIGH SCORES (A TYPE: LEVELS, HIGHSCORE, B TYPE: LEVELS, HIGH SCORE, HEIGHT.)
-game.gs.SETUP2 = {
-	//
-	temp : {},
-	//
-	vars         : {
-	},
-	//
-	prepareState : function(){
-		let gs   = this;
-		let vars = gs.vars;
-		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
-
-		vars.END = false;
-	},
-	init : function(){
-		let gs    = this;
-		let vars  = gs.vars;
-	},
-	//
-	main : function(){
+	// Show/hides the specified cursor.
+	changeCursorState : function(which, newState){
 		let gs    = this;
 		let vars  = gs.vars;
 
-		// Don't run if we are done.
-		if(vars.END){
+		// Get the spriteNum, flags.
+		let spriteNum = vars.currSprite_indexes[which];
+		let flags;
+		try{
+			flags = core.GRAPHICS.sprites[spriteNum].flags;
+		}
+		catch(e){
+			console.log("Invalid sprite data.", which, newState, vars.currSprite_indexes);
 			return;
 		}
 
-		// Start of this game state?
-		if(!vars.init){
-			vars.init=true;
-			gs.init();
-			return;
-			// vars.END = true;
-		}
+		let data = gs.getMenuData(which);
 
-		// Run.
-		if(vars.init){
-		}
+		// Adjust flags.
+		if     (newState=="ON") { flags &= ~( core.CONSTS["SPRITE_OFF"] ); } // Clear the bit.
+		else if(newState=="OFF"){ flags |=  ( core.CONSTS["SPRITE_OFF"] ); } // Set the bit.
+		else                    { return; }
+
+		// Update the sprite.
+		core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+		core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x, data.cursor_y , data.cursor_width, data.cursor_height );
 	},
-
-	// *** SUPPORT FUNCTIONS ***
-
-	//
-	EXAMPLE : function( VALUE ){
+	// Changes the active song.
+	changeSong : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+
+		// Play the next song if there is a value set. (OFF is "").
+		if( vars.music[ vars.menuSettings.music.option ] ){
+			let song = vars.music[ vars.menuSettings.music.option ];
+			core.FUNCS.audio.play_midi  ( "BGM1", song, true, 1.0 );
+		}
+		else{ core.FUNCS.audio.stop_midi("BGM1", true); }
 	},
 };
 // MAIN GAME: TYPE A
-game.gs.PLAY_A = {
+game.gs.PLAY = {
 	//
 	temp : {},
 	//
@@ -787,7 +1031,9 @@ game.gs.PLAY_A = {
 		gs.updateStats();
 
 		// Start the music!
-		core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 );
+		if(game.gs.PLAY.temp.music){
+			core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 );
+		}
 	},
 	//
 	main         : function(){
@@ -864,8 +1110,8 @@ game.gs.PLAY_A = {
 					// Can the piece move down?
 					if( gs.canThePieceBeDrawn("DOWN") ){
 						// YES: Drop the piece one tile down after a certain time.
-						game.gs.PLAY_A.vars.matrix_y+=1;
-						game.gs.PLAY_A.drawCurrentPiece();
+						game.gs.PLAY.vars.matrix_y+=1;
+						game.gs.PLAY.drawCurrentPiece();
 						vars.dropSpeed_cnt=0;
 						vars.inputSpeed_cnt=0;
 					}
@@ -913,6 +1159,7 @@ game.gs.PLAY_A = {
 				if     ( game.chkBtn("BTN_UP"    , "btnPressed1") ){
 					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
 					vars.instantDrop=true;
+					vars.dropSpeed_cnt=0;
 					vars.inputSpeed_cnt=0;
 				}
 				// Move the piece DOWN, LEFT, or RIGHT?
@@ -920,9 +1167,9 @@ game.gs.PLAY_A = {
 					let reset=false;
 
 					// Handle directional user input.
-					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_y+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
-					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_x-=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
-					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY_A.vars.matrix_x+=1; game.gs.PLAY_A.drawCurrentPiece(); } reset=true; }
+					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_y+=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
+					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_x-=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; }
+					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_x+=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; }
 
 					if(reset){ vars.inputSpeed_cnt=0; }
 					// else     { vars.inputSpeed_cnt += 1; }
@@ -932,8 +1179,8 @@ game.gs.PLAY_A = {
 				// Rotate the piece LEFT or RIGHT?
 				// if(vars.inputSpeed_cnt != 0 && ! vars.instantDrop){
 				if(! vars.instantDrop){
-					if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
-					else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); /*vars.dropSpeed_cnt=0;*/ } }
+					if     ( game.chkBtn("BTN_A"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_RIGHT" ) ) { gs.rotatePiece("R_RIGHT"); core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); } }
+					else if( game.chkBtn("BTN_B"     , "btnPressed1") ){ if( gs.canThePieceBeDrawn("R_LEFT"  ) ) { gs.rotatePiece("R_LEFT") ; core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); gs.drawCurrentPiece(); } }
 				}
 			}
 		}
@@ -1595,59 +1842,6 @@ game.gs.PLAY_A = {
 		vars.currentMatrix = game.pieces[ vars.currentPiece ][ vars.rotationIndex ];
 	},
 };
-// (TODO) ---- MAIN GAME: TYPE B
-game.gs.PLAY_B = {
-	//
-	temp : {},
-	//
-	vars         : {
-	},
-	//
-	prepareState : function(){
-		let gs   = this;
-		let vars = gs.vars;
-		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
-
-		vars.END = false;
-	},
-	init : function(){
-		let gs    = this;
-		let vars  = gs.vars;
-	},
-	//
-	main : function(){
-		let gs    = this;
-		let vars  = gs.vars;
-
-		// Don't run if we are done.
-		if(vars.END){
-			return;
-		}
-
-		// Start of this game state?
-		if(!vars.init){
-			vars.init=true;
-			gs.init();
-			return;
-
-			// vars.END = true;
-		}
-
-		// Run.
-		if(vars.init){
-		}
-	},
-
-	// *** SUPPORT FUNCTIONS ***
-
-	//
-	EXAMPLE : function( VALUE ){
-		let gs    = this;
-		let vars  = gs.vars;
-	},
-};
 // (TODO) ---- HIGH SCORE ENTRY SCREEN
 game.gs.ENTER_HIGH_SCORE = {
 	//
@@ -1701,6 +1895,7 @@ game.gs.ENTER_HIGH_SCORE = {
 		let vars  = gs.vars;
 	},
 };
+// (TODO) ---- HIGH SCORE ENTRY SCREEN
 
 // *** TEMPLATE GAMESTATE FUNCTION ***
 
@@ -1757,9 +1952,3 @@ game.gs.TEMPLATE = {
 		let vars  = gs.vars;
 	},
 };
-
-// *** TEST GAMESTATE FUNCTIONS ***
-
-//
-
-

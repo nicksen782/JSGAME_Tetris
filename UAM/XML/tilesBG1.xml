@@ -27,6 +27,7 @@
   <map var-name="boardborder_top" left="15" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_topL" left="13" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_topR" left="14" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="boardborder_bot" left="16" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_botL" left="13" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_botR" left="14" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_left" left="15" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 

@@ -38,27 +38,33 @@
 	"midi_synths": {
 		"BGM1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":true
 		} ,
 		"BGM2" : {
 			"synthOptions": { "quality":1, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":false
 		} ,
 		"SFX1" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":false
 		} ,
 		"SFX2" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":false
 		} ,
 		"SFX3" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":false
 		} ,
 		"SFX4" : {
 			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
-			"options"     : { "loop":false, "masterVol":"" }
+			"options"     : { "loop":false, "masterVol":"" },
+			"used":false
 		}
 	},
 
@@ -74,7 +80,7 @@
 
 	"typeGamepads"      : "nes" ,
 	"numGamepads"       : 1     ,
-	"fps"               : 60    ,
+	"fps"               : 30    ,
 
 	"canvas_scaleFactor" : 2.3 ,
 

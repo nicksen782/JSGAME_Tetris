@@ -52,7 +52,7 @@
 					<tr>
 						<td>RESTARTS</td>
 						<td>
-							<button title="restartGamestate"  id="restartGamestate">GAMESTATE</button>
+							<button id="restartGamestate">GAMESTATE</button>
 							<button onclick="game.game_full_restart();">WHOLE GAME</button>
 						</td>
 					</tr>
@@ -60,6 +60,21 @@
 						<td>LOGO</td>
 						<td>
 							<button onclick="core.FUNCS.graphics.logo();">logo</button>
+						</td>
+					</tr>
+					<tr>
+						<td>GAMESTATES</td>
+						<td>
+							<button onclick='game.setGamestate1("TITLE0"          , true);'>TITLE0</button>
+							<button onclick='game.setGamestate1("TITLE1"          , true);'>TITLE1</button>
+							<button onclick='game.setGamestate1("TITLE2"          , true);'>TITLE2</button>
+							<br>
+							<button onclick='game.setGamestate1("SETUP1"          , true);'>SETUP1</button>
+							<button onclick='game.setGamestate1("SETUP2"          , true);'>SETUP2</button>
+							<br>
+							<button onclick='game.setGamestate1("PLAY"          , true);'>PLAY</button>
+							<br>
+							<button onclick='game.setGamestate1("ENTER_HIGH_SCORE", true);'>ENTER_HIGH_SCORE</button>
 						</td>
 					</tr>
 				</tbody>
@@ -122,14 +137,14 @@
 							<br>
 
 							<!-- NON-BLOCKING -- BLOCK LOGIC WHEN DONE -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, true);">FadeIn (3, false, true)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, true);">FadeOut(3, false, true)</button>
-							<br>
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, true);">FadeIn (3, false, true)</button> -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, true);">FadeOut(3, false, true)</button> -->
+							<!-- <br> -->
 
 							<!-- BLOCKING -- BLOCK LOGIC WHEN DONE -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, true);">FadeIn (3, true, true)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, true);">FadeOut(3, true, true)</button>
-							<br>
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, true);">FadeIn (3, true, true)</button> -->
+							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, true);">FadeOut(3, true, true)</button> -->
+							<!-- <br> -->
 
 							<!-- OVERRIDE LOGIC BLOCK -->
 							<button onclick="core.GRAPHICS.FADER.FUNCS.blockLogic(false);">blockLogic(false)</button>
@@ -153,8 +168,8 @@
 					<tr>
 						<td>CLEARS</td>
 						<td>
-							<button title="debug_ClearVram1" id="debug_ClearVram1">VRAM1</button>
-							<button title="debug_ClearVram2" id="debug_ClearVram2">VRAM2</button>
+							<button title="debug_ClearVram1"   id="debug_ClearVram1">VRAM1</button>
+							<button title="debug_ClearVram2"   id="debug_ClearVram2">VRAM2</button>
 							<button title="debug_ClearSprites" id="debug_ClearSprites">SPRITES</button>
 						</td>
 					</tr>
@@ -174,7 +189,7 @@
 						<td>DISP FLAGS</td>
 						<td>
 							<button onclick="game.DEBUG.drawFlagsToConsole();">DISP #1</button>
-							<button onclick="game.DEBUG.fadeValuesToConsole();">DISP #2</button>
+							<!-- <button onclick="game.DEBUG.fadeValuesToConsole();">DISP #2</button> -->
 
 						</td>
 					</tr>
@@ -209,33 +224,33 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='J'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/J.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='T'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/T.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='Z'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/Z.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='O'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/O.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='S'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/S.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='L'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/L.png');">  </button> </td>
-						<td> <button onclick="game.gs['PLAY_A'].vars.nextPiece='I'; game.gs['PLAY_A'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/I.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='J'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/J.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='T'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/T.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='Z'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/Z.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='O'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/O.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='S'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/S.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='L'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/L.png');">  </button> </td>
+						<td> <button onclick="game.gs['PLAY'].vars.nextPiece='I'; game.gs['PLAY'].updateNextPiece();" style="display: inline-block;width: 64px;height: 32px;background-position: center;background-repeat: no-repeat;background-size: contain;background-image:url('../JS_GAMES/Tetris/DEBUG/I.png');">  </button> </td>
 					</tr>
 				</tbody>
 			</table>
 			<br>
 
-			<!-- <button onclick="game.gs['PLAY_A'].setNextDropSpeed('UP');">Dropspeed UP</button> -->
-			<!-- <button onclick="game.gs['PLAY_A'].setNextDropSpeed('DOWN');">Dropspeed DOWN</button> -->
-			<button onclick="game.gs['PLAY_A'].clearBoard();">Clear Board</button>
-			<button onclick="game.gs['PLAY_A'].setDropSpeed(0);">Dropspeed 0</button>
-			<button onclick="game.gs['PLAY_A'].setDropSpeed(9);">Dropspeed 9</button>
+			<!-- <button onclick="game.gs['PLAY'].setNextDropSpeed('UP');">Dropspeed UP</button> -->
+			<!-- <button onclick="game.gs['PLAY'].setNextDropSpeed('DOWN');">Dropspeed DOWN</button> -->
+			<button onclick="game.gs['PLAY'].clearBoard();">Clear Board</button>
+			<button onclick="game.gs['PLAY'].setDropSpeed(0);">Dropspeed 0</button>
+			<button onclick="game.gs['PLAY'].setDropSpeed(9);">Dropspeed 9</button>
 			<br>
 
-			<button onclick="game.DEBUG.bottomLines();">bottomLines</button>
-			<button onclick="game.gs['PLAY_A'].detectCompletedLines();">detectCompletedLines</button>
-			<button onclick="game.DEBUG.showVramInConsole();">showVramInConsole</button>
+			<!-- <button onclick="game.DEBUG.bottomLines();">bottomLines</button> -->
+			<!-- <button onclick="game.gs['PLAY'].detectCompletedLines();">detectCompletedLines</button> -->
+			<!-- <button onclick="game.DEBUG.showVramInConsole();">showVramInConsole</button> -->
 			<br>
 
-			<button onclick="game.DEBUG.showCoords('white');">Show Coords(white)</button>
+			<!-- <button onclick="game.DEBUG.showCoords('white');">Show Coords(white)</button>
 			<button onclick="game.DEBUG.showCoords('black');">Show Coords(black)</button>
-			<button onclick="game.DEBUG.hideCoords();">Hide Coords</button>
+			<button onclick="game.DEBUG.hideCoords();">Hide Coords</button> -->
 
 			<br>
 			<br>

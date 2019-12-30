@@ -88,104 +88,114 @@ game.runOnce = function(){
 		// These functions may run async.
 		let proms1 = [];
 
-		// *** DEBUG ***
-		if(JSGAME.SHARED.debug && game.DEBUG.init){ proms1.push( game.DEBUG.init() ); }
-
+		// Graphics and audio setup.
 		proms1.push( core.FUNCS.graphics.init() ) ; // Comes from the selected video kernel.
 		proms1.push( core.FUNCS.audio   .init() ) ; // Comes from the selected sound kernel.
 
-		Promise.all(proms1).then(function(){
-			// POPULATE solidBg1Tiles.
-			let populate_solidBg1Tiles = function(){
-				// Used to populate game.solidBgTiles.
-				let solidBg1Tilemaps = [
-					// Background Tetris pieces.
-					"T_bgtile"        , // 1 tile.
-					"J_bgtile"        , // 1 tile.
-					"Z_bgtile"        , // 1 tile.
-					"O_bgtile"        , // 1 tile.
-					"S_bgtile"        , // 1 tile.
-					"L_bgtile"        , // 1 tile.
-					"I_bgtile"        , // 1 tile.
-					"boardborder_ALL" , // 8 tiles.
-				];
-				let skipTheseTiles = [
-					core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2],
-					// core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2],
-				];
-				// Clear
-				game.solidBg1Tiles    = [];
+		// When the above promises have been completed...
+		Promise.all(proms1).then(
+			function(){
+				// POPULATE solidBg1Tiles.
+				let populate_solidBg1Tiles = function(){
+					// Used to populate game.solidBgTiles.
+					let solidBg1Tilemaps = [
+						// Background Tetris pieces.
+						"T_bgtile"        , // 1 tile.
+						"J_bgtile"        , // 1 tile.
+						"Z_bgtile"        , // 1 tile.
+						"O_bgtile"        , // 1 tile.
+						"S_bgtile"        , // 1 tile.
+						"L_bgtile"        , // 1 tile.
+						"I_bgtile"        , // 1 tile.
+						"boardborder_ALL" , // 8 tiles.
+					];
+					let skipTheseTiles = [
 
-				// Set multi-tile tilemaps.
-				let len = solidBg1Tilemaps.length;
-				for(let i=0; i<len; i+=1){
-					let mapKey = solidBg1Tilemaps[i];
-					let map = core.ASSETS.graphics.tilemaps[ mapKey ];
-					let width  = map[0];
-					let height = map[1];
-					let numTiles = width*height;
+						// core.ASSETS.graphics.tilemaps[ "boardborder_ALL"   ][2],
+						core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_bot"   ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2],
+						// core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2],
+					];
+					// Clear
+					game.solidBg1Tiles    = [];
 
-					// Populate game.solidBg1Tiles.
-					for(let ii=0; ii<numTiles; ii+=1){
-						let tileid = map[ii+2];
+					// Set multi-tile tilemaps.
+					let len = solidBg1Tilemaps.length;
+					for(let i=0; i<len; i+=1){
+						let mapKey = solidBg1Tilemaps[i];
+						let map = core.ASSETS.graphics.tilemaps[ mapKey ];
+						let width  = map[0];
+						let height = map[1];
+						let numTiles = width*height;
 
-						// Is this a skipped tile?
-						if(skipTheseTiles.indexOf(tileid) == -1){
-							// Is this a solid tile?
-							if(game.solidBg1Tiles.indexOf(tileid) == -1){
-								// Add the tile to the list.
-								// console.log("Adding:", tileid);
-								game.solidBg1Tiles.push( tileid );
+						// Populate game.solidBg1Tiles.
+						for(let ii=0; ii<numTiles; ii+=1){
+							let tileid = map[ii+2];
+
+							// Is this a skipped tile?
+							if(skipTheseTiles.indexOf(tileid) == -1){
+								// Is this a solid tile?
+								if(game.solidBg1Tiles.indexOf(tileid) == -1){
+									// Add the tile to the list.
+									// console.log("Adding:", tileid);
+									game.solidBg1Tiles.push( tileid );
+								}
+							}
+							else{
+								// console.log("Skipping:", tileid);
 							}
 						}
-						else{
-							// console.log("Skipping:", tileid);
-						}
 					}
+
+					// console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
+
+				};
+				populate_solidBg1Tiles();
+
+				// Whole image graphics processors.
+				// core.EXTERNAL.GRAPHICS = game.graphicsPostProcessor_shake ;
+
+				// Remove the initial graphics assets since they will not be needed again.
+				delete core.ASSETS.graphics.tiles ;
+				delete core.ASSETS.graphics.ramtiles
+
+				// Remove these functions since they will not be needed again.
+				delete core.FUNCS.graphics.init ;
+				delete core.FUNCS.audio.init    ;
+
+				// Remove these functions since they will not be needed again.
+				delete game.runOnce ;
+
+				// *** DEBUG ***
+				if(JSGAME.SHARED.debug && game.DEBUG.init){
+					//
+					game.DEBUG.init();
+
+					// Combine all the core objects into one.
+					app = {
+						"JSGAME" : JSGAME ,
+						"core"   : core   ,
+						"game"   : game   ,
+					};
 				}
 
-				// console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
-
-			};
-			populate_solidBg1Tiles();
-
-			// Whole image graphics processors.
-			// core.EXTERNAL.GRAPHICS = game.graphicsPostProcessor_shake ;
-
-			// DEBUG ONLY: Combine all the core objects into one.
-			app = {
-				"JSGAME" : JSGAME ,
-				"core"   : core   ,
-				"game"   : game   ,
-			};
-
-			// Remove the initial graphics assets since they will not be needed again.
-			delete core.ASSETS.graphics.tiles ;
-			delete core.ASSETS.graphics.ramtiles
-
-			// Remove these functions since they will not be needed again.
-			delete core.FUNCS.graphics.init ;
-			delete core.FUNCS.audio.init    ;
-
-			// Remove these functions since they will not be needed again.
-			delete game.runOnce ;
-
-			// Resolve the promise and allow the program to continue.
-			resolve();
-		}
-		,function(err){ console.log("ERROR: runOnce: ", err);  } );
+				// Resolve the promise and allow the program to continue.
+				resolve();
+			}
+			,function(err){ console.log("ERROR: runOnce: ", err);  }
+		);
 
 	});
 };
 // Game setup and first game loop.
 game.firstLoop = function(){
 	return new Promise(function(resolve,reject){
-
+		// Make sure any sounds have been stopped.
 		core.FUNCS.audio.stopAllSounds_midi();
 		core.FUNCS.audio.cancelAllSounds_mp3("all");
 
@@ -194,10 +204,12 @@ game.firstLoop = function(){
 		JSGAME.DOM["canvasScaleSlider"].value = JSGAME.PRELOAD.gamesettings_json.canvas_scaleFactor;
 		JSGAME.SHARED.canvasResize( JSGAME.DOM["canvasScaleSlider"].value );
 
-		// *** Aliases ***
+		// *** Aliases for JSGAME.SHARED functions ***
 
-		game.chkBtn  = JSGAME.SHARED.checkButton ; // Alias the JSGAME.SHARED.checkButton function.
-		game.buttons = JSGAME.SHARED.buttons     ; // Alias the JSGAME.SHARED.buttons object.
+		game.chkBtn               = JSGAME.SHARED.checkButton          ; //
+		game.buttons              = JSGAME.SHARED.buttons              ; //
+		game.secondsToFrames      = JSGAME.SHARED.secondsToFrames      ; //
+		game.getRandomInt_inRange = JSGAME.SHARED.getRandomInt_inRange ; //
 
 		// *** TIMING ***
 
@@ -206,10 +218,10 @@ game.firstLoop = function(){
 
 		// *** VRAM ***
 
-		// VRAM1 - TILESET AND CLEAR.
+		// VRAM1 - SET INITIAL TILESET.
 		core.FUNCS.graphics.SetTileTable("tilesBG1");
 
-		// VRAM2 - FONTS
+		// VRAM2 - SET INTITAL FONT.
 		core.FUNCS.graphics.SetFont("fonts1"); // White
 		// core.FUNCS.graphics.SetFont("fonts2"); // Dark gray.
 
@@ -240,19 +252,7 @@ game.firstLoop = function(){
 		let gamestates = Object.keys(game.gs);
 		gamestates.forEach(function(d){ game.gs[d].vars = {}; });
 
-		// *** GAMESTATE ***
-
-		// Set the gamestate.
-		game.setGamestate1("TITLE0"          , true); // Init screen
-		// game.setGamestate1("TITLE1"          , true); // Copyright screen.
-		// game.setGamestate1("TITLE2"          , true); // Title screen.
-		// game.setGamestate1("SETUP1"          , true); // Setup screen 1
-		// game.setGamestate1("SETUP2"          , true); // Setup screen 2
-		// game.setGamestate1("PLAY_A"          , true); // Main game, Type A.
-		// game.setGamestate1("PLAY_B"          , true); // Main game, Type B.
-		// game.setGamestate1("ENTER_HIGH_SCORE", true); // End of game, high score entry.
-
-		// Make sure all canvases are cleared.
+		// CLEAR ALL CANVASES AND GRAPHICS ARRAYS.
 		core.FUNCS.graphics.clearAllCanvases();
 
 		// core.FUNCS.graphics.update_allLayers();
@@ -267,15 +267,32 @@ game.firstLoop = function(){
 
 				resolve(
 					function(){
+						// CLEAR ALL CANVASES AND GRAPHICS ARRAYS.
+						core.FUNCS.graphics.clearAllCanvases();
+
+						// Again, make sure the output is is clear.
 						outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
 
-						// *** REQUEST FIRST GAME LOOP ***
+						// Play the game start sound.
 						core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
 
+						// Set the gameReady flag to true.
 						JSGAME.FLAGS.gameReady=true;
-						JSGAME.SHARED.raf_id = requestAnimationFrame( game.gameloop );
 
-						console.log("GAME STARTED");
+						// *** REQUEST FIRST GAME LOOP ***
+						// JSGAME.SHARED.raf_id = requestAnimationFrame( game.gameloop );
+
+						// *** GAMESTATE ***
+
+						game.setGamestate1("TITLE0"          , true); // Init screen
+						// game.setGamestate1("TITLE1"          , true); // Copyright screen.
+						// game.setGamestate1("TITLE2"          , true); // Title screen.
+						// game.setGamestate1("SETUP1"          , true); // Setup screen 1
+						// game.setGamestate1("SETUP2"          , true); // Setup screen 2
+						// game.setGamestate1("PLAY"            , true); // Main game.
+						// game.setGamestate1("ENTER_HIGH_SCORE", true); // End of game, high score entry.
+
+						console.log("JSGAME TETRIS - STARTED");
 					}
 				);
 			},
@@ -289,6 +306,11 @@ game.firstLoop = function(){
 
 // Updates game.gamestate and game.gamestate_prev.
 game.setGamestate1 = function(newState, prepare){
+	// Stop whatever might be running.
+	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
+	JSGAME.SHARED.raf_id=null;
+	JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
+
 	// Save previous gamestate1
 	game.gamestate_prev  = game.gamestate ;
 
@@ -302,6 +324,11 @@ game.setGamestate1 = function(newState, prepare){
 };
 // Updates game.gamestate2 and game.gamestate2_prev.
 game.setGamestate2 = function(newState, prepare){
+	// Stop whatever might be running.
+	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
+	JSGAME.SHARED.raf_id=null;
+	JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
+
 	// Save previous gamestate1
 	game.gamestate2_prev = game.gamestate2 ;
 
@@ -318,6 +345,7 @@ game.game_full_restart = function(){
 	// Stop whatever might be running.
 	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
 	JSGAME.SHARED.raf_id=null;
+	// JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
 
 	// Blank the screen.
 	let outputCanvasCtx = core.GRAPHICS["ctx"].OUTPUT;
@@ -347,18 +375,7 @@ game.restart = function(){
 	// Switch to the title screen.
 	game.setGamestate1("TITLE1", true);
 };
-// Get a random integer in the specified range.
-game.getRandomInt_inRange = function (min, max) {
-	min = (min << 0);
-	max = (max << 0);
-	return ((Math.random() * (max - min + 1)) + min) << 0;
-};
-//
-game.secondsToFrames = function(seconds){
-	// Given a number of seconds, the corresponding number of frames will be returned (rounded up.)
-	// seconds can be a decimal number.
-	return Math.ceil((core.SETTINGS.fps) * seconds);
-};
+
 
 // *** LOW-LEVEL GAME FUNCTIONS ***
 

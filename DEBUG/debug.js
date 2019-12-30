@@ -105,8 +105,14 @@ game.DEBUG.init = function(){
 		let mp3_keys;
 		let mid_keys;
 
-		try{ mp3_keys = Object.keys(core.ASSETS.audio.lookups); } catch(e){ mp3_keys = []; }
-		try{ mid_keys = Object.keys(core.AUDIO.midiData);       } catch(e){ mid_keys = []; }
+		try{ mp3_keys = Object.keys(core.ASSETS.audio.lookups); } catch(e){ console.log("No mp3_keys found!"); mp3_keys = []; }
+		try{ mid_keys = Object.keys(core.AUDIO.midiData);       } catch(e){ console.log("No mid_keys found!"); mid_keys = []; }
+
+		// console.log(
+		// 	"mp3_keys:",mp3_keys,
+		// 	"mid_keys:",mid_keys,
+		// 	""
+		// );
 
 		var frag = document.createDocumentFragment();
 
@@ -156,7 +162,6 @@ game.DEBUG.init = function(){
 		elem.appendChild(frag);
 	};
 	populateSoundTest();
-
 
 	// *** Show the debug div. ***
 
@@ -225,23 +230,23 @@ game.DEBUG.drawFlagsToConsole = function(){
 		);
 	};
 
-game.DEBUG.fadeValuesToConsole = function(){
-	console.log(
-		"\n old values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.prevFadeStep],
-		"\n new values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.fadeStep],
-		// "\n " ,
-		"\n prevFadeStep :" , core.GRAPHICS.FADER.prevFadeStep  ,
-		"\n fadeStep     :" , core.GRAPHICS.FADER.fadeStep      ,
-		"\n fadeSpeed    :" , core.GRAPHICS.FADER.fadeSpeed     ,
-		"\n currFadeFrame:" , core.GRAPHICS.FADER.currFadeFrame ,
-		"\n fadeDir      :" , core.GRAPHICS.FADER.fadeDir       ,
-		"\n fadeActive   :" , core.GRAPHICS.FADER.fadeActive    ,
-		"\n blocking     :" , core.GRAPHICS.FADER.blocking      ,
-		"\n stayDark     :" , core.GRAPHICS.FADER.stayDark      ,
-		"\n lastFadeFrame:" , core.GRAPHICS.FADER.lastFadeFrame ,
-		"\n"
-	);
-};
+// game.DEBUG.fadeValuesToConsole = function(){
+// 	console.log(
+// 		"\n old values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.prevFadeStep],
+// 		"\n new values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.fadeStep],
+// 		// "\n " ,
+// 		"\n prevFadeStep :" , core.GRAPHICS.FADER.prevFadeStep  ,
+// 		"\n fadeStep     :" , core.GRAPHICS.FADER.fadeStep      ,
+// 		"\n fadeSpeed    :" , core.GRAPHICS.FADER.fadeSpeed     ,
+// 		"\n currFadeFrame:" , core.GRAPHICS.FADER.currFadeFrame ,
+// 		"\n fadeDir      :" , core.GRAPHICS.FADER.fadeDir       ,
+// 		"\n fadeActive   :" , core.GRAPHICS.FADER.fadeActive    ,
+// 		"\n blocking     :" , core.GRAPHICS.FADER.blocking      ,
+// 		"\n stayDark     :" , core.GRAPHICS.FADER.stayDark      ,
+// 		"\n lastFadeFrame:" , core.GRAPHICS.FADER.lastFadeFrame ,
+// 		"\n"
+// 	);
+// };
 
 // Fills VRAM1 with random tiles from the layer's active tileset.
 game.DEBUG.fillVram1_random = function(){
@@ -519,67 +524,67 @@ game.DEBUG.updateDebugDisplay = function(){
 // *** GAME-SPECIFIC DEBUG TESTS ***
 
 // Add some "junk" lines (some complete) to the screen.
-game.DEBUG.bottomLines = function(){
-	let vars = game.gs['PLAY_A'].vars;
+// game.DEBUG.bottomLines = function(){
+// 	let vars = game.gs['PLAY_A'].vars;
 
-	let startx1=vars.min_x_tile+0;
-	let starty =vars.min_y_tile+19;
+// 	let startx1=vars.min_x_tile+0;
+// 	let starty =vars.min_y_tile+19;
 
-	let T = core.ASSETS.graphics.tilemaps["T_bgtile"][2]
-	let J = core.ASSETS.graphics.tilemaps["J_bgtile"][2]
-	let Z = core.ASSETS.graphics.tilemaps["Z_bgtile"][2]
-	let O = core.ASSETS.graphics.tilemaps["O_bgtile"][2]
-	let S = core.ASSETS.graphics.tilemaps["S_bgtile"][2]
-	let L = core.ASSETS.graphics.tilemaps["L_bgtile"][2]
-	let I = core.ASSETS.graphics.tilemaps["I_bgtile"][2]
+// 	let T = core.ASSETS.graphics.tilemaps["T_bgtile"][2]
+// 	let J = core.ASSETS.graphics.tilemaps["J_bgtile"][2]
+// 	let Z = core.ASSETS.graphics.tilemaps["Z_bgtile"][2]
+// 	let O = core.ASSETS.graphics.tilemaps["O_bgtile"][2]
+// 	let S = core.ASSETS.graphics.tilemaps["S_bgtile"][2]
+// 	let L = core.ASSETS.graphics.tilemaps["L_bgtile"][2]
+// 	let I = core.ASSETS.graphics.tilemaps["I_bgtile"][2]
 
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+0 , 1  , 1, T, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+2 , 1  , 1, J, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+4 , 1  , 1, Z, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+12, 10 , 1, O, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+13, 10 , 1, S, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+15, 10 , 1, L, "VRAM1");
-	// core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+17, 10 , 1, I, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+16, 1  , 1, J, "VRAM1");
-	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+19, 10 , 1, I, "VRAM1");
-};
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+0 , 1  , 1, T, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+2 , 1  , 1, J, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+4 , 1  , 1, Z, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+12, 10 , 1, O, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+13, 10 , 1, S, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+15, 10 , 1, L, "VRAM1");
+// 	// core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+17, 10 , 1, I, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+16, 1  , 1, J, "VRAM1");
+// 	core.FUNCS.graphics.Fill(startx1, vars.min_y_tile+19, 10 , 1, I, "VRAM1");
+// };
 // Displays the playboard VRAM1 data in the counsole. (basic.)
-game.DEBUG.showVramInConsole = function(){
-	console.log("\n");
-	let vars = game.gs['PLAY_A'].vars;
+// game.DEBUG.showVramInConsole = function(){
+// 	console.log("\n");
+// 	let vars = game.gs['PLAY_A'].vars;
 
-	// Shift the lines down.
-	let i=0;
-	for(let y=0; y<20; y+=1){
-		let newy=(y+vars.min_y_tile).toString().padEnd(3, " ");
-		let text="";
-		for(let x=0; x<10; x+=1){
-			let tileid = core.GRAPHICS.VRAM1[ ((y+vars.min_y_tile)*core.SETTINGS.VRAM_TILES_H) + (x+vars.min_x_tile) ] ;
-			// let newtileid = (tileid).toString().padEnd(3, " ");
-			if(tileid==1){ text+= "" + "."    + " " ; }
-			else         { text+= "" + "X" + " " ; }
+// 	// Shift the lines down.
+// 	let i=0;
+// 	for(let y=0; y<20; y+=1){
+// 		let newy=(y+vars.min_y_tile).toString().padEnd(3, " ");
+// 		let text="";
+// 		for(let x=0; x<10; x+=1){
+// 			let tileid = core.GRAPHICS.VRAM1[ ((y+vars.min_y_tile)*core.SETTINGS.VRAM_TILES_H) + (x+vars.min_x_tile) ] ;
+// 			// let newtileid = (tileid).toString().padEnd(3, " ");
+// 			if(tileid==1){ text+= "" + "."    + " " ; }
+// 			else         { text+= "" + "X" + " " ; }
 
-		}
-		console.log(newy, " ::: ", text, " --- ", "i:", i);
-		i++;
-	}
-};
+// 		}
+// 		console.log(newy, " ::: ", text, " --- ", "i:", i);
+// 		i++;
+// 	}
+// };
 
 //
-game.DEBUG.showCoords = function(color){
-	if(color=="white"){
-		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          core.ASSETS.graphics.tilemaps["nums_0_9_wh"], "VRAM2");
-		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, core.ASSETS.graphics.tilemaps["nums_0_9_wv"], "VRAM2");
-	}
-	else if(color=="black"){
-		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          core.ASSETS.graphics.tilemaps["nums_0_9_bh"], "VRAM2");
-		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, core.ASSETS.graphics.tilemaps["nums_0_9_bv"], "VRAM2");
-	}
-};
-game.DEBUG.hideCoords = function(){
-	core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          0, "VRAM2");
-	core.FUNCS.graphics.Fill(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, 0, "VRAM2");
-};
+// game.DEBUG.showCoords = function(color){
+// 	if(color=="white"){
+// 		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          core.ASSETS.graphics.tilemaps["nums_0_9_wh"], "VRAM2");
+// 		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, core.ASSETS.graphics.tilemaps["nums_0_9_wv"], "VRAM2");
+// 	}
+// 	else if(color=="black"){
+// 		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          core.ASSETS.graphics.tilemaps["nums_0_9_bh"], "VRAM2");
+// 		core.FUNCS.graphics.DrawMap_customDimensions(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, core.ASSETS.graphics.tilemaps["nums_0_9_bv"], "VRAM2");
+// 	}
+// };
+// game.DEBUG.hideCoords = function(){
+// 	core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, 1,                          0, "VRAM2");
+// 	core.FUNCS.graphics.Fill(0, 0, 1                         , core.SETTINGS.VRAM_TILES_V, 0, "VRAM2");
+// };
 
 
 // *** CUSTOM TESTS ***
