@@ -56,8 +56,6 @@ game.gs.TITLE1 = {
 			core.FUNCS.graphics.ClearVram();
 			core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
 
-
-			// vars.END = true;
 			let xOffset = 0;
 			let yOffset = 5;
 			for(let y=0; y<vars.text1.length; y+=1){
@@ -72,7 +70,7 @@ game.gs.TITLE1 = {
 		// Run.
 		if(vars.init){
 			if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
-				core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, false);
+				core.GRAPHICS.FADER.FUNCS.FadeOut(2, true, false);
 				// core.GRAPHICS.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 
 				game.setGamestate1("TITLE2", true);

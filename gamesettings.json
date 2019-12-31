@@ -19,14 +19,14 @@
 	},
 
 	"js_files": [
-		"js/MAIN.js"                ,
+		"js/MAIN.js"             ,
 		"js/gs_ENTER_HIGH_SCORE.js" ,
 		"js/gs_PLAY.js"             ,
 		"js/gs_SETUP1.js"           ,
 		"js/gs_SETUP2.js"           ,
 		"js/gs_TITLE0.js"           ,
 		"js/gs_TITLE1.js"           ,
-		"js/gs_TITLE3.js"
+		"js/gs_TITLE2.js"
 	],
 
 	"links":[

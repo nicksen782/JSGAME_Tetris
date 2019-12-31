@@ -153,7 +153,7 @@ game.gs.PLAY = {
 		// Game over?
 		else if(vars.gameOver){
 			console.log("yup, game over!");
-			if(JSGAME.SHARED.debug){ game.DEBUG.updateDebugDisplay(); }
+			if(JSGAME.FLAGS.debug){ game.DEBUG.updateDebugDisplay(); }
 			throw "done!";
 		}
 
@@ -367,7 +367,7 @@ game.gs.PLAY = {
 			for(let x=0; x<10; x+=1){
 				let thisTile = oldFields[y][x];
 				// Is the tile solid?
-				if(game.solidBg1Tiles.indexOf( thisTile ) == -1){
+				if(game.SHARED.solidBg1Tiles.indexOf( thisTile ) == -1){
 					// No? Clear flag and break.
 					completedLine=false;
 					break;
@@ -820,12 +820,8 @@ game.gs.PLAY = {
 				}
 				else{ console.log("ERROR!"); }
 
-				// BUG HERE???? PIECE CAN ROTATE EVEN IF IT SHOULD NOT???? vars.matrix_x, vars.matrix_y
 				let _x = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][0] * core.SETTINGS.TILE_WIDTH ) + ((3+vars.matrix_x  ) * core.SETTINGS.TILE_WIDTH  ); // x;
 				let _y = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][1] * core.SETTINGS.TILE_HEIGHT) + (  (vars.matrix_y-2) * core.SETTINGS.TILE_HEIGHT ); // y;
-
-				// (vars.currentMatrix[i][0] * core.SETTINGS.TILE_WIDTH)  + ((3+vars.matrix_x  ) * core.SETTINGS.TILE_WIDTH  ), // x
-				// (vars.currentMatrix[i][1] * core.SETTINGS.TILE_HEIGHT) + (  (vars.matrix_y-2) * core.SETTINGS.TILE_HEIGHT ), // y
 
 				checking_sprite = {
 					"x" : _x                        ,
@@ -865,7 +861,7 @@ game.gs.PLAY = {
 			// Perform the easier collision detection?
 			let bg_tileId = core.GRAPHICS.VRAM1[ (core.SETTINGS.VRAM_TILES_H * checking_bgtile.yT) + checking_bgtile.xT ];
 
-			if(fullOverlap && game.solidBg1Tiles.indexOf(bg_tileId) != -1){
+			if(fullOverlap && game.SHARED.solidBg1Tiles.indexOf(bg_tileId) != -1){
 				// We have an exact overlap. And the bg_tileId is a solid tile.
 				// The draw must be denied.
 

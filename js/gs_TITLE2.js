@@ -41,7 +41,7 @@ game.gs.TITLE2 = {
 			core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
 		}
 
-		core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);
+		core.GRAPHICS.FADER.FUNCS.FadeIn (2, true, false);
 		// core.GRAPHICS.FADER.FUNCS.FadeIn (game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 
 	},

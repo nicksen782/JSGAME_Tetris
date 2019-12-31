@@ -2,8 +2,8 @@
 	<!-- DEBUG NAVIGATION -->
 	<div id="DEBUG_DIV_MENU">
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_1',this);">CORE</div>
-		<div class="active debugPanelButtons" onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_2',this);">VID TESTS</div>
-		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_3',this);">GAME VARS</div>
+		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_2',this);">VID TESTS</div>
+		<div class="active debugPanelButtons" onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_3',this);">GAME VARS</div>
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_4',this);">GAME FUNCS</div>
 		<div class="debugPanelButtons"        onclick="game.DEBUG.NAV.debug_showPanel('DEBUG_MENU_DIV_5',this);">SOUND</div>
 
@@ -52,7 +52,7 @@
 					<tr>
 						<td>RESTARTS</td>
 						<td>
-							<button id="restartGamestate">GAMESTATE</button>
+							<button onclick="game.DEBUG.restartGamestate();">GAMESTATE</button>
 							<button onclick="game.game_full_restart();">WHOLE GAME</button>
 						</td>
 					</tr>
@@ -85,7 +85,7 @@
 
 		</div>
 
-		<div id="DEBUG_MENU_DIV_2" class="DEBUG_DIV_MENU_DIVS active">
+		<div id="DEBUG_MENU_DIV_2" class="DEBUG_DIV_MENU_DIVS">
 			<table class="debugTable2">
 				<caption>Test functions</caption>
 				<thead>
@@ -199,7 +199,7 @@
 			<br>
 		</div>
 
-		<div id="DEBUG_MENU_DIV_3" class="DEBUG_DIV_MENU_DIVS">
+		<div id="DEBUG_MENU_DIV_3" class="DEBUG_DIV_MENU_DIVS active">
 			<textarea contenteditable="false" spellcheck="false" readonly id="debug_gameVars"></textarea>
 			<br>
 

@@ -30,7 +30,6 @@ game.DEBUG.init = function(){
 	game.DEBUG.DOM["sprite_test1_off"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#sprite_test1_off");
 	game.DEBUG.DOM["sprite_test2_on"]    = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#sprite_test2_on");
 	game.DEBUG.DOM["sprite_test2_off"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#sprite_test2_off");
-	game.DEBUG.DOM["restartGamestate"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#restartGamestate");
 	game.DEBUG.DOM["debug_ClearVram1"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearVram1");
 	game.DEBUG.DOM["debug_ClearVram2"]   = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearVram2");
 	game.DEBUG.DOM["debug_ClearSprites"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_ClearSprites");
@@ -66,7 +65,6 @@ game.DEBUG.init = function(){
 	game.DEBUG.DOM["sprite_test2_on"] .addEventListener("click", function(){game.DEBUG.TESTS.timedTests(this.id);    }, false);
 	game.DEBUG.DOM["sprite_test2_off"].addEventListener("click", function(){game.DEBUG.TESTS.timedTests(this.id);    }, false);
 
-	game.DEBUG.DOM["restartGamestate"].addEventListener("click", function(){game.DEBUG.restartGamestate();           }, false);
 	game.DEBUG.DOM["debug_ClearVram1"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM1"); }, false);
 	game.DEBUG.DOM["debug_ClearVram2"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM2"); }, false);
 	game.DEBUG.DOM["debug_ClearSprites"].addEventListener("click", function(){core.FUNCS.graphics.clearSprites();    }, false);
@@ -85,10 +83,10 @@ game.DEBUG.init = function(){
 	// Allow activing or de-activating the debug functions.
 	game.DEBUG.DOM["debug_mode_chk"].addEventListener("change", function(){
 		// Change the debug flag per the checked value of the checkbox.
-		JSGAME.SHARED.debug = this.checked;
+		JSGAME.FLAGS.debug = this.checked;
 
 		// Adjust the DEBUG_DIV visibility.
-		if(JSGAME.SHARED.debug){
+		if(JSGAME.FLAGS.debug){
 			game.DEBUG.DOM["DEBUG_DIV"].classList.remove("notActive");
 			game.DEBUG.DOM["DEBUG_DIV"].classList.remove("noSelect");
 		}

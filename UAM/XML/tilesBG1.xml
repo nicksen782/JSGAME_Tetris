@@ -33,7 +33,7 @@
   <map var-name="boardborder_left" left="15" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_right" left="16" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="main_game" left="2" top="30" width="28" height="28" mapOutputTo="PROGMEM" /> 
-  <map var-name="setup_oneplayer" left="2" top="61" width="28" height="28" mapOutputTo="PROGMEM" /> 
+  <map var-name="setup_oneplayer" left="2" top="61" width="28" height="28" mapOutputTo="SKIPMAP" /> 
   <map var-name="title_tetris" left="2" top="92" width="26" height="12" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_flare_f1" left="36" top="3" width="7" height="5" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_flare_f2" left="36" top="9" width="7" height="5" mapOutputTo="PROGMEM" /> 

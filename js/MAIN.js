@@ -2,6 +2,322 @@
 
 // Will hold each individual game state.
 game.gs = {};
+game.SHARED = {
+	// These are the tiles that are considered "solid". (populated via populate.)
+	solidBg1Tiles : [],
+
+	populate : function(){
+		let populate_menuStyles = function(){
+			game.SHARED.menuStyle1 = {
+				"tiles":[
+					core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2], // index: 0
+					core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2], // index: 1
+					core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2], // index: 2
+					core.ASSETS.graphics.tilemaps[ "boardborder_bot"   ][2], // index: 3
+					core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2], // index: 4
+					core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2], // index: 5
+					core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2], // index: 6
+					core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2], // index: 7
+				],
+				"keys":{
+					"top"  :0, "topL" :1, "topR" :2,
+					"bot"  :3, "botL" :4, "botR" :5,
+					"left" :6, "right":7,
+				},
+			};
+		};
+		let populate_solidBg1Tiles = function(){
+			// Used to populate game.solidBgTiles.
+			let solidBg1Tilemaps = [
+				// Background Tetris pieces.
+				"T_bgtile"        , // 1 tile.
+				"J_bgtile"        , // 1 tile.
+				"Z_bgtile"        , // 1 tile.
+				"O_bgtile"        , // 1 tile.
+				"S_bgtile"        , // 1 tile.
+				"L_bgtile"        , // 1 tile.
+				"I_bgtile"        , // 1 tile.
+				"boardborder_ALL" , // 8 tiles.
+			];
+			let skipTheseTiles = [
+				core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
+			];
+			// Clear
+			game.solidBg1Tiles    = [];
+
+			// Set multi-tile tilemaps.
+			let len = solidBg1Tilemaps.length;
+			for(let i=0; i<len; i+=1){
+				let mapKey = solidBg1Tilemaps[i];
+				let map = core.ASSETS.graphics.tilemaps[ mapKey ];
+				let width  = map[0];
+				let height = map[1];
+				let numTiles = width*height;
+
+				// Populate game.solidBg1Tiles.
+				for(let ii=0; ii<numTiles; ii+=1){
+					let tileid = map[ii+2];
+
+					// Is this a skipped tile?
+					if(skipTheseTiles.indexOf(tileid) == -1){
+						// Is this a solid tile?
+						if(game.SHARED.solidBg1Tiles.indexOf(tileid) == -1){
+							// Add the tile to the list.
+							game.SHARED.solidBg1Tiles.push( tileid );
+						}
+					}
+				}
+			}
+
+			// console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
+
+		};
+
+		populate_solidBg1Tiles();
+		populate_menuStyles();
+
+		// *** MENU FUNCTIONS ***
+
+		// Get all the settings for the specified menu key.
+		game.SHARED.getMenuData = function(key, gs){
+			let vars  = gs.vars;
+
+			let menu           = vars.menus[key]                                              ;
+			let MENU           = menu.MENU                                                    ;
+			let mw             = MENU.mw                                                      ;
+			let mh             = MENU.mh                                                      ;
+			let mx             = MENU.mx                                                      ;
+			let my             = MENU.my                                                      ;
+			let menuKeys       = MENU.menu.keys                                               ;
+			let menuTiles      = MENU.menu.tiles                                              ;
+			let OPTIONS        = menu.OPTIONS                                                 ;
+			let CURSOR         = menu.CURSOR                                                  ;
+			let selectedIndex  = vars.menuSettings[key].option                                ;
+			let cursor_x       = (OPTIONS[ selectedIndex ].cx+mx) * core.SETTINGS.TILE_WIDTH  ;
+			let cursor_y       = (OPTIONS[ selectedIndex ].cy+my) * core.SETTINGS.TILE_HEIGHT ;
+			let cursor_tilemap = core.ASSETS.graphics.tilemaps[ CURSOR ]                      ;
+			let cursor_width   = cursor_tilemap[0]                                            ;
+			let cursor_height  = cursor_tilemap[1]                                            ;
+			let TITLE          = menu.TITLE                                                   ;
+			let title_text     = TITLE.text                                                   ;
+			let title_x        = TITLE.x                                                      ;
+			let title_y        = TITLE.y                                                      ;
+
+			return{
+				"key"            : key            ,
+				"menu"           : menu           ,
+				"MENU"           : MENU           ,
+				"mw"             : mw             ,
+				"mh"             : mh             ,
+				"mx"             : mx             ,
+				"my"             : my             ,
+				"menuKeys"       : menuKeys       ,
+				"menuTiles"      : menuTiles      ,
+				"OPTIONS"        : OPTIONS        ,
+				"CURSOR"         : CURSOR         ,
+				"selectedIndex"  : selectedIndex  ,
+				"cursor_x"       : cursor_x       ,
+				"cursor_y"       : cursor_y       ,
+				"cursor_tilemap" : cursor_tilemap ,
+				"cursor_width"   : cursor_width   ,
+				"cursor_height"  : cursor_height  ,
+				"TITLE"          : TITLE          ,
+				"title_text"     : title_text     ,
+				"title_x"        : title_x        ,
+				"title_y"        : title_y        ,
+			}
+		};
+		// Draws the menu box itself.
+		game.SHARED.drawMenu_box = function(mx, my, mw, mh, style, fillTile ){
+			let menuTiles = style.tiles;
+			let menuKeys  = style.keys;
+
+			// Fill it (inside)
+			if(fillTile != null){ core.FUNCS.graphics.Fill(mx, my, mw, mh, fillTile, "VRAM1"); }
+
+			// Draw it (borders)
+			for(let y=0; y<mh; y+=1){
+				for(let x=0; x<mw; x+=1){
+					let tileid;
+					let name;
+
+					if     (x==0    && y==0   ) { name = "topL"  ; } // "topL"
+					else if(x==mw-1 && y==0   ) { name = "topR"  ; } // "topR"
+					else if(           y==0   ) { name = "top"   ; } // "top"
+					else if(x==0    && y==mh-1) { name = "botL"  ; } // "botL"
+					else if(x==mw-1 && y==mh-1) { name = "botR"  ; } // "botR"
+					else if(           y==mh-1) { name = "bot"   ; } // "bot"
+					else if(x==0              ) { name = "left"  ; } // "left"
+					else if(x==mw-1           ) { name = "right" ; } // "right"
+					else                        { continue; }
+
+					tileid = menuTiles[ menuKeys[name] ];
+
+					if(tileid==undefined){
+						console.log("tileid was not defined.");
+						continue;
+					}
+
+					core.FUNCS.graphics.SetTile(x+mx, y+my, tileid, "VRAM1");
+				}
+			}
+
+		};
+		// Show/hide menu, text, and cursor.
+		game.SHARED.drawMenu = function(which, newState, gs){
+			let vars  = gs.vars;
+
+			let data = game.SHARED.getMenuData(which,gs);
+
+			if(newState=="ON") {
+				// Update the visibility flag for this menu.
+				vars.menu_visibility[which]=true;
+
+				let fillTile = vars.bg1_tile     ;
+
+				// Draw the menu box.
+				game.SHARED.drawMenu_box(
+					data.mx        ,
+					data.my        ,
+					data.mw        ,
+					data.mh        ,
+					data.MENU.menu ,
+					fillTile
+				);
+
+				// Print the title text.
+				core.FUNCS.graphics.Print(data.title_x+data.mx, data.title_y+data.my , data.title_text, "VRAM2");
+
+				// Print the options text.
+				for(let i2=0; i2<data.OPTIONS.length; i2+=1){
+					let option = data.OPTIONS[i2];
+					let text = option.text;
+					let tx   = option.tx + data.mx ;
+					let ty   = option.ty + data.my ;
+					core.FUNCS.graphics.Print(tx, ty , text, "VRAM2");
+				}
+
+				// Show the sprite for this menu.
+				game.SHARED.changeCursorState(which, newState, gs);
+			}
+			if(newState=="OFF"){
+				// Update the visibility flag for this menu.
+				vars.menu_visibility[which]=false;
+
+				// Which tile will we draw with?
+				let tileid = vars.empty_square;
+
+				// Clear this portion of VRAM1.
+				core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, tileid, "VRAM1");
+
+				// Clear this portion of VRAM2.
+				core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, 0     , "VRAM2");
+
+				// Hide the sprite for this menu.
+				game.SHARED.changeCursorState(which, newState, gs);
+			}
+			else{ return; }
+
+		},
+		// Does the initial menu draw (all menus.)
+		game.SHARED.drawMenus = function(gs){
+			let vars  = gs.vars;
+
+			// Make sure that menu_keys exists.
+			if(!vars.menu_keys){
+				// console.log("menu_keys was not defined.");
+				return;
+			}
+
+			// Draw the menus.
+			let spriteNum=0;
+			vars.currSprite_indexes = {};
+			for(let i=0; i<vars.menu_keys.length; i+=1){
+				// Get the core values.
+				let key            = vars.menu_keys[i];
+				let data = game.SHARED.getMenuData(key, gs);
+
+				// Set bank and also SPRITE_OFF.
+				let flags = core.CONSTS["SPRITE_OFF"] | core.CONSTS["SPRITE_BANK0"] ;
+
+				// Map/Move the sprites.
+				core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+				core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x+(data.mx*core.SETTINGS.TILE_WIDTH) , data.cursor_y+(data.my*core.SETTINGS.TILE_HEIGHT) , data.cursor_width, data.cursor_height );
+
+				// Set the cursor sprite numbers.
+				vars.currSprite_indexes[key]=spriteNum;
+				spriteNum+=(data.cursor_width*data.cursor_height);
+
+				// Draw the menu text.
+
+				if(vars.menu_visibility[data.key]==true){ game.SHARED.drawMenu(data.key, "ON" , gs ); }
+				else                                    { game.SHARED.drawMenu(data.key, "OFF", gs ); }
+			}
+
+
+		},
+		// Turns the highlighting for all menus off.
+		game.SHARED.blink_menus_allOff = function(gs){
+			let vars  = gs.vars;
+
+			// Force to off state (clears previous.)
+			let data;
+			let arrs = vars.menu_keys;
+			for(let i=0; i<arrs.length; i+=1){
+				let key = arrs[i];
+				data = game.SHARED.getMenuData(key,gs);
+
+				if(vars.menu_visibility[key]==true){
+					core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, vars.bg1_tile, "VRAM1");
+				}
+				else{
+				}
+			}
+		},
+		// Turns the highlighting for a specific menu either on or off.
+		game.SHARED.blink_menu = function( which, state, gs ){
+			let vars  = gs.vars;
+
+			// Force to off state (clears previous.)
+			game.SHARED.blink_menus_allOff(gs);
+
+			let tileid;
+
+			let data = game.SHARED.getMenuData(which,gs);
+
+			if     (state=="ON" ){ tileid = vars.bg2_tile; }
+			else if(state=="OFF"){ tileid = vars.bg1_tile; }
+
+			core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, tileid, "VRAM1");
+		},
+		// Show/hides the specified cursor.
+		game.SHARED.changeCursorState = function(which, newState, gs){
+			let vars  = gs.vars;
+
+			// Get the spriteNum, flags.
+			let spriteNum = vars.currSprite_indexes[which];
+			let flags;
+			try{
+				flags = core.GRAPHICS.sprites[spriteNum].flags;
+			}
+			catch(e){
+				console.log("Invalid sprite data.", which, newState, vars.currSprite_indexes);
+				return;
+			}
+
+			let data = game.SHARED.getMenuData(which,gs);
+
+			// Adjust flags.
+			if     (newState=="ON") { flags &= ~( core.CONSTS["SPRITE_OFF"] ); } // Clear the bit.
+			else if(newState=="OFF"){ flags |=  ( core.CONSTS["SPRITE_OFF"] ); } // Set the bit.
+			else                    { return; }
+
+			// Update the sprite.
+			core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+			core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x, data.cursor_y , data.cursor_width, data.cursor_height );
+		};
+	},
+};
 
 // Tetriminos Matrixes and rotations.
 game.pieces = {
@@ -52,20 +368,6 @@ game.pieces = {
 // Each piece when spawned has a default rotation index.
 game.pieces_spawnIndexes = { "T" : 2, "J" : 3, "Z" : 0, "O" : 0, "S" : 0, "L" : 1, "I" : 1, };
 
-// These are the tiles that are considered "solid".
-// populated by the game.firstLoop function.
-game.solidBg1Tiles    = [];
-
-// The game board is 22 by 10 where the top 2 rows are not visible.
-// Created by the game reset function.
-// game.playBoard=[];
-
-// Holds the button states for the game.
-// game.buttons = {
-// 	btnPrev1 : 0 , btnHeld1 : 0 , btnPressed1 : 0 , btnReleased1 : 0 ,
-// 	btnPrev2 : 0 , btnHeld2 : 0 , btnPressed2 : 0 , btnReleased2 : 0 ,
-// };
-
 // Will hold variables that are meant to be shared across the application.
 game.gamestate       = "" ;
 game.gamestate_prev  = "" ;
@@ -95,67 +397,8 @@ game.runOnce = function(){
 		// When the above promises have been completed...
 		Promise.all(proms1).then(
 			function(){
-				// POPULATE solidBg1Tiles.
-				let populate_solidBg1Tiles = function(){
-					// Used to populate game.solidBgTiles.
-					let solidBg1Tilemaps = [
-						// Background Tetris pieces.
-						"T_bgtile"        , // 1 tile.
-						"J_bgtile"        , // 1 tile.
-						"Z_bgtile"        , // 1 tile.
-						"O_bgtile"        , // 1 tile.
-						"S_bgtile"        , // 1 tile.
-						"L_bgtile"        , // 1 tile.
-						"I_bgtile"        , // 1 tile.
-						"boardborder_ALL" , // 8 tiles.
-					];
-					let skipTheseTiles = [
-
-						// core.ASSETS.graphics.tilemaps[ "boardborder_ALL"   ][2],
-						core.ASSETS.graphics.tilemaps[ "boardborder_top"   ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_topL"  ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_topR"  ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_bot"   ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_botL"  ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_botR"  ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_left"  ][2],
-						// core.ASSETS.graphics.tilemaps[ "boardborder_right" ][2],
-					];
-					// Clear
-					game.solidBg1Tiles    = [];
-
-					// Set multi-tile tilemaps.
-					let len = solidBg1Tilemaps.length;
-					for(let i=0; i<len; i+=1){
-						let mapKey = solidBg1Tilemaps[i];
-						let map = core.ASSETS.graphics.tilemaps[ mapKey ];
-						let width  = map[0];
-						let height = map[1];
-						let numTiles = width*height;
-
-						// Populate game.solidBg1Tiles.
-						for(let ii=0; ii<numTiles; ii+=1){
-							let tileid = map[ii+2];
-
-							// Is this a skipped tile?
-							if(skipTheseTiles.indexOf(tileid) == -1){
-								// Is this a solid tile?
-								if(game.solidBg1Tiles.indexOf(tileid) == -1){
-									// Add the tile to the list.
-									// console.log("Adding:", tileid);
-									game.solidBg1Tiles.push( tileid );
-								}
-							}
-							else{
-								// console.log("Skipping:", tileid);
-							}
-						}
-					}
-
-					// console.log("game.solidBg1Tiles:", game.solidBg1Tiles);
-
-				};
-				populate_solidBg1Tiles();
+				// Populate the SHARED data for the game.
+				game.SHARED.populate();
 
 				// Whole image graphics processors.
 				// core.EXTERNAL.GRAPHICS = game.graphicsPostProcessor_shake ;
@@ -168,11 +411,14 @@ game.runOnce = function(){
 				delete core.FUNCS.graphics.init ;
 				delete core.FUNCS.audio.init    ;
 
+				// Remove the population function since it is only needed once.
+				delete game.SHARED.populate;
+
 				// Remove these functions since they will not be needed again.
 				delete game.runOnce ;
 
 				// *** DEBUG ***
-				if(JSGAME.SHARED.debug && game.DEBUG.init){
+				if(JSGAME.FLAGS.debug && game.DEBUG.init){
 					//
 					game.DEBUG.init();
 
@@ -302,13 +548,15 @@ game.firstLoop = function(){
 	});
 };
 
-// *** SHARED GAME FUNCTIONS ***
+// *** GAME STATE FUNCTIONS ***
 
 // Updates game.gamestate and game.gamestate_prev.
 game.setGamestate1 = function(newState, prepare){
 	// Stop whatever might be running.
 	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
 	JSGAME.SHARED.raf_id=null;
+
+	// Start it again.
 	JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
 
 	// Save previous gamestate1
@@ -327,6 +575,8 @@ game.setGamestate2 = function(newState, prepare){
 	// Stop whatever might be running.
 	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
 	JSGAME.SHARED.raf_id=null;
+
+	// Start it again.
 	JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
 
 	// Save previous gamestate1
@@ -345,37 +595,30 @@ game.game_full_restart = function(){
 	// Stop whatever might be running.
 	window.cancelAnimationFrame( JSGAME.SHARED.raf_id );
 	JSGAME.SHARED.raf_id=null;
-	// JSGAME.SHARED.raf_id=requestAnimationFrame(game.gameloop);
 
 	// Blank the screen.
 	let outputCanvasCtx = core.GRAPHICS["ctx"].OUTPUT;
 	outputCanvasCtx.fillStyle = "#BB3";
 	outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
 
-	core.FUNCS.audio.stopAllSounds_midi();
-	core.FUNCS.audio.cancelAllSounds_mp3("all");
+	// Set the gameReady flag to false.
+	JSGAME.FLAGS.gameReady=false;
 
-	// Wait a short time for whatever may have been active before cancel.
 	setTimeout(function(){
-		game.firstLoop().then(
-			function(func){ func(); },
-			function(err) { console.log("ERR:", err); }
-		);
-	}, 500);
+		// Stop sounds.
+		core.FUNCS.audio.stopAllSounds_midi();
+		core.FUNCS.audio.cancelAllSounds_mp3("all");
 
-};
-// Clears gamestates and changes the game to the title screen.
-game.restart = function(){
-	// Clear gamestate variables.
-	game.gamestate       = "";
-	game.gamestate_prev  = "";
-	game.gamestate2      = "";
-	game.gamestate2_prev = "";
+		// Wait a short time for whatever may have been active before cancel.
+		setTimeout(function(){
+			game.firstLoop().then(
+				function(func){ func(); },
+				function(err) { console.log("ERR:", err); }
+			);
+			}, 125);
+		}, 125);
 
-	// Switch to the title screen.
-	game.setGamestate1("TITLE1", true);
-};
-
+	};
 
 // *** LOW-LEVEL GAME FUNCTIONS ***
 
@@ -383,20 +626,20 @@ game.restart = function(){
 game.loop = function(){
 	// Debug: Performance check.
 	let logic_start;
-	if(JSGAME.SHARED.debug){
+	if(JSGAME.FLAGS.debug){
 		logic_start=performance.now();
 		game.logic_timings.shift();
 	}
 
-
 	// Should the gameloop run or be skipped?
 	if(
-		JSGAME.FLAGS.windowIsFocused         && // Window in focus?
+		  JSGAME.FLAGS.windowIsFocused       && // Window in focus?
 		! core.GRAPHICS.flags.INLAYERUPDATE  && // Not in a graphics update?
 		! JSGAME.FLAGS.paused                && // Game NOT paused? (Automatic.)
 		! JSGAME.FLAGS.manuallyPaused        && // Game NOT paused? (By user.)
 		! core.GRAPHICS.FADER.blocking       && // Fader NOT set to block?
-		! core.GRAPHICS.FADER.blockAfterFade    // Fade done but set to block logic?
+		! core.GRAPHICS.FADER.blockAfterFade && // Fade done but set to block logic?
+		  JSGAME.FLAGS.gameReady                // Game is ready.
 	){
 		// *** Get inputs ***
 
@@ -409,20 +652,10 @@ game.loop = function(){
 	}
 	else{
 		// Game logic is paused.
-		// console.log(
-		// 	"Game logic is paused!",
-		// 	JSGAME.FLAGS.windowIsFocused         ,
-		// 	!core.GRAPHICS.flags.INLAYERUPDATE    ,
-		// 	!JSGAME.FLAGS.paused                  ,
-		// 	!JSGAME.FLAGS.manuallyPaused          ,
-		// 	!core.GRAPHICS.FADER.blocking         ,
-		// 	!core.GRAPHICS.FADER.blockAfterFade   ,
-		// 	""
-		// );
 	}
 
 	// Debug: Performance check.
-	if(JSGAME.SHARED.debug){
+	if(JSGAME.FLAGS.debug){
 		game.logic_timings.pop();
 		game.logic_timings.push(performance.now()-logic_start);
 	}
@@ -448,7 +681,7 @@ game.gameloop = function(timestamp){
 
 		JSGAME.SHARED.timing._then = JSGAME.SHARED.timing.now - (JSGAME.SHARED.timing.delta % JSGAME.SHARED.timing.interval);
 
-		// *** Update the effective average framerate. ***
+		// *** Update the effective average framerate. (Can be displayed to the user/debug.) ***
 
 		JSGAME.SHARED.fps.tick();
 
@@ -458,7 +691,7 @@ game.gameloop = function(timestamp){
 	else{
 		// *** DEBUG ***
 
-		if(JSGAME.SHARED.debug){
+		if(JSGAME.FLAGS.debug){
 			// Control how often the debug display is updated.
 			// NOTE: Time includes the last frame drawn.
 			let last                       = game.DEBUG.VALS.lastDebugDisplay           ;
@@ -493,3 +726,6 @@ game.stateManager = function(){
 		throw str + " " + game.gamestate;
 	}
 };
+
+// *** SHARED ***
+
