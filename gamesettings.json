@@ -29,6 +29,12 @@
 		"js/gs_TITLE2.js"
 	],
 
+	"debug_files": [
+		"DEBUG/debug.css",
+		"DEBUG/debug.js",
+		"DEBUG/debug.html"
+	],
+
 	"links":[
 		{ "text":"Instructions", "href":"links/instructions.txt"                     , "target":"_blank" },
 		{ "text":"Credits"     , "href":"links/credits.txt"                          , "target":"_blank" },
@@ -39,43 +45,43 @@
 		{ "key":"tick"     , "fileurl":"snd/tick.mp3"     , "type":"mp3_sfx", "names":["cursorTick1"] }
 	],
 
-	"midi_bin": "UAM/MUSIC/Tetris.txt",
+	"midi_bin": "UAM/MUSIC/tetris_midi.bin",
 
 	"midi_synths": {
 		"BGM1" : {
-			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":0 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":true
 		} ,
 		"BGM2" : {
-			"synthOptions": { "quality":1, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":1 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":false
 		} ,
 		"SFX1" : {
-			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":0 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":false
 		} ,
 		"SFX2" : {
-			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":0 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":false
 		} ,
 		"SFX3" : {
-			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":0 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":false
 		} ,
 		"SFX4" : {
-			"synthOptions": { "quality":0, "useReverb":false, "voices":16 },
+			"synthOptions": { "quality":0 , "useReverb":false, "voices":16 },
 			"options"     : { "loop":false, "masterVol":"" },
 			"used":false
 		}
 	},
 
 	"graphics_files": [
-		"UAM/PROGMEM/_min_combined_alltilegraphics.txt"
+		"UAM/PROGMEM/_min_combined_alltilegraphics.inc"
 	],
 
 	"graphics_conversionSettings": [
@@ -88,7 +94,7 @@
 	"numGamepads"       : 1     ,
 	"fps"               : 30    ,
 
-	"canvas_scaleFactor" : 2.3 ,
+	"canvas_scaleFactor" : 2.4 ,
 
 	"ENDOFFILE" : ""
 }

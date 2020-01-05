@@ -14,6 +14,9 @@ Helpful websites:
 * http://oopsilon.com/06/texts/tetris.html
 	A great breakdown of the game logic basics.
 
+* http://www.javascripter.net/games/index.htm
+	Helpful example of Tetris.
+
 TM AND C 1987
 V/O ELECTRONORGTECHNICA
 ("ELORG")

@@ -114,6 +114,13 @@ game.gs.PLAY = {
 		};
 
 		vars.instantDrop = false;
+
+		vars.paused = false;
+		vars.prev_vram1=[];
+		vars.prev_vram2=[];
+		vars.menuActive = false;
+
+		vars.blacktile    = core.ASSETS.graphics.tilemaps["blacktile"][2];
 	},
 	init : function(){
 		let gs    = this;
@@ -126,19 +133,10 @@ game.gs.PLAY = {
 		// Determine the first piece.
 		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
 
-		// Spawn the piece.
-		gs.spawnPiece( vars.nextPiece );
-
-		// Determine the next piece.
-		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
-
-		// Update the stats.
-		gs.updateStats();
+		gs.startNextTurn();
 
 		// Start the music!
-		if(game.gs.PLAY.temp.music){
-			core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 );
-		}
+		if(game.gs.PLAY.temp.music){ core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 ); }
 	},
 	//
 	main         : function(){
@@ -166,15 +164,32 @@ game.gs.PLAY = {
 
 		// Run.
 		if(vars.init){
-			// // Handle user-input: pause (start).
-			// if     ( game.chkBtn("BTN_START"     , "btnPressed1") ){ console.log("START"); }
-
-			// // Handle user-input: menu (select).
-			// if     ( game.chkBtn("BTN_SELECT"     , "btnPressed1") ){ console.log("SELECT"); }
-
 			if(0){
 			}
 			else {
+				// Is the pause active?
+				if(vars.paused){
+					if( game.chkBtn("BTN_START"    , "btnPressed1") ){
+						// Restore previous VRAMs.
+						core.FUNCS.graphics.DrawMap2(0, 0, vars.prev_vram1, "VRAM1");
+						core.FUNCS.graphics.DrawMap2(0, 0, vars.prev_vram2, "VRAM2");
+
+						vars.currSprite_indexes.forEach(function(d){
+							let flags = JSGAME.SHARED.apply_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 0);
+							core.FUNCS.graphics.changeSpriteFlags(d, flags);
+						});
+						core.GRAPHICS.flags.SPRITE=true;
+
+						// Clear the paused flag.
+						vars.paused=false;
+
+						// Resume the music.
+						if(game.gs.PLAY.temp.music){ core.FUNCS.audio.resume_midi( "BGM1"); }
+						return;
+					}
+					return;
+				}
+
 				// Is a piece in the process of being removed?
 				if(vars.linesBeingCleared){
 					// Ready for the next animation?
@@ -188,9 +203,10 @@ game.gs.PLAY = {
 
 							// Draw the new field.
 							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.new );
+
+							gs.startNextTurn();
 						}
 						else{
-							// if(vars.linesBeingCleared_flashesCnt%2==0 && vars.linesBeingCleared_flashesCnt !=0){
 							if(vars.linesBeingCleared_flashesCnt%2==0){
 								core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.adj );
 							}
@@ -241,17 +257,12 @@ game.gs.PLAY = {
 							core.FUNCS.graphics.clearSprites();
 
 							// Detect completed lines!
-							gs.detectCompletedLines();
+							let linesCleared = gs.detectCompletedLines();
 
-							// Determine the next piece.
-							// let newIndex = game.getRandomInt_inRange(0, vars.validPieces.length-1) ;
-
-							// Spawn a piece.
-							gs.spawnPiece( vars.nextPiece );
-
-							// Set the next piece.
-							vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
-							gs.updateNextPiece();
+							// Spawn the next piece right away if no lines were cleared.
+							if(!linesCleared){
+								gs.startNextTurn();
+							}
 						}
 					}
 				}
@@ -260,12 +271,49 @@ game.gs.PLAY = {
 					vars.dropSpeed_cnt  += 1;
 				}
 
+				// Pause?
+				if     ( game.chkBtn("BTN_START"    , "btnPressed1") ){
+					// Copy VRAM1 and VRAM2.
+					vars.prev_vram1 = core.FUNCS.graphics.vramRegionToTilemap(0,0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, "VRAM1");
+					vars.prev_vram2 = core.FUNCS.graphics.vramRegionToTilemap(0,0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, "VRAM2");
+
+					// Clear VRAM1 and VRAM2.
+					core.FUNCS.graphics.Fill(0,0,core.SETTINGS.VRAM_TILES_H,core.SETTINGS.VRAM_TILES_V, vars.blacktile, "VRAM1");
+					core.FUNCS.graphics.Fill(0,0,core.SETTINGS.VRAM_TILES_H,core.SETTINGS.VRAM_TILES_V, vars.blacktile, "VRAM2");
+
+					// Draw the pause text.
+					let text = "-- PAUSED --";
+					let x    = (core.SETTINGS.VRAM_TILES_H/2)-text.length+(text.length/2);
+					let y    = (core.SETTINGS.VRAM_TILES_V/2)-1;
+					game.SHARED.drawMenu_box(x-2, y-2, 16, 5, game.SHARED.menuStyle1, vars.blacktile);
+					core.FUNCS.graphics.Print(x, y, text, "VRAM2");
+
+					// Turn off the active sprites.
+					vars.currSprite_indexes.forEach(function(d){
+						let flags = JSGAME.SHARED.apply_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 1);
+						core.FUNCS.graphics.changeSpriteFlags(d, flags);
+					});
+					core.GRAPHICS.flags.SPRITE=true;
+
+					// Set the paused flag.
+					vars.paused=true;
+
+					// Pause the music.
+					core.FUNCS.audio.stop_midi("BGM1", false);
+					return;
+				}
+				// Menu?
+				else if( game.chkBtn("BTN_SELECT"    , "btnPressed1") ){
+					// vars.menuActive=true;
+				}
+
 				// Instant drop?
-				if     ( game.chkBtn("BTN_UP"    , "btnPressed1") ){
+				else if( game.chkBtn("BTN_UP"    , "btnPressed1") ){
 					core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0);
 					vars.instantDrop=true;
 					vars.dropSpeed_cnt=0;
 					vars.inputSpeed_cnt=0;
+					return;
 				}
 				// Move the piece DOWN, LEFT, or RIGHT?
 				else if(vars.inputSpeed_cnt >= vars.inputSpeed){
@@ -308,7 +356,20 @@ game.gs.PLAY = {
 	},
 
 	// WORKING
+	startNextTurn : function(){
+		let gs    = this;
+		let vars  = gs.vars;
 
+		// Spawn a piece.
+		gs.spawnPiece( vars.nextPiece );
+
+		// Set the next piece.
+		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+		gs.updateNextPiece();
+
+		// Update the stats.
+		gs.updateStats();
+	},
 	//
 	convert2dTo1d         : function(arr){
 		let new_arr = [];
@@ -333,12 +394,19 @@ game.gs.PLAY = {
 		// Copy the VRAM block into the field.
 		for(let y=y_lines.length-1; y>=0; y-=1){
 			// Create the row (blank.)
-			let newRow=[];
 
+			// OLD WAY
+			// let newRow=[];
 			// Populate the row from VRAM data.
-			for(let x=0; x<x_lines.length; x+=1){
-				newRow.push( core.GRAPHICS.VRAM1[ ( ( y_lines[y] ) * core.SETTINGS.VRAM_TILES_H) + ( x_lines[x] ) ] );
-			}
+			// for(let x=0; x<x_lines.length; x+=1){
+			// 	newRow.push( core.GRAPHICS.VRAM1[ ( ( y_lines[y] ) * core.SETTINGS.VRAM_TILES_H) + ( x_lines[x] ) ] );
+			// }
+
+			// NEW WAY
+			let newRow = core.FUNCS.graphics.vramRegionToTilemap(x_lines[0], y_lines[y], x_lines.length, 1, "VRAM1");
+			// Remove the indexes containing width and height since they are not needed.
+			newRow.shift();
+			newRow.shift();
 
 			// Add the completed row.
 			field.push(newRow);
@@ -453,7 +521,10 @@ game.gs.PLAY = {
 			vars.linesBeingCleared_flashesCnt = 0;
 			vars.linesBeingCleared_cnt        = 0;
 			vars.linesBeingCleared_cnt = vars.linesBeingCleared_speed;
+
+			return linesCleared;
 		}
+		else { return 0; }
 	},
 	// Updates ALL stats (convenience function.)
 	updateStats           : function(){
@@ -485,7 +556,7 @@ game.gs.PLAY = {
 		core.FUNCS.graphics.Print(15, 19, str, "VRAM2");
 	},
 	//
-	updateType       : function(){
+	updateType            : function(){
 		let gs    = this;
 		let vars  = gs.vars;
 
@@ -845,21 +916,22 @@ game.gs.PLAY = {
 			// Determine the x, y for the bg tile based on the checking_sprite.
 			let checking_bgtile = {
 				// Get the pixel coords for the tile.
-				"x" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ) * core.SETTINGS.TILE_WIDTH , 10),
-				"y" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT) * core.SETTINGS.TILE_HEIGHT, 10),
+				"x" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ) * core.SETTINGS.TILE_WIDTH , 10) ,
+				"y" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT) * core.SETTINGS.TILE_HEIGHT, 10) ,
 
 				// Get the tile grid coords for the tile.
-				"xT" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ), 10),
-				"yT" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT), 10),
+				"xT" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ), 10) ,
+				"yT" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT), 10) ,
 
-				"w" : core.SETTINGS.TILE_WIDTH                             ,
-				"h" : core.SETTINGS.TILE_HEIGHT                            ,
+				"w" : core.SETTINGS.TILE_WIDTH  ,
+				"h" : core.SETTINGS.TILE_HEIGHT ,
 			};
 
 			let fullOverlap = ( (checking_sprite.x == checking_bgtile.x) && (checking_sprite.y == checking_bgtile.y) ? true : false );
 
 			// Perform the easier collision detection?
-			let bg_tileId = core.GRAPHICS.VRAM1[ (core.SETTINGS.VRAM_TILES_H * checking_bgtile.yT) + checking_bgtile.xT ];
+			// let bg_tileId = core.GRAPHICS.VRAM1[ (core.SETTINGS.VRAM_TILES_H * checking_bgtile.yT) + checking_bgtile.xT ];
+			let bg_tileId = core.FUNCS.graphics.GetTile(checking_bgtile.xT, checking_bgtile.yT, "VRAM1");
 
 			if(fullOverlap && game.SHARED.solidBg1Tiles.indexOf(bg_tileId) != -1){
 				// We have an exact overlap. And the bg_tileId is a solid tile.
@@ -885,24 +957,12 @@ game.gs.PLAY = {
 
 		// Draw the matrix.
 		let spriteNum=0;
-		// core.FUNCS.graphics.MapSprite2(
-		// 	spriteNum,
-		// 	core.ASSETS.graphics.tilemaps["TESTMATRIX5_5"] ,
-		// 	0 | core.CONSTS["SPRITE_BANK0"]
-		// );
-		// core.FUNCS.graphics.MoveSprite(
-		// 	spriteNum,
-		// 	((vars.matrix_x+3) * core.SETTINGS.TILE_WIDTH  ), // x
-		// 	((vars.matrix_y-2) * core.SETTINGS.TILE_HEIGHT ), // y
-		// 	core.ASSETS.graphics.tilemaps["TESTMATRIX5_5"][0],
-		// 	core.ASSETS.graphics.tilemaps["TESTMATRIX5_5"][1]
-		// );
-		// spriteNum+=(5*5);
 
 		vars.currSprite_indexes = [];
 
 		// Draw 4 sprites (each block always has 4 sprites.)
 		for(let i=0; i<4; i+=1){
+
 			core.FUNCS.graphics.MapSprite2(
 				spriteNum,
 				core.ASSETS.graphics.tilemaps[vars.currentMap],
@@ -918,6 +978,7 @@ game.gs.PLAY = {
 			);
 
 			vars.currSprite_indexes.push(spriteNum);
+
 			spriteNum+=1;
 		}
 

@@ -6,6 +6,8 @@
  <maps pointers-size="8">
   <map var-name="fonts1" left="1" top="11" width="16" height="4" mapOutputTo="PROGMEM" /> 
   <map var-name="fonts2" left="1" top="7" width="16" height="4" mapOutputTo="PROGMEM" /> 
+  <map var-name="fonts3" left="1" top="15" width="16" height="4" mapOutputTo="PROGMEM" /> 
+  <map var-name="fonts4" left="1" top="19" width="16" height="4" mapOutputTo="PROGMEM" /> 
  </maps> 
  </output> 
 </gfx-xform> 

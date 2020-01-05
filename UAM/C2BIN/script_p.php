@@ -9,7 +9,7 @@ $filesIn=[
 ];
 
 // Combined, minimized, output file.
-$combinedFile2 = "../PROGMEM/_min_combined_alltilegraphics.txt";
+$combinedFile2 = "../PROGMEM/_min_combined_alltilegraphics.inc";
 
 // Make sure that the input files all exist.
 for($i=0; $i<sizeof($filesIn) ; $i+=1){

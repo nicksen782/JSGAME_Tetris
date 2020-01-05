@@ -310,8 +310,7 @@ game.DEBUG.spriteStressTest1 = function(){
 	// Map sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		let flags =  game.getRandomInt_inRange(0, flags_arr.length-1) ;
-		// core.FUNCS.graphics.MapSprite2( i , tilemap, flags );
-		core.FUNCS.graphics.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags );
+		core.FUNCS.graphics.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags);
 	}
 
 	// Move sprites.
@@ -346,7 +345,6 @@ game.DEBUG.spriteStressTest2 = function(){
 	// Map sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		let flags =  game.getRandomInt_inRange(0, flags_arr.length-1) ;
-		// core.FUNCS.graphics.MapSprite2( i , tilemap, flags );
 		core.FUNCS.graphics.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags );
 	}
 

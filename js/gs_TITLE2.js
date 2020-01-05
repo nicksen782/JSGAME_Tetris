@@ -66,7 +66,11 @@ game.gs.TITLE2 = {
 		// Run.
 		if(vars.init){
 			// Dismiss this screen when the user presses start.
-			if( game.chkBtn("BTN_START" , "btnPressed1") ){
+			if(
+				game.chkBtn("BTN_START" , "btnPressed1")
+				||
+				game.chkBtn("BTN_A"    , "btnPressed1")
+			){
 				game.setGamestate1("SETUP1", true);
 				vars.END = true;
 			}

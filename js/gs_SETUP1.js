@@ -135,7 +135,6 @@ game.gs.SETUP1 = {
 				else if( game.chkBtn("BTN_B"    , "btnPressed1") ){ gs.show_mainMenu(); }
 			}
 
-
 		}
 	},
 
@@ -286,7 +285,8 @@ game.gs.SETUP1 = {
 		core.FUNCS.graphics.ClearVram();
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		// game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.blacktile);
 
 		// Draw the main menu title and box.
 		vars.currentScreen="highScores";
@@ -296,10 +296,100 @@ game.gs.SETUP1 = {
 		let text_mainmenu = "- HIGH  SCORES -";
 		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
-		let str="NOT READY YET!";
-		let x=core.SETTINGS.VRAM_TILES_H - str.length - (str.length/2);
-		let y=(core.SETTINGS.VRAM_TILES_H/2);
-		core.FUNCS.graphics.Print(x, y, str, "VRAM2");
+		// Display the loading indicator.
+		let str="...LOADING";
+		let loading_x=((core.SETTINGS.VRAM_TILES_H-1) - str.length) ;
+		let loading_y=((core.SETTINGS.VRAM_TILES_V-2));
+		core.FUNCS.graphics.Print(loading_x, loading_y, str, "VRAM2");
+
+		// Get the high scores.
+		let prom = gs.getHighScores();
+
+		// Display the high scores.
+		prom.then(
+			function(res){
+				// Clear the loading indicator.
+				core.FUNCS.graphics.Print(loading_x, loading_y, "          ", "VRAM2");
+
+				// Update the display.
+				let maxRecordsToDisplay=6;
+				let startX=2;
+				let startY=5;
+				let y=0;
+				recsDisplayed=0;
+
+				// If still on the high scores screen.
+				if(vars.currentScreen=="highScores"){
+					// Type A.
+					core.FUNCS.graphics.Print_multiFont(
+						startX+0, startY+y,
+						{
+							"text"  : "=======[ TYPE A ]=======" ,
+							"font"  : "222222220000000022222222".split("").map(function(d){ return parseInt(d,10); }) ,
+							"fonts" : [ "fonts1", "fonts2", "fonts3", "fonts4" ]
+						},
+						"VRAM2"
+					);
+					y+=1;
+
+					core.FUNCS.graphics.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
+					core.FUNCS.graphics.Print(startX   , startY+y, "========================", "VRAM2", "fonts3"); y+=1;
+					y+=1;
+					res.type_a.forEach(function(d){
+						if(recsDisplayed >= maxRecordsToDisplay){ return; }
+						let text = "" +
+							(d.name            ).padEnd  (8," ") + " " +
+							(d.score.toString()).padStart(6," ") + " " + " " +
+							(d.lines.toString()).padEnd  (4," ") + " " +
+							(d.level.toString()).padStart(2," ") + " " +
+							""
+						;
+						core.FUNCS.graphics.Print(startX, startY+y, text, "VRAM2");
+						y+=1;
+						recsDisplayed+=1;
+					});
+
+					// Type B.
+					recsDisplayed=0;
+					y+=1;
+					y+=1;
+					core.FUNCS.graphics.Print_multiFont(
+						startX+0, startY+y,
+						{
+							"text"  : "=======[ TYPE B ]=======" ,
+							"font"  : "333333330000000033333333".split("").map(function(d){ return parseInt(d,10); }) ,
+							"fonts" : [ "fonts1", "fonts2", "fonts3", "fonts4" ]
+						},
+						"VRAM2"
+					);
+					y+=1;
+					core.FUNCS.graphics.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
+					core.FUNCS.graphics.Print(startX   , startY+y, "========================", "VRAM2", "fonts4"); y+=1;
+					y+=1;
+
+					res.type_b.forEach(function(d){
+						if(recsDisplayed >= maxRecordsToDisplay){ return; }
+						let text = "" +
+							(d.name            ).padEnd  (8," ") + " " +
+							(d.score.toString()).padStart(6," ") + " " + " " +
+							(d.lines.toString()).padEnd  (4," ") + " " +
+							(d.level.toString()).padStart(2," ") + " " +
+							""
+						;
+						core.FUNCS.graphics.Print(startX, startY+y, text, "VRAM2");
+						y+=1;
+						recsDisplayed+=1;
+					});
+				}
+
+				// If not on the high scores screen anymore.
+				else{
+					console.log("The wrong sub-screen is currently active.");
+					return;
+				}
+			},
+			function(err){ console.log("err:", err); }
+		);
 	},
 	//
 	show_credits(){
@@ -360,6 +450,27 @@ game.gs.SETUP1 = {
 		game.setGamestate1("SETUP2", true); // Setup screen 2
 		vars.END = true;
 		return;
+	},
+
+	getHighScores(){
+		let gs   = this;
+		let vars = gs.vars;
+
+		return new Promise(function(res,rej){
+			// Ask the server for the high scores JSON file.
+			let relative_gamedir = JSGAME.PRELOAD.PHP_VARS.relative_gamedir ;
+			let url              = relative_gamedir+"/"+"highscores.json" ;
+			let useGzip          = true ;
+			let responseType     = "json" ;
+
+			let prom = JSGAME.SHARED.getFile_fromUrl(url, useGzip, responseType);
+
+			prom.then(
+				function(data){ res(data); },
+				function(err){ console.log("err:", err); }
+			)
+
+		});
 	},
 
 	// Used when the cursor moves within a menu.
