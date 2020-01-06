@@ -74,7 +74,7 @@ game.gs.SETUP2 = {
 		//
 		vars.menuSettings = {
 			"game"  : {"option":0, "len":vars.menus["game"]  .OPTIONS.length},
-			"music" : {"option":2, "len":vars.menus["music"] .OPTIONS.length},
+			"music" : {"option":1, "len":vars.menus["music"] .OPTIONS.length},
 			"level" : {"option":0, "len":vars.menus["level"] .OPTIONS.length},
 			"height": {"option":0, "len":vars.menus["height"].OPTIONS.length},
 		};
@@ -108,7 +108,7 @@ game.gs.SETUP2 = {
 		vars.configComplete=false;
 
 		// Blink speed/delay
-		vars.blinkState=false;
+		vars.blinkState     = false;
 		vars.blinkSpeed     = game.secondsToFrames(0.50);
 		vars.blinkSpeed_cnt = 0 ;
 	},
@@ -262,6 +262,9 @@ game.gs.SETUP2 = {
 
 		// Start game!
 		if(game.gs.PLAY.temp.type=="A"){
+			// Set height.
+			game.gs.PLAY.temp.height = 0 ;
+
 			// Start Type A.
 			game.setGamestate1("PLAY", true);
 		}

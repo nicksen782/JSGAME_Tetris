@@ -8,9 +8,13 @@ game.gs.TEMPLATE = {
 	vars         : {
 	},
 	//
+	consts       : {
+	},
+	//
 	prepareState : function(){
-		let gs   = this;
-		let vars = gs.vars;
+		let gs     = this;
+		let vars   = gs.vars;
+		let consts = gs.consts;
 
 		vars.init=false;
 		core.FUNCS.graphics.clearSprites();
@@ -46,5 +50,6 @@ game.gs.TEMPLATE = {
 	EXAMPLE : function( VALUE ){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 	},
 };

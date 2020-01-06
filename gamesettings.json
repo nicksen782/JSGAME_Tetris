@@ -6,6 +6,7 @@
 	"VRAM_TILES_V"      : 28    ,
 	"RAM_TILES_COUNT"   : 0     ,
 	"INTRO_LOGO"        : 1     ,
+	"VRAM_ADDR_SIZE"    : 1     ,
 
 	"custom_videokernel" : false,
 	"custom_soundkernel" : false,

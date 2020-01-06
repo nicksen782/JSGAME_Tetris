@@ -483,13 +483,56 @@ game.DEBUG.updateDebugDisplay_funcs = {
 	},
 	// Update the textarea with the gamestate variables/values.
 	vars_display : function(){
-		let keys = Object.keys(game.gs[game.gamestate].vars);
-		let newText = "";
-		keys.forEach(function(d){
-			let key = d.padEnd(20, " ");
-			newText+=key+" ::: "+JSON.stringify(game.gs[game.gamestate].vars[d],null,0) + "\n";
-		});
-		game.DEBUG.DOM["debug_gameVars"].innerHTML="GAMESTATE: " + game.gamestate + "\n\n" + newText;
+		game.DEBUG.DOM["debug_gameVars"].innerHTML="";
+		game.DEBUG.DOM["debug_gameVars"].innerHTML="GAMESTATE: " + game.gamestate + "\n" + "";
+		let keys;
+		let newText="";
+
+		// VARS
+		try{ keys = Object.keys(game.gs[game.gamestate].vars); } catch(e){ keys = [];}
+		if(keys.length){
+			newText = "";
+			newText = "\n";
+			newText += "-----------\n";
+			newText += "[ GS VARS ]\n";
+			newText += "-----------\n";
+			keys.forEach(function(d){
+				let key = d.padEnd(20, " ");
+				newText+=key+" ::: "+JSON.stringify(game.gs[game.gamestate].vars[d],null,0) + "\n";
+			});
+			game.DEBUG.DOM["debug_gameVars"].innerHTML+= newText;
+		}
+
+		// CONSTS
+		try{ keys = Object.keys(game.gs[game.gamestate].consts); } catch(e){ keys = [];}
+		if(keys.length){
+			newText = "";
+			newText = "\n";
+			newText += "-------------\n";
+			newText += "[ GS CONSTS ]\n";
+			newText += "-------------\n";
+			keys.forEach(function(d){
+				let key = d.padEnd(20, " ");
+				newText+=key+" ::: "+JSON.stringify(game.gs[game.gamestate].consts[d],null,0) + "\n";
+			});
+			game.DEBUG.DOM["debug_gameVars"].innerHTML+= newText;
+		}
+
+		// TEMP
+		try{ keys = Object.keys(game.gs[game.gamestate].temp); } catch(e){ keys = [];}
+		if(keys.length){
+			newText = "";
+			newText = "\n";
+			newText += "-----------\n";
+			newText += "[ GS TEMP ]\n";
+			newText += "-----------\n";
+			keys.forEach(function(d){
+				let key = d.padEnd(20, " ");
+				newText+=key+" ::: "+JSON.stringify(game.gs[game.gamestate].temp[d],null,0) + "\n";
+			});
+			game.DEBUG.DOM["debug_gameVars"].innerHTML+= newText;
+		}
+
 	},
 };
 // Called periodically to update the displayed debug information.

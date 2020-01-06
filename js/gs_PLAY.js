@@ -6,57 +6,62 @@ game.gs.PLAY = {
 	vars         : {
 	},
 	//
+	consts       : {
+	},
+	//
 	prepareState : function(){
-		let gs   = this;
-		let vars = gs.vars;
+		let gs     = this;
+		let vars   = gs.vars;
+		let consts = gs.consts;
+
 		vars.init=false;
 		core.FUNCS.graphics.clearSprites();
 		core.FUNCS.graphics.ClearVram();
 
 		// Constants.
-		vars.min_x_tile  = 2  ;
-		vars.min_y_tile  = 4  ;
-		vars.max_y_tile  = 4  ; // This is the first playgrid row.
+		consts.min_x_tile  = 2  ;
+		consts.min_y_tile  = 4  ;
+		consts.max_y_tile  = 4  ; // This is the first playgrid row.
 
 		// X values within the game play grid.
-		vars.x_lines = [
-			(0+vars.min_x_tile),
-			(1+vars.min_x_tile),
-			(2+vars.min_x_tile),
-			(3+vars.min_x_tile),
-			(4+vars.min_x_tile),
-			(5+vars.min_x_tile),
-			(6+vars.min_x_tile),
-			(7+vars.min_x_tile),
-			(8+vars.min_x_tile),
-			(9+vars.min_x_tile),
+		consts.x_lines = [
+			(0+consts.min_x_tile),
+			(1+consts.min_x_tile),
+			(2+consts.min_x_tile),
+			(3+consts.min_x_tile),
+			(4+consts.min_x_tile),
+			(5+consts.min_x_tile),
+			(6+consts.min_x_tile),
+			(7+consts.min_x_tile),
+			(8+consts.min_x_tile),
+			(9+consts.min_x_tile),
 		];
 		// Y values within the game play grid.
-		vars.y_lines = [
-			(19+vars.min_y_tile),
-			(18+vars.min_y_tile),
-			(17+vars.min_y_tile),
-			(16+vars.min_y_tile),
-			(15+vars.min_y_tile),
-			(14+vars.min_y_tile),
-			(13+vars.min_y_tile),
-			(12+vars.min_y_tile),
-			(11+vars.min_y_tile),
-			(10+vars.min_y_tile),
-			(9+vars.min_y_tile),
-			(8+vars.min_y_tile),
-			(7+vars.min_y_tile),
-			(6+vars.min_y_tile),
-			(5+vars.min_y_tile),
-			(4+vars.min_y_tile),
-			(3+vars.min_y_tile),
-			(2+vars.min_y_tile),
-			(1+vars.min_y_tile),
-			(0+vars.min_y_tile),
+		consts.y_lines = [
+			(19+consts.min_y_tile),
+			(18+consts.min_y_tile),
+			(17+consts.min_y_tile),
+			(16+consts.min_y_tile),
+			(15+consts.min_y_tile),
+			(14+consts.min_y_tile),
+			(13+consts.min_y_tile),
+			(12+consts.min_y_tile),
+			(11+consts.min_y_tile),
+			(10+consts.min_y_tile),
+			(9+consts.min_y_tile),
+			(8+consts.min_y_tile),
+			(7+consts.min_y_tile),
+			(6+consts.min_y_tile),
+			(5+consts.min_y_tile),
+			(4+consts.min_y_tile),
+			(3+consts.min_y_tile),
+			(2+consts.min_y_tile),
+			(1+consts.min_y_tile),
+			(0+consts.min_y_tile),
 		];
 
 		// Variables.
-		vars.dropSpeeds         = [
+		consts.dropSpeeds  = [
 			game.secondsToFrames(1.00) , // 0
 			game.secondsToFrames(0.90) , // 1
 			game.secondsToFrames(0.80) , // 2
@@ -69,17 +74,17 @@ game.gs.PLAY = {
 			game.secondsToFrames(0.15) , // 9
 			// game.secondsToFrames(0.05) , // 10 // This was too fast and blocked user input.
 		];
-		vars.validPieces = ["T"  ,"J"  ,"Z"  ,"O"  ,"S"  ,"L"  ,"I"];
+		consts.validPieces = ["T"  ,"J"  ,"Z"  ,"O"  ,"S"  ,"L"  ,"I"];
 
 		vars.pieceCounts = {"T":0,"J":0,"Z":0,"O":0,"S":0,"L":0,"I":0};
 
 		// Drop speed/delay
-		vars.dropSpeedIndex     = gs.temp.dropSpeedIndex ;
-		vars.dropSpeed          = vars.dropSpeeds[ vars.dropSpeedIndex ] ;
-		vars.dropSpeed_cnt      = 0                               ;
+		vars.dropSpeedIndex = gs.temp.dropSpeedIndex ;
+		vars.dropSpeed      = consts.dropSpeeds[ vars.dropSpeedIndex ] ;
+		vars.dropSpeed_cnt  = 0                               ;
 
 		// Input speed/delay
-		vars.inputSpeed     = game.secondsToFrames(0.10);
+		consts.inputSpeed   = game.secondsToFrames(0.10);
 		vars.inputSpeed_cnt = 0 ;
 
 		vars.END                = false           ;
@@ -89,8 +94,8 @@ game.gs.PLAY = {
 		vars.currentMap         = ""              ;
 		vars.gameOver           = false           ;
 		vars.rotationIndex      = 0               ;
-		vars.matrix_x           = vars.min_x_tile ; // Position of the falling piece.
-		vars.matrix_y           = vars.min_y_tile ; // Position of the falling piece.
+		vars.matrix_x           = consts.min_x_tile ; // Position of the falling piece.
+		vars.matrix_y           = consts.min_y_tile ; // Position of the falling piece.
 
 		vars.nextPiece ; // Next piece.
 
@@ -101,11 +106,11 @@ game.gs.PLAY = {
 		vars.type  = gs.temp.type;
 
 		// Line clearing.
-		vars.linesBeingCleared            = false;
-		vars.linesBeingCleared_speed      = game.secondsToFrames(0.075);
-		vars.linesBeingCleared_flashes    = 5;
-		vars.linesBeingCleared_flashesCnt = 0;
-		vars.linesBeingCleared_cnt        = 0;
+		vars.linesCleared           = false;
+		consts.linesCleared_speed   = game.secondsToFrames(0.075);
+		consts.linesCleared_flashes = 5;
+		vars.linesCleared_f_Cnt     = 0;
+		vars.linesCleared_cnt       = 0;
 
 		vars.field = {
 			"org" : [] , // Before line clear.
@@ -120,20 +125,26 @@ game.gs.PLAY = {
 		vars.prev_vram2=[];
 		vars.menuActive = false;
 
+		vars.nextPiece = "";
+
 		vars.blacktile    = core.ASSETS.graphics.tilemaps["blacktile"][2];
 	},
 	init : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		core.FUNCS.graphics.ClearVram();
 
 		core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["main_game"], "VRAM1"); // PLAY
 
 		// Determine the first piece.
-		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+		vars.nextPiece = consts.validPieces[ game.getRandomInt_inRange(0, consts.validPieces.length-1) ];
 
+		// gs.updatePieceCounts(vars.currentPiece);
 		gs.startNextTurn();
+
+		gs.clearPieceCounts();
 
 		// Start the music!
 		if(game.gs.PLAY.temp.music){ core.FUNCS.audio.play_midi  ( "BGM1", gs.temp.music, true, 1.0 ); }
@@ -142,6 +153,7 @@ game.gs.PLAY = {
 	main         : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Don't run if we are done.
 		if(vars.END){
@@ -191,36 +203,37 @@ game.gs.PLAY = {
 				}
 
 				// Is a piece in the process of being removed?
-				if(vars.linesBeingCleared){
+				if(vars.linesCleared){
 					// Ready for the next animation?
-					if(vars.linesBeingCleared_cnt >= vars.linesBeingCleared_speed){
-						vars.linesBeingCleared_cnt  = 0;
+					if(vars.linesCleared_cnt >= consts.linesCleared_speed){
+						vars.linesCleared_cnt  = 0;
 
 						// Flashed enough times? Stop the animation.
-						if(vars.linesBeingCleared_flashesCnt >= vars.linesBeingCleared_flashes){
+						if(vars.linesCleared_f_Cnt >= consts.linesCleared_flashes){
 							// Clear the flag.
-							vars.linesBeingCleared=false;
+							vars.linesCleared=false;
 
 							// Draw the new field.
-							core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.new );
+							core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.new );
 
+							gs.updatePieceCounts(vars.currentPiece);
 							gs.startNextTurn();
 						}
 						else{
-							if(vars.linesBeingCleared_flashesCnt%2==0){
-								core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.adj );
+							if(vars.linesCleared_f_Cnt%2==0){
+								core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.adj );
 							}
 							else{
-								core.FUNCS.graphics.DrawMap2(vars.min_x_tile, vars.min_y_tile, vars.field.org );
+								core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.org );
 							}
 
-							vars.linesBeingCleared_flashesCnt +=1 ;
-							vars.linesBeingCleared_cnt += 1;
+							vars.linesCleared_f_Cnt +=1 ;
+							vars.linesCleared_cnt += 1;
 						}
 
 					}
 					else{
-						vars.linesBeingCleared_cnt += 1;
+						vars.linesCleared_cnt += 1;
 					}
 
 					return;
@@ -238,7 +251,7 @@ game.gs.PLAY = {
 					}
 					else{
 						// 1 NO:  If at the top then game over.
-						if( vars.matrix_y == vars.max_y_tile ){
+						if( vars.matrix_y == consts.max_y_tile ){
 							if(vars.instantDrop){ vars.instantDrop = false ; }
 							gs.clearBoard(0);
 							// vars.gameOver=true;
@@ -247,8 +260,6 @@ game.gs.PLAY = {
 						// 2 NO:  Else, next piece.
 						else{
 							if(vars.instantDrop){ vars.instantDrop = false ; }
-
-							gs.updatePieceCounts(vars.currentPiece);
 
 							// Save the sprite as VRAM tiles at their present location.
 							gs.currentPiecetoVRAM1();
@@ -261,6 +272,7 @@ game.gs.PLAY = {
 
 							// Spawn the next piece right away if no lines were cleared.
 							if(!linesCleared){
+								gs.updatePieceCounts(vars.currentPiece);
 								gs.startNextTurn();
 							}
 						}
@@ -316,15 +328,35 @@ game.gs.PLAY = {
 					return;
 				}
 				// Move the piece DOWN, LEFT, or RIGHT?
-				else if(vars.inputSpeed_cnt >= vars.inputSpeed){
-					let reset=false;
-
+				else if(vars.inputSpeed_cnt >= consts.inputSpeed){
 					// Handle directional user input.
-					if     ( game.chkBtn("BTN_DOWN"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("DOWN" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_y+=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; vars.dropSpeed_cnt=0; }
-					else if( game.chkBtn("BTN_LEFT"  , "btnHeld1") ){ if( gs.canThePieceBeDrawn("LEFT" )   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_x-=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; }
-					else if( game.chkBtn("BTN_RIGHT" , "btnHeld1") ){ if( gs.canThePieceBeDrawn("RIGHT")   ) {core.FUNCS.audio.playSound_mp3("cursorTick1"      , true, 1.0); game.gs.PLAY.vars.matrix_x+=1; game.gs.PLAY.drawCurrentPiece(); } reset=true; }
+					if     ( game.chkBtn("BTN_DOWN" , "btnHeld1") ){
+						if( gs.canThePieceBeDrawn("DOWN" ) ) {
+							core.FUNCS.audio.playSound_mp3("cursorTick1", true, 1.0);
+							game.gs.PLAY.vars.matrix_y+=1;
+							game.gs.PLAY.drawCurrentPiece();
+							vars.dropSpeed_cnt=0;
+						}
+						vars.inputSpeed_cnt=0;
+					}
+					else if( game.chkBtn("BTN_LEFT" , "btnHeld1") ){
+						if( gs.canThePieceBeDrawn("LEFT" ) ) {
+							core.FUNCS.audio.playSound_mp3("cursorTick1", true, 1.0);
+							game.gs.PLAY.vars.matrix_x-=1;
+							game.gs.PLAY.drawCurrentPiece();
+						}
+						vars.inputSpeed_cnt=0;
+					}
+					else if( game.chkBtn("BTN_RIGHT", "btnHeld1") ){
+						if( gs.canThePieceBeDrawn("RIGHT") ) {
+							core.FUNCS.audio.playSound_mp3("cursorTick1", true, 1.0);
+							game.gs.PLAY.vars.matrix_x+=1;
+							game.gs.PLAY.drawCurrentPiece();
+						}
+						vars.inputSpeed_cnt=0;
+					}
 
-					if(reset){ vars.inputSpeed_cnt=0; }
+					// if(reset){ vars.inputSpeed_cnt=0; }
 					// else     { vars.inputSpeed_cnt += 1; }
 				}
 				else{ vars.inputSpeed_cnt += 1; }
@@ -347,6 +379,7 @@ game.gs.PLAY = {
 	gameOver              : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		console.log("game over");
 
@@ -359,12 +392,13 @@ game.gs.PLAY = {
 	startNextTurn : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Spawn a piece.
 		gs.spawnPiece( vars.nextPiece );
 
 		// Set the next piece.
-		vars.nextPiece = vars.validPieces[ game.getRandomInt_inRange(0, vars.validPieces.length-1) ];
+		vars.nextPiece = consts.validPieces[ game.getRandomInt_inRange(0, consts.validPieces.length-1) ];
 		gs.updateNextPiece();
 
 		// Update the stats.
@@ -384,9 +418,10 @@ game.gs.PLAY = {
 	playboardVramToArray  : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
-		let x_lines = vars.x_lines;
-		let y_lines = vars.y_lines;
+		let x_lines = consts.x_lines;
+		let y_lines = consts.y_lines;
 
 		//
 		let field = [];
@@ -418,6 +453,7 @@ game.gs.PLAY = {
 	detectCompletedLines  : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		let X_tile = core.ASSETS.graphics.tilemaps[ "X_tile" ][2];
 
@@ -517,10 +553,10 @@ game.gs.PLAY = {
 			if(old_level != vars.level && gs.temp.level < vars.level){ gs.setNextDropSpeed("UP"); }
 
 			// Start the flash animation.
-			vars.linesBeingCleared            = true;
-			vars.linesBeingCleared_flashesCnt = 0;
-			vars.linesBeingCleared_cnt        = 0;
-			vars.linesBeingCleared_cnt = vars.linesBeingCleared_speed;
+			vars.linesCleared            = true;
+			vars.linesCleared_f_Cnt = 0;
+			vars.linesCleared_cnt        = 0;
+			vars.linesCleared_cnt = consts.linesCleared_speed;
 
 			return linesCleared;
 		}
@@ -530,11 +566,12 @@ game.gs.PLAY = {
 	updateStats           : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		gs.updateLineCount();
 		gs.updateScore();
 		gs.updateLevel();
-		gs.clearPieceCounts();
+		// gs.clearPieceCounts();
 		gs.updateType();
 		gs.updateNextPiece();
 
@@ -544,6 +581,7 @@ game.gs.PLAY = {
 	updateLineCount       : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
@@ -559,6 +597,7 @@ game.gs.PLAY = {
 	updateType            : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
@@ -575,6 +614,7 @@ game.gs.PLAY = {
 	updateScore           : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
@@ -590,6 +630,7 @@ game.gs.PLAY = {
 	updateLevel           : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// Determine current level value.
 		vars.level = parseInt( (vars.lines / 10),10);
@@ -608,6 +649,7 @@ game.gs.PLAY = {
 	updateNextPiece       : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// T_map :: purple
 		// J_map :: green
@@ -638,6 +680,7 @@ game.gs.PLAY = {
 	clearPieceCounts      : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		let keys = Object.keys( vars.pieceCounts );
 		for(let i = 0; i<keys.length; i+=1){
@@ -679,6 +722,7 @@ game.gs.PLAY = {
 	updatePieceCounts     : function(type){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		let x;
 		let y;
@@ -691,7 +735,11 @@ game.gs.PLAY = {
 			case "S" : { x=17 ; y=15; break; } // orange
 			case "L" : { x=17 ; y=16; break; } // red
 			case "I" : { x=23 ; y=15; break; } // l blue
-			default : { console.log("INVALID PIECE SPECIFIED!", type); return; break; }
+			default : {
+				console.log("INVALID PIECE SPECIFIED!", type);
+				return;
+				break;
+			}
 		};
 
 		// Increment the count
@@ -711,9 +759,10 @@ game.gs.PLAY = {
 
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		let empty_square = core.ASSETS.graphics.tilemaps[ "empty_square" ][2];
-		core.FUNCS.graphics.Fill(vars.min_x_tile, vars.min_y_tile, 10, 20, empty_square, "VRAM1");
+		core.FUNCS.graphics.Fill(consts.min_x_tile, consts.min_y_tile, 10, 20, empty_square, "VRAM1");
 	},
 	//
 	setDropSpeed          : function(index){
@@ -723,9 +772,10 @@ game.gs.PLAY = {
 
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
-		if(vars.dropSpeeds[index]){
-			vars.dropSpeed     = vars.dropSpeeds[index] ;
+		if(consts.dropSpeeds[index]){
+			vars.dropSpeed     = consts.dropSpeeds[index] ;
 			vars.dropSpeed_cnt = 0                  ;
 
 			// console.log("Speed has been set to index:", index);
@@ -738,8 +788,9 @@ game.gs.PLAY = {
 	setNextDropSpeed      : function(dir){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
-		let len = vars.dropSpeeds.length;
+		let len = consts.dropSpeeds.length;
 
 		if(dir=="DOWN"){
 			if( vars.dropSpeedIndex == 0 )    { }
@@ -757,6 +808,7 @@ game.gs.PLAY = {
 	currentPiecetoVRAM1   : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		// currSprite_indexes
 		let len = vars.currSprite_indexes.length;
@@ -821,6 +873,7 @@ game.gs.PLAY = {
 	spawnPiece            : function( type ){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		switch(type){
 			case "T" : { vars.currentMap = "T_sptile"; break; } // purple
@@ -837,8 +890,8 @@ game.gs.PLAY = {
 		vars.rotationIndex = game.pieces_spawnIndexes[vars.currentPiece] ;
 		vars.currentMatrix = game.pieces[ vars.currentPiece ][ vars.rotationIndex ];
 
-		vars.matrix_x = vars.min_x_tile;
-		vars.matrix_y = vars.min_y_tile;
+		vars.matrix_x = consts.min_x_tile;
+		vars.matrix_y = consts.min_y_tile;
 
 		gs.drawCurrentPiece();
 
@@ -851,6 +904,7 @@ game.gs.PLAY = {
 		// Check game.playBoard and the current rotation matrix for the current piece.
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		let type;
 
@@ -952,6 +1006,7 @@ game.gs.PLAY = {
 	drawCurrentPiece      : function(){
 		let gs    = this;
 		let vars  = gs.vars;
+		let consts = gs.consts;
 
 		core.FUNCS.graphics.clearSprites();
 
@@ -987,6 +1042,7 @@ game.gs.PLAY = {
 	rotatePiece           : function(dir){
 		let gs   = this;
 		let vars = gs.vars;
+		let consts = gs.consts;
 
 		let len = vars.currentMatrix.length;
 

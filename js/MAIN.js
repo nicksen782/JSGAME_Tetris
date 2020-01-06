@@ -530,13 +530,18 @@ game.firstLoop = function(){
 
 						// *** GAMESTATE ***
 
-						game.setGamestate1("TITLE0"          , true); // Init screen
-						// game.setGamestate1("TITLE1"          , true); // Copyright screen.
-						// game.setGamestate1("TITLE2"          , true); // Title screen.
-						// game.setGamestate1("SETUP1"          , true); // Setup screen 1
-						// game.setGamestate1("SETUP2"          , true); // Setup screen 2
-						// game.setGamestate1("PLAY"            , true); // Main game.
-						// game.setGamestate1("ENTER_HIGH_SCORE", true); // End of game, high score entry.
+						if(!JSGAME.FLAGS.debug){
+							game.setGamestate1("TITLE0"          , true); // Init screen
+						}
+						else{
+							// game.setGamestate1("TITLE0"          , true); // Init screen
+							// game.setGamestate1("TITLE1"          , true); // Copyright screen.
+							// game.setGamestate1("TITLE2"          , true); // Title screen.
+							// game.setGamestate1("SETUP1"          , true); // Setup screen 1
+							game.setGamestate1("SETUP2"          , true); // Setup screen 2
+							// game.setGamestate1("PLAY"            , true); // Main game.
+							// game.setGamestate1("ENTER_HIGH_SCORE", true); // End of game, high score entry.
+						}
 
 						console.log("JSGAME TETRIS - STARTED");
 					}
