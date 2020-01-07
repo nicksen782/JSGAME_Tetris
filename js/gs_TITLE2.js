@@ -2,9 +2,11 @@
 game.gs.TITLE2 = {
 	//
 	temp : {},
+
 	//
 	vars         : {
 	},
+
 	//
 	prepareState : function(){
 		let gs   = this;
@@ -23,6 +25,8 @@ game.gs.TITLE2 = {
 		vars.framesBetweenFlashes_cnt   = 0;
 		vars.framesBetweenFlashes_state = false;
 	},
+
+	//
 	init : function(){
 		let gs    = this;
 		let vars  = gs.vars;
@@ -41,10 +45,11 @@ game.gs.TITLE2 = {
 			core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
 		}
 
-		core.GRAPHICS.FADER.FUNCS.FadeIn (2, true, false);
+		core.GRAPHICS.FADER.FUNCS.FadeIn (1, true, false);
 		// core.GRAPHICS.FADER.FUNCS.FadeIn (game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 
 	},
+
 	//
 	main : function(){
 		let gs    = this;
