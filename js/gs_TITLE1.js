@@ -84,8 +84,8 @@ game.gs.TITLE1 = {
 				core.GRAPHICS.FADER.FUNCS.FadeOut(1, true, false);
 				// core.GRAPHICS.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
 
-				game.setGamestate1("TITLE2", true);
 				vars.END = true;
+				game.setGamestate1("TITLE2", true);
 			}
 			else{
 				vars.framesUntilDone_cnt+=1;

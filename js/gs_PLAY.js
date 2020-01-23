@@ -187,7 +187,7 @@ game.gs.PLAY = {
 						core.FUNCS.graphics.DrawMap2(0, 0, vars.prev_vram2, "VRAM2");
 
 						vars.currSprite_indexes.forEach(function(d){
-							let flags = JSGAME.SHARED.apply_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 0);
+							let flags = JSGAME.SHARED.get_new_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 0);
 							core.FUNCS.graphics.changeSpriteFlags(d, flags);
 						});
 						core.GRAPHICS.flags.SPRITE=true;
@@ -302,7 +302,7 @@ game.gs.PLAY = {
 
 					// Turn off the active sprites.
 					vars.currSprite_indexes.forEach(function(d){
-						let flags = JSGAME.SHARED.apply_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 1);
+						let flags = JSGAME.SHARED.get_new_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 1);
 						core.FUNCS.graphics.changeSpriteFlags(d, flags);
 					});
 					core.GRAPHICS.flags.SPRITE=true;

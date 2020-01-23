@@ -260,6 +260,8 @@ game.gs.SETUP2 = {
 		game.gs.PLAY.temp.level          = vars.menuSettings.level.option ;
 		game.gs.PLAY.temp.dropSpeedIndex = vars.menuSettings.level.option ;
 
+		vars.END=true;
+
 		// Start game!
 		if(game.gs.PLAY.temp.type=="A"){
 			// Set height.
@@ -276,8 +278,6 @@ game.gs.SETUP2 = {
 			game.setGamestate1("PLAY", true);
 			// game.setGamestate1("PLAY", true);
 		}
-
-		vars.END=true;
 
 		return;
 	},

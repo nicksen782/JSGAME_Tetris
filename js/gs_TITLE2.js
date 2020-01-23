@@ -76,8 +76,8 @@ game.gs.TITLE2 = {
 				||
 				game.chkBtn("BTN_A"    , "btnPressed1")
 			){
-				game.setGamestate1("SETUP1", true);
 				vars.END = true;
+				game.setGamestate1("SETUP1", true);
 			}
 
 			if(vars.framesBetweenFlashes_cnt >= vars.framesBetweenFlashes){

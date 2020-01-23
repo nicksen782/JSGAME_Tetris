@@ -447,8 +447,8 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 
-		game.setGamestate1("SETUP2", true); // Setup screen 2
 		vars.END = true;
+		game.setGamestate1("SETUP2", true); // Setup screen 2
 		return;
 	},
 
