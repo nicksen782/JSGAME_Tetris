@@ -465,7 +465,8 @@ game.firstLoop = function(){
 		// *** VRAM ***
 
 		// VRAM1 - SET INITIAL TILESET.
-		core.FUNCS.graphics.SetTileTable("tilesBG1");
+		core.FUNCS.graphics.SetTileTable("tilesBG1", "BG");
+		core.FUNCS.graphics.SetTileTable("tilesBG1", "BG2");
 
 		// VRAM2 - SET INTITAL FONT.
 		core.FUNCS.graphics.SetFont("fonts1"); // White

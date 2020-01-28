@@ -86,10 +86,21 @@
 	],
 
 	"graphics_conversionSettings": [
-		{"tileset":"tilesBG1", "handleTransparency":false , "type":"canvas"},
-		{"tileset":"tilesTX1", "handleTransparency":true  , "type":"canvas"},
-		{"tileset":"tilesSP1", "handleTransparency":true  , "type":"canvas"}
+		{"tileset":"tilesBG1", "handleTransparency":false , "type":"canvas", "trackTransparent":false},
+		{"tileset":"tilesTX1", "handleTransparency":true  , "type":"canvas", "trackTransparent":false},
+		{"tileset":"tilesSP1", "handleTransparency":true  , "type":"canvas", "trackTransparent":false}
 	],
+
+	"useBG2" : false,
+
+	"canvas_alphaSettings": {
+		"BG_alpha"     : true  ,
+		"BG2_alpha"    : true  ,
+		"SPRITE_alpha" : true  ,
+		"TEXT_alpha"   : true  ,
+		"FADE_alpha"   : false ,
+		"OUTPUT_alpha" : false
+	},
 
 	"typeGamepads"      : "nes" ,
 	"numGamepads"       : 1     ,
