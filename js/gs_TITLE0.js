@@ -1,4 +1,7 @@
 // NICKSEN782 ANIMATION
+
+'use strict';
+
 game.gs.TITLE0 = {
 	//
 	temp : {},

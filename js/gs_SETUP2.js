@@ -1,4 +1,7 @@
 // (TODO) ---- SETUP FOR: MUSIC, GAME TYPE, LEVEL, HEIGHT.
+
+'use strict';
+
 game.gs.SETUP2 = {
 	//
 	temp : {},

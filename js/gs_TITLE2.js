@@ -1,4 +1,7 @@
 // MAIN TITLE SCREEN
+
+'use strict';
+
 game.gs.TITLE2 = {
 	//
 	temp : {},

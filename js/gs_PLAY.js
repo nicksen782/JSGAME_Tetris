@@ -1,4 +1,7 @@
 // MAIN GAME: TYPE A
+
+'use strict';
+
 game.gs.PLAY = {
 	//
 	temp : {},

@@ -1,4 +1,7 @@
 // FIRST MENU: INSTRUCTIONS, CONTROLS, GAME SETUP, HIGHSCORES, CREDITS
+
+'use strict';
+
 game.gs.SETUP1 = {
 	//
 	temp : {},
@@ -182,7 +185,7 @@ game.gs.SETUP1 = {
 		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT (break into individual words. Add a space after periods.)
-		text1 = (
+		let text1 = (
 			"Complete full lines using the blocks that come from the top. " +
 			"You can complete up to 4 lines at once. "                                          +
 			"You get more points for more lines cleared at a time. "                            +
@@ -241,7 +244,7 @@ game.gs.SETUP1 = {
 		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT
-		text1 = [
+		let text1 = [
 			'-------- GAMEPAD -------' ,
 			'' ,
 			'A       = ROTATE  90 DEG' ,
@@ -316,7 +319,7 @@ game.gs.SETUP1 = {
 				let startX=2;
 				let startY=5;
 				let y=0;
-				recsDisplayed=0;
+				let recsDisplayed=0;
 
 				// If still on the high scores screen.
 				if(vars.currentScreen=="highScores"){
@@ -411,7 +414,7 @@ game.gs.SETUP1 = {
 		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT
-		text1 = [
+		let text1 = [
 			''                             ,
 			''                             ,
 			'        JSGAME PORT:'         ,

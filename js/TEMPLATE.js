@@ -1,5 +1,7 @@
 // *** TEMPLATE GAMESTATE FUNCTION ***
 
+'use strict';
+
 // GAMESTATE TEMPLATE
 game.gs.TEMPLATE = {
 	//

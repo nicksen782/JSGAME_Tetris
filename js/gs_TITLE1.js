@@ -1,4 +1,7 @@
 // COPYRIGHT SCREEN
+
+'use strict';
+
 game.gs.TITLE1 = {
 	//
 	temp : {},

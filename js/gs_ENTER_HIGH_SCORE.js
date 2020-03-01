@@ -1,4 +1,7 @@
 // (TODO) ---- HIGH SCORE ENTRY SCREEN
+
+'use strict';
+
 game.gs.ENTER_HIGH_SCORE = {
 	//
 	temp : {},

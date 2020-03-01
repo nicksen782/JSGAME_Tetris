@@ -1,3 +1,5 @@
+'use strict';
+
 game.DEBUG       = {} ;
 game.DEBUG.DOM   = {} ;
 game.DEBUG.VALS  = {} ;
@@ -169,6 +171,7 @@ game.DEBUG.init = function(){
 	JSGAME.DOM["sideDiv"].classList.remove("hide");
 	game.DEBUG.DOM["DEBUG_DIV"].classList.remove("hidden");
 	game.DEBUG.DOM["DEBUG_DIV"].classList.remove("noSelect");
+	document.body.classList.remove("verticalCenter");
 
 	// Remove the init function since it is no longer needed.
 	delete game.DEBUG.init;

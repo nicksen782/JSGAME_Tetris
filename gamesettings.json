@@ -14,11 +14,6 @@
 	"videokernel"       : "cores/videoMode_A/videoMode_A.js",
 	"soundkernel"       : "cores/soundMode_A/soundMode_A.js",
 
-	"fonts"              : {
-		"fonts1" : { "tileset":"tilesTX1" },
-		"fonts2" : { "tileset":"tilesTX1" }
-	},
-
 	"js_files": [
 		"js/MAIN.js"             ,
 		"js/gs_ENTER_HIGH_SCORE.js" ,
@@ -40,6 +35,10 @@
 		{ "text":"Instructions", "href":"links/instructions.txt"                     , "target":"_blank" },
 		{ "text":"Credits"     , "href":"links/credits.txt"                          , "target":"_blank" },
 		{ "text":"Github"      , "href":"https://github.com/nicksen782/JSGAME_Tetris", "target":"_blank" }
+	],
+
+	"authors":[
+		{ "author_name": "Nickolas Andersen", "author_handle":"nicksen782", "role":"ALL", "show":false }
 	],
 
 	"mp3_files": [
@@ -81,9 +80,21 @@
 		}
 	},
 
+	"typeGamepads"      : "nes" ,
+	"numGamepads"       : 1     ,
+	"fps"               : 30    ,
+
+	"canvas_scaleFactor" : 2.0 ,
+
+
 	"graphics_files": [
 		"UAM/PROGMEM/_min_combined_alltilegraphics.inc"
 	],
+
+	"fonts"              : {
+		"fonts1" : { "tileset":"tilesTX1" },
+		"fonts2" : { "tileset":"tilesTX1" }
+	},
 
 	"graphics_conversionSettings": [
 		{"tileset":"tilesBG1", "handleTransparency":false , "type":"canvas", "trackTransparent":false},
@@ -102,11 +113,6 @@
 		"OUTPUT_alpha" : false
 	},
 
-	"typeGamepads"      : "nes" ,
-	"numGamepads"       : 1     ,
-	"fps"               : 30    ,
-
-	"canvas_scaleFactor" : 2.4 ,
 
 	"ENDOFFILE" : ""
 }

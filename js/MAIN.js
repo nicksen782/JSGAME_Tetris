@@ -1,5 +1,7 @@
 // *** SHARED GAME VARIABLES ***
 
+'use strict';
+
 // Will hold each individual game state.
 game.gs = {};
 game.SHARED = {
