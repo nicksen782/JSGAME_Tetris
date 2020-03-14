@@ -38,14 +38,14 @@ game.DEBUG.init = function(){
 
 	// Test - Fonts
 	game.DEBUG.DOM["debug_fontChangeDiv"] = game.DEBUG.DOM["DEBUG_DIV"].querySelector("#debug_fontChangeDiv");
-	let fontKeys = Object.keys(core.GRAPHICS.fonts);
+	let fontKeys = Object.keys(_CG.fonts);
 	fontKeys.forEach(function(d){
-		let rec = core.GRAPHICS.fonts[d] ;
+		let rec = _CG.fonts[d] ;
 		let button = document.createElement("button");
 		let space = document.createElement("span");
 		space.innerText=" ";
 		button.innerText=d;
-		button.onclick=function(){ core.FUNCS.graphics.SetFont( d ); };
+		button.onclick=function(){ _CFG.SetFont( d ); };
 		game.DEBUG.DOM["debug_fontChangeDiv"].appendChild(button);
 		game.DEBUG.DOM["debug_fontChangeDiv"].appendChild(space);
 	});
@@ -67,9 +67,9 @@ game.DEBUG.init = function(){
 	game.DEBUG.DOM["sprite_test2_on"] .addEventListener("click", function(){game.DEBUG.TESTS.timedTests(this.id);    }, false);
 	game.DEBUG.DOM["sprite_test2_off"].addEventListener("click", function(){game.DEBUG.TESTS.timedTests(this.id);    }, false);
 
-	game.DEBUG.DOM["debug_ClearVram1"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM1"); }, false);
-	game.DEBUG.DOM["debug_ClearVram2"] .addEventListener("click", function(){core.FUNCS.graphics.ClearVram("VRAM2"); }, false);
-	game.DEBUG.DOM["debug_ClearSprites"].addEventListener("click", function(){core.FUNCS.graphics.clearSprites();    }, false);
+	game.DEBUG.DOM["debug_ClearVram1"] .addEventListener("click", function(){_CFG.ClearVram("VRAM1"); }, false);
+	game.DEBUG.DOM["debug_ClearVram2"] .addEventListener("click", function(){_CFG.ClearVram("VRAM2"); }, false);
+	game.DEBUG.DOM["debug_ClearSprites"].addEventListener("click", function(){_CFG.clearSprites();    }, false);
 
 	// Set flags and counters.
 	game.DEBUG.VALS.lastDebugDisplay=performance.now();  //
@@ -221,30 +221,30 @@ game.DEBUG.NAV.debug_hidePanels = function(){
 
 game.DEBUG.drawFlagsToConsole = function(){
 	console.log(
-		""  , ( core.GRAPHICS.flags.BG         == true ? 'BG         : TRUE' :'BG         :     ' ),
-		"\n", ( core.GRAPHICS.flags.SPRITE     == true ? 'SPRITE     : TRUE' :'SPRITE     :     ' ),
-		"\n", ( core.GRAPHICS.flags.TEXT       == true ? 'TEXT       : TRUE' :'TEXT       :     ' ),
-		"\n", ( core.GRAPHICS.flags.FADE       == true ? 'FADE       : TRUE' :'FADE       :     ' ),
-		"\n", ( core.GRAPHICS.flags.OUTPUT     == true ? 'OUTPUT     : TRUE' :'OUTPUT     :     ' ),
-		"\n", ( core.GRAPHICS.FADER.fadeActive == true ? 'fadeActive : TRUE' :'fadeActive :     ' ),
+		""  , ( _CG.flags.BG         == true ? 'BG         : TRUE' :'BG         :     ' ),
+		"\n", ( _CG.flags.SPRITE     == true ? 'SPRITE     : TRUE' :'SPRITE     :     ' ),
+		"\n", ( _CG.flags.TEXT       == true ? 'TEXT       : TRUE' :'TEXT       :     ' ),
+		"\n", ( _CG.flags.FADE       == true ? 'FADE       : TRUE' :'FADE       :     ' ),
+		"\n", ( _CG.flags.OUTPUT     == true ? 'OUTPUT     : TRUE' :'OUTPUT     :     ' ),
+		"\n", ( _CG.FADER.fadeActive == true ? 'fadeActive : TRUE' :'fadeActive :     ' ),
 		""
 		);
 	};
 
 // game.DEBUG.fadeValuesToConsole = function(){
 // 	console.log(
-// 		"\n old values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.prevFadeStep],
-// 		"\n new values   : " , core.GRAPHICS.FADER.CONSTS["fader"][core.GRAPHICS.FADER.fadeStep],
+// 		"\n old values   : " , _CG.FADER.CONSTS["fader"][_CG.FADER.prevFadeStep],
+// 		"\n new values   : " , _CG.FADER.CONSTS["fader"][_CG.FADER.fadeStep],
 // 		// "\n " ,
-// 		"\n prevFadeStep :" , core.GRAPHICS.FADER.prevFadeStep  ,
-// 		"\n fadeStep     :" , core.GRAPHICS.FADER.fadeStep      ,
-// 		"\n fadeSpeed    :" , core.GRAPHICS.FADER.fadeSpeed     ,
-// 		"\n currFadeFrame:" , core.GRAPHICS.FADER.currFadeFrame ,
-// 		"\n fadeDir      :" , core.GRAPHICS.FADER.fadeDir       ,
-// 		"\n fadeActive   :" , core.GRAPHICS.FADER.fadeActive    ,
-// 		"\n blocking     :" , core.GRAPHICS.FADER.blocking      ,
-// 		"\n stayDark     :" , core.GRAPHICS.FADER.stayDark      ,
-// 		"\n lastFadeFrame:" , core.GRAPHICS.FADER.lastFadeFrame ,
+// 		"\n prevFadeStep :" , _CG.FADER.prevFadeStep  ,
+// 		"\n fadeStep     :" , _CG.FADER.fadeStep      ,
+// 		"\n fadeSpeed    :" , _CG.FADER.fadeSpeed     ,
+// 		"\n currFadeFrame:" , _CG.FADER.currFadeFrame ,
+// 		"\n fadeDir      :" , _CG.FADER.fadeDir       ,
+// 		"\n fadeActive   :" , _CG.FADER.fadeActive    ,
+// 		"\n blocking     :" , _CG.FADER.blocking      ,
+// 		"\n stayDark     :" , _CG.FADER.stayDark      ,
+// 		"\n lastFadeFrame:" , _CG.FADER.lastFadeFrame ,
 // 		"\n"
 // 	);
 // };
@@ -252,41 +252,41 @@ game.DEBUG.drawFlagsToConsole = function(){
 // Fills VRAM1 with random tiles from the layer's active tileset.
 game.DEBUG.fillVram1_random = function(){
 	// Ignore if a tileset is not selected.
-	if(!core.GRAPHICS.activeTileset["BG"]){ return; }
+	if(!_CG.activeTileset["BG"]){ return; }
 
 	// Set the tileset.
-	let tileset = core.GRAPHICS.tiles[ core.GRAPHICS.activeTileset["BG"] ];
+	let tileset = _CG.tiles[ _CG.activeTileset["BG"] ];
 
 	// Count the number of tiles.
 	let numTiles = tileset.length-1 ;
 
 	// Write all tiles to VRAM.
-	for(let y=0; y<core.SETTINGS.VRAM_TILES_V; y+=1){
-		for(let x=0; x<core.SETTINGS.VRAM_TILES_H; x+=1){
+	for(let y=0; y<_CS.VRAM_TILES_V; y+=1){
+		for(let x=0; x<_CS.VRAM_TILES_H; x+=1){
 			// Get random tile id from the range of available tile.
 			let tileId = game.getRandomInt_inRange(0, numTiles);
 
 			// Write the tile to VRAM.
-			core.FUNCS.graphics.SetTile(x,y, tileId, 'VRAM1');
+			_CFG.SetTile(x,y, tileId, 'VRAM1');
 		}
 	}
 };
 // Fills VRAM2 with random tiles from the layer's active tileset.
 game.DEBUG.fillVram2_random = function(){
 	// Ignore if a tileset is not selected.
-	if(!core.GRAPHICS.activeTileset["TEXT"]){
+	if(!_CG.activeTileset["TEXT"]){
 		console.log("Font tilemap not selected!");
 		return;
 	}
 
-	let fontmap   = core.ASSETS.graphics.tilemaps[core.GRAPHICS.fontSettings.fontmap];
+	let fontmap   = core.ASSETS.graphics.tilemaps[_CG.fontSettings.fontmap];
 	if(!fontmap){ console.log("Font map not selected!"); }
 	var numTiles  = fontmap.length-1 ;
 
-	for(let y=0; y<core.SETTINGS.VRAM_TILES_V; y+=1){
-		for(let x=0; x<core.SETTINGS.VRAM_TILES_H; x+=1){
+	for(let y=0; y<_CS.VRAM_TILES_V; y+=1){
+		for(let x=0; x<_CS.VRAM_TILES_H; x+=1){
 			let tileId = game.getRandomInt_inRange(2, numTiles);
-			core.FUNCS.graphics.SetTile(x, y, fontmap[ tileId ], 'VRAM2' );
+			_CFG.SetTile(x, y, fontmap[ tileId ], 'VRAM2' );
 		}
 	}
 };
@@ -295,7 +295,7 @@ game.DEBUG.spriteStressTest1 = function(){
 	// Clear all sprites, map then move sprites.
 	// Sprite x, y, and flags are randomized.
 
-	core.FUNCS.graphics.clearSprites();
+	_CFG.clearSprites();
 
 	// let tilemap = core.ASSETS.graphics.tilemaps["shape_colors_sp"];
 	let tilemap = [1,1,game.getRandomInt_inRange(0, 5)];
@@ -305,24 +305,24 @@ game.DEBUG.spriteStressTest1 = function(){
 	let numSprites = numTiles * numSpriteMaps;
 	let flags_arr=[
 		0 ,
-		0 | (core.CONSTS.SPRITE_FLIP_X),
-		0 | (core.CONSTS.SPRITE_FLIP_Y),
-		0 | (core.CONSTS.SPRITE_FLIP_X | core.CONSTS.SPRITE_FLIP_Y),
+		0 | (_CC.SPRITE_FLIP_X),
+		0 | (_CC.SPRITE_FLIP_Y),
+		0 | (_CC.SPRITE_FLIP_X | _CC.SPRITE_FLIP_Y),
 	];
 
 	// Map sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		let flags =  game.getRandomInt_inRange(0, flags_arr.length-1) ;
-		core.FUNCS.graphics.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags);
+		_CFG.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags);
 	}
 
 	// Move sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		// NOT Grid-aligned
-		let rand_x = game.getRandomInt_inRange(0, (core.SETTINGS.VRAM_TILES_H-1) * core.SETTINGS.TILE_WIDTH) ;
-		let rand_y = game.getRandomInt_inRange(0, (core.SETTINGS.VRAM_TILES_V-1) * core.SETTINGS.TILE_HEIGHT) ;
+		let rand_x = game.getRandomInt_inRange(0, (_CS.VRAM_TILES_H-1) * _CS.TILE_WIDTH) ;
+		let rand_y = game.getRandomInt_inRange(0, (_CS.VRAM_TILES_V-1) * _CS.TILE_HEIGHT) ;
 
-		core.FUNCS.graphics.MoveSprite( i , rand_x, rand_y, tilemap[0], tilemap[1] );
+		_CFG.MoveSprite( i , rand_x, rand_y, tilemap[0], tilemap[1] );
 	}
 };
 // Randomly place sprites (grid aligned.)
@@ -330,7 +330,7 @@ game.DEBUG.spriteStressTest2 = function(){
 	// Clear all sprites, map then move sprites.
 	// Sprite x, y, and flags are randomized.
 
-	core.FUNCS.graphics.clearSprites();
+	_CFG.clearSprites();
 
 	// let tilemap = core.ASSETS.graphics.tilemaps["shape_colors_sp"];
 	let tilemap = [1,1,game.getRandomInt_inRange(0, 5)];
@@ -340,26 +340,26 @@ game.DEBUG.spriteStressTest2 = function(){
 	let numSprites = numTiles * numSpriteMaps;
 	let flags_arr=[
 		0 ,
-		0 | (core.CONSTS.SPRITE_FLIP_X),
-		0 | (core.CONSTS.SPRITE_FLIP_Y),
-		0 | (core.CONSTS.SPRITE_FLIP_X | core.CONSTS.SPRITE_FLIP_Y),
+		0 | (_CC.SPRITE_FLIP_X),
+		0 | (_CC.SPRITE_FLIP_Y),
+		0 | (_CC.SPRITE_FLIP_X | _CC.SPRITE_FLIP_Y),
 	];
 
 	// Map sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		let flags =  game.getRandomInt_inRange(0, flags_arr.length-1) ;
-		core.FUNCS.graphics.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags );
+		_CFG.MapSprite2( i , [1,1,game.getRandomInt_inRange(0, 5)], flags );
 	}
 
 	// Move sprites.
 	for(let i=0; i<numSprites; i+=numTiles){
 		// Grid-aligned (assumes 8 by 8 pixel tile.)
-		let rand_x = game.getRandomInt_inRange(0, (core.SETTINGS.VRAM_TILES_H-1) * core.SETTINGS.TILE_WIDTH )  ;
-		let rand_y = game.getRandomInt_inRange(0, (core.SETTINGS.VRAM_TILES_V-1) * core.SETTINGS.TILE_HEIGHT)  ;
+		let rand_x = game.getRandomInt_inRange(0, (_CS.VRAM_TILES_H-1) * _CS.TILE_WIDTH )  ;
+		let rand_y = game.getRandomInt_inRange(0, (_CS.VRAM_TILES_V-1) * _CS.TILE_HEIGHT)  ;
 		rand_x = (rand_x >> 3) << 3;
 		rand_y = (rand_y >> 3) << 3;
 
-		core.FUNCS.graphics.MoveSprite( i , rand_x, rand_y, tilemap[0], tilemap[1] );
+		_CFG.MoveSprite( i , rand_x, rand_y, tilemap[0], tilemap[1] );
 	}
 };
 // Runs prepareState again on the current gamestate which should restart it.
@@ -372,7 +372,7 @@ game.DEBUG.TESTS.timedTests = function(id){
 	switch(id){
 		case "vram1_test1_on"  : {
 			clearInterval( game.DEBUG.VALS.vram1_test1_id );
-			game.DEBUG.VALS.vram1_test1_id = setInterval(function(){ if(core.GRAPHICS.flags.INLAYERUPDATE){ return; }; game.DEBUG.fillVram1_random(); }, 100);
+			game.DEBUG.VALS.vram1_test1_id = setInterval(function(){ if(_CG.flags.INLAYERUPDATE){ return; }; game.DEBUG.fillVram1_random(); }, 100);
 			break;
 		}
 		case "vram1_test1_off" : {
@@ -382,7 +382,7 @@ game.DEBUG.TESTS.timedTests = function(id){
 
 		case "vram2_test1_on"  : {
 			clearInterval( game.DEBUG.VALS.vram2_test1_id );
-			game.DEBUG.VALS.vram2_test1_id = setInterval(function(){ if(core.GRAPHICS.flags.INLAYERUPDATE){ return; }; game.DEBUG.fillVram2_random(); }, 250);
+			game.DEBUG.VALS.vram2_test1_id = setInterval(function(){ if(_CG.flags.INLAYERUPDATE){ return; }; game.DEBUG.fillVram2_random(); }, 250);
 			break;
 		}
 		case "vram2_test1_off" : {
@@ -392,7 +392,7 @@ game.DEBUG.TESTS.timedTests = function(id){
 
 		case "sprite_test1_on"  : {
 			clearInterval( game.DEBUG.VALS.sprite_test1_id );
-			game.DEBUG.VALS.sprite_test1_id = setInterval(function(){ if(core.GRAPHICS.flags.INLAYERUPDATE){ return; }; game.DEBUG.spriteStressTest1(); }, 100);
+			game.DEBUG.VALS.sprite_test1_id = setInterval(function(){ if(_CG.flags.INLAYERUPDATE){ return; }; game.DEBUG.spriteStressTest1(); }, 100);
 			break;
 		}
 		case "sprite_test1_off" : {
@@ -402,7 +402,7 @@ game.DEBUG.TESTS.timedTests = function(id){
 
 		case "sprite_test2_on"  : {
 			clearInterval( game.DEBUG.VALS.sprite_test2_id );
-			game.DEBUG.VALS.sprite_test2_id = setInterval(function(){ if(core.GRAPHICS.flags.INLAYERUPDATE){ return; }; game.DEBUG.spriteStressTest2(); }, 100);
+			game.DEBUG.VALS.sprite_test2_id = setInterval(function(){ if(_CG.flags.INLAYERUPDATE){ return; }; game.DEBUG.spriteStressTest2(); }, 100);
 			break;
 		}
 		case "sprite_test2_off" : {
@@ -429,11 +429,11 @@ game.DEBUG.updateDebugDisplay_funcs = {
 		let new_avg_FADE  ;
 		let new_avg_OUTPUT;
 
-		try{ new_avg_BG     = (core.GRAPHICS.performance.BG     .reduce(sum) / core.GRAPHICS.performance.BG    .length); } catch(e){ return; }
-		try{ new_avg_SPRITE = (core.GRAPHICS.performance.SPRITE .reduce(sum) / core.GRAPHICS.performance.SPRITE.length); } catch(e){ return; }
-		try{ new_avg_TEXT   = (core.GRAPHICS.performance.TEXT   .reduce(sum) / core.GRAPHICS.performance.TEXT  .length); } catch(e){ return; }
-		try{ new_avg_FADE   = (core.GRAPHICS.performance.FADE   .reduce(sum) / core.GRAPHICS.performance.FADE  .length); } catch(e){ return; }
-		try{ new_avg_OUTPUT = (core.GRAPHICS.performance.OUTPUT .reduce(sum) / core.GRAPHICS.performance.OUTPUT.length); } catch(e){ return; }
+		try{ new_avg_BG     = (_CG.performance.BG     .reduce(sum) / _CG.performance.BG    .length); } catch(e){ return; }
+		try{ new_avg_SPRITE = (_CG.performance.SPRITE .reduce(sum) / _CG.performance.SPRITE.length); } catch(e){ return; }
+		try{ new_avg_TEXT   = (_CG.performance.TEXT   .reduce(sum) / _CG.performance.TEXT  .length); } catch(e){ return; }
+		try{ new_avg_FADE   = (_CG.performance.FADE   .reduce(sum) / _CG.performance.FADE  .length); } catch(e){ return; }
+		try{ new_avg_OUTPUT = (_CG.performance.OUTPUT .reduce(sum) / _CG.performance.OUTPUT.length); } catch(e){ return; }
 
 		// toFixed and then parseFloat.
 		let new_avg_TOTAL  = (
@@ -581,26 +581,26 @@ game.DEBUG.speedtest1 = function(){
 
 	for(let i=0; i<50000; i+=1){
 		var ts1=performance.now();
-		core.GRAPHICS.sprites.map(a => Object.assign({}, a));
+		_CG.sprites.map(a => Object.assign({}, a));
 		var te1=performance.now();
 
 		var ts2=performance.now();
-		core.GRAPHICS.sprites_prev = JSON.parse(JSON.stringify(core.GRAPHICS.sprites));
+		_CG.sprites_prev = JSON.parse(JSON.stringify(_CG.sprites));
 		var te2=performance.now();
 
 		// var ts3=performance.now();
-		// core.GRAPHICS.sprites_prev = core.GRAPHICS.sprites.map(x=>x);
+		// _CG.sprites_prev = _CG.sprites.map(x=>x);
 		// var te3=performance.now();
 
 		var ts4=performance.now();
-		core.GRAPHICS.sprites_prev.length=0;
-		for(let i=0; i<core.GRAPHICS.sprites.length; i+=1){
-			core.GRAPHICS.sprites_prev[i] = {
-				"flags"     : core.GRAPHICS.sprites[i].flags     ,
-				"hash"      : core.GRAPHICS.sprites[i].hash      ,
-				"tileIndex" : core.GRAPHICS.sprites[i].tileIndex ,
-				"x"         : core.GRAPHICS.sprites[i].x         ,
-				"y"         : core.GRAPHICS.sprites[i].y         ,
+		_CG.sprites_prev.length=0;
+		for(let i=0; i<_CG.sprites.length; i+=1){
+			_CG.sprites_prev[i] = {
+				"flags"     : _CG.sprites[i].flags     ,
+				"hash"      : _CG.sprites[i].hash      ,
+				"tileIndex" : _CG.sprites[i].tileIndex ,
+				"x"         : _CG.sprites[i].x         ,
+				"y"         : _CG.sprites[i].y         ,
 			};
 		}
 		var te4=performance.now();

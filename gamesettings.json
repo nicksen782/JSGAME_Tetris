@@ -15,26 +15,29 @@
 	"soundkernel"       : "cores/soundMode_A/soundMode_A.js",
 
 	"js_files": [
-		"js/MAIN.js"             ,
-		"js/gs_ENTER_HIGH_SCORE.js" ,
-		"js/gs_PLAY.js"             ,
-		"js/gs_SETUP1.js"           ,
-		"js/gs_SETUP2.js"           ,
-		"js/gs_TITLE0.js"           ,
-		"js/gs_TITLE1.js"           ,
-		"js/gs_TITLE2.js"
+		{ "type":"js"  , "location":"js/MAIN.js"                } ,
+		{ "type":"js"  , "location":"js/gs_ENTER_HIGH_SCORE.js" } ,
+		{ "type":"js"  , "location":"js/gs_PLAY.js"             } ,
+		{ "type":"js"  , "location":"js/gs_SETUP1.js"           } ,
+		{ "type":"js"  , "location":"js/gs_SETUP2.js"           } ,
+		{ "type":"js"  , "location":"js/gs_TITLE0.js"           } ,
+		{ "type":"js"  , "location":"js/gs_TITLE1.js"           } ,
+		{ "type":"js"  , "location":"js/gs_TITLE2.js"           }
 	],
 
 	"debug_files": [
-		"DEBUG/debug.css",
-		"DEBUG/debug.js",
-		"DEBUG/debug.html"
+		{ "type":"css" , "location":"DEBUG/debug.css"  } ,
+		{ "type":"js"  , "location":"DEBUG/debug.js"   } ,
+		{ "type":"html", "location":"DEBUG/debug.html" }
+	],
+
+	"game_files" : [
 	],
 
 	"links":[
-		{ "text":"Instructions", "href":"links/instructions.txt"                     , "target":"_blank" },
-		{ "text":"Credits"     , "href":"links/credits.txt"                          , "target":"_blank" },
-		{ "text":"Github"      , "href":"https://github.com/nicksen782/JSGAME_Tetris", "target":"_blank" }
+		{ "text":"Instructions (game)", "href":"links/instructions.txt"                     , "target":"_blank" },
+		{ "text":"Credits (game)"     , "href":"links/credits.txt"                          , "target":"_blank" },
+		{ "text":"Github (game)"      , "href":"https://github.com/nicksen782/JSGAME_Tetris", "target":"_blank" }
 	],
 
 	"authors":[
@@ -86,7 +89,6 @@
 
 	"canvas_scaleFactor" : 2.0 ,
 
-
 	"graphics_files": [
 		"UAM/PROGMEM/_min_combined_alltilegraphics.inc"
 	],
@@ -112,7 +114,6 @@
 		"FADE_alpha"   : false ,
 		"OUTPUT_alpha" : false
 	},
-
 
 	"ENDOFFILE" : ""
 }

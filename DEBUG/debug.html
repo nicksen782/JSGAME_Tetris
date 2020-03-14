@@ -59,7 +59,7 @@
 					<tr>
 						<td>LOGO</td>
 						<td>
-							<button onclick="core.FUNCS.graphics.logo();">logo</button>
+							<button onclick="_CFG.logo();">logo</button>
 						</td>
 					</tr>
 					<tr>
@@ -127,28 +127,28 @@
 						<td>FADE TESTS</td>
 						<td>
 							<!-- NON-BLOCKING -- DON'T BLOCK LOGIC WHEN DONE -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, false);">FadeIn (3, false, false)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, false);">FadeOut(3, false, false)</button>
+							<button onclick="_CG.FADER.FUNCS.FadeIn (3, false, false);">FadeIn (3, false, false)</button>
+							<button onclick="_CG.FADER.FUNCS.FadeOut(3, false, false);">FadeOut(3, false, false)</button>
 							<br>
 
 							<!-- BLOCKING -- DON'T BLOCK LOGIC WHEN DONE -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, false);">FadeIn (3, true, false)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, false);">FadeOut(3, true, false)</button>
+							<button onclick="_CG.FADER.FUNCS.FadeIn (3, true, false);">FadeIn (3, true, false)</button>
+							<button onclick="_CG.FADER.FUNCS.FadeOut(3, true, false);">FadeOut(3, true, false)</button>
 							<br>
 
 							<!-- NON-BLOCKING -- BLOCK LOGIC WHEN DONE -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, false, true);">FadeIn (3, false, true)</button> -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, false, true);">FadeOut(3, false, true)</button> -->
+							<!-- <button onclick="_CG.FADER.FUNCS.FadeIn (3, false, true);">FadeIn (3, false, true)</button> -->
+							<!-- <button onclick="_CG.FADER.FUNCS.FadeOut(3, false, true);">FadeOut(3, false, true)</button> -->
 							<!-- <br> -->
 
 							<!-- BLOCKING -- BLOCK LOGIC WHEN DONE -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeIn (3, true, true);">FadeIn (3, true, true)</button> -->
-							<!-- <button onclick="core.GRAPHICS.FADER.FUNCS.FadeOut(3, true, true);">FadeOut(3, true, true)</button> -->
+							<!-- <button onclick="_CG.FADER.FUNCS.FadeIn (3, true, true);">FadeIn (3, true, true)</button> -->
+							<!-- <button onclick="_CG.FADER.FUNCS.FadeOut(3, true, true);">FadeOut(3, true, true)</button> -->
 							<!-- <br> -->
 
 							<!-- OVERRIDE LOGIC BLOCK -->
-							<button onclick="core.GRAPHICS.FADER.FUNCS.blockLogic(false);">blockLogic(false)</button>
-							<button onclick="core.GRAPHICS.FADER.FUNCS.blockLogic(true);" >blockLogic(true)</button>
+							<button onclick="_CG.FADER.FUNCS.blockLogic(false);">blockLogic(false)</button>
+							<button onclick="_CG.FADER.FUNCS.blockLogic(true);" >blockLogic(true)</button>
 							<br>
 
 						</td>
@@ -177,11 +177,11 @@
 					<tr>
 						<td>DRAW FLAGS</td>
 						<td>
-							<button onclick="core.GRAPHICS.flags.BG    =true;game.DEBUG.drawFlagsToConsole();">BG    =true</button>
-							<button onclick="core.GRAPHICS.flags.SPRITE=true;game.DEBUG.drawFlagsToConsole();">SPRITE=true</button>
-							<button onclick="core.GRAPHICS.flags.TEXT  =true;game.DEBUG.drawFlagsToConsole();">TEXT  =true</button>
-							<button onclick="core.GRAPHICS.flags.FADE  =true;game.DEBUG.drawFlagsToConsole();">FADE  =true</button>
-							<button onclick="core.GRAPHICS.flags.OUTPUT=true;game.DEBUG.drawFlagsToConsole();">OUTPUT=true</button>
+							<button onclick="_CG.flags.BG    =true;game.DEBUG.drawFlagsToConsole();">BG    =true</button>
+							<button onclick="_CG.flags.SPRITE=true;game.DEBUG.drawFlagsToConsole();">SPRITE=true</button>
+							<button onclick="_CG.flags.TEXT  =true;game.DEBUG.drawFlagsToConsole();">TEXT  =true</button>
+							<button onclick="_CG.flags.FADE  =true;game.DEBUG.drawFlagsToConsole();">FADE  =true</button>
+							<button onclick="_CG.flags.OUTPUT=true;game.DEBUG.drawFlagsToConsole();">OUTPUT=true</button>
 						</td>
 					</tr>
 

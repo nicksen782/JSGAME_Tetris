@@ -15,8 +15,8 @@ game.gs.TITLE2 = {
 		let gs   = this;
 		let vars = gs.vars;
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		// core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		// _CFG.ClearVram();
 
 		vars.END = false;
 		vars.text1 = ["PRESS START!"];
@@ -33,23 +33,23 @@ game.gs.TITLE2 = {
 	init : function(){
 		let gs    = this;
 		let vars  = gs.vars;
-		core.FUNCS.graphics.ClearVram();
+		_CFG.ClearVram();
 
 		core.FUNCS.audio.stopAllSounds_midi(true);
 		core.FUNCS.audio.cancelAllSounds_mp3("all");
 
 		let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
-		core.FUNCS.graphics.DrawMap2(1,6, core.ASSETS.graphics.tilemaps["title_tetris"], "VRAM1"); // TITLE
+		_CFG.Fill(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, fillTile, "VRAM1")
+		_CFG.DrawMap2(1,6, core.ASSETS.graphics.tilemaps["title_tetris"], "VRAM1"); // TITLE
 
 		// vars.END = true;
 
 		for(let y=0; y<vars.text1.length; y+=1){
-			core.FUNCS.graphics.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
+			_CFG.Print(vars.xOffset_text, (y+vars.yOffset_text), vars.text2[y], "VRAM2");
 		}
 
-		core.GRAPHICS.FADER.FUNCS.FadeIn (1, true, false);
-		// core.GRAPHICS.FADER.FUNCS.FadeIn (game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
+		_CG.FADER.FUNCS.FadeIn (1, true, false);
+		// _CG.FADER.FUNCS.FadeIn (game.secondsToFrames(0.1)/_CG.FADER.CONSTS["FADER_STEPS"], true, false);
 
 	},
 
@@ -85,10 +85,10 @@ game.gs.TITLE2 = {
 
 			if(vars.framesBetweenFlashes_cnt >= vars.framesBetweenFlashes){
 				if(vars.framesBetweenFlashes_state){
-					core.FUNCS.graphics.Print(vars.xOffset_text, (vars.yOffset_text), vars.text2[0], "VRAM2");
+					_CFG.Print(vars.xOffset_text, (vars.yOffset_text), vars.text2[0], "VRAM2");
 				}
 				else{
-					core.FUNCS.graphics.Print(vars.xOffset_text, (vars.yOffset_text), vars.text1[0], "VRAM2");
+					_CFG.Print(vars.xOffset_text, (vars.yOffset_text), vars.text1[0], "VRAM2");
 				}
 
 				vars.framesBetweenFlashes_state = !vars.framesBetweenFlashes_state;

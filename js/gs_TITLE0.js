@@ -16,8 +16,8 @@ game.gs.TITLE0 = {
 		let vars  = gs.vars;
 		vars.init = false;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		vars.tilemaps = core.ASSETS.graphics.tilemaps;
 
@@ -74,7 +74,7 @@ game.gs.TITLE0 = {
 	init : function(){
 		let gs    = this;
 		let vars  = gs.vars;
-		core.FUNCS.graphics.ClearVram();
+		_CFG.ClearVram();
 
 		core.FUNCS.audio.stopAllSounds_midi(true);
 		core.FUNCS.audio.cancelAllSounds_mp3("all");
@@ -82,17 +82,17 @@ game.gs.TITLE0 = {
 		// let fillTile = core.ASSETS.graphics.tilemaps[ "empty_square" ][2];
 
 		// Clear the background.
-		core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
+		_CFG.Fill(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, fillTile, "VRAM1")
 
 		// Draw the first frame of the lense.
-		core.FUNCS.graphics.DrawMap2(vars.lense.pos.x,vars.lense.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
+		_CFG.DrawMap2(vars.lense.pos.x,vars.lense.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
 
 		// Draw the first frame of the stars.
-		core.FUNCS.graphics.DrawMap2(vars.stars.pos.x,vars.stars.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
-		// core.FUNCS.graphics.DrawMap2(vars.stars.pos.x,vars.stars.pos.y, vars.tilemaps["n782_text_f2"], "VRAM1");
+		_CFG.DrawMap2(vars.stars.pos.x,vars.stars.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
+		// _CFG.DrawMap2(vars.stars.pos.x,vars.stars.pos.y, vars.tilemaps["n782_text_f2"], "VRAM1");
 
 		// Fade this in.
-		core.GRAPHICS.FADER.FUNCS.FadeIn(1, true, false);
+		_CG.FADER.FUNCS.FadeIn(1, true, false);
 	},
 
 	//
@@ -121,13 +121,13 @@ game.gs.TITLE0 = {
 				if(obj.waitFrames >= obj.frameDelay){
 					obj.waitFrames=0;
 					if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
-						core.FUNCS.graphics.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
+						_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
 						obj.curFrame+=obj.frameDir;
 					}
 					else{
 						if(obj.repeat_cnt>= obj.repeatsTillDone){
 							obj.complete=true;
-							core.FUNCS.graphics.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
+							_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
 						}
 						else{
 							obj.repeat_cnt+=1;
@@ -146,18 +146,18 @@ game.gs.TITLE0 = {
 				if(obj.waitFrames >= obj.frameDelay){
 					obj.waitFrames=0;
 					if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
-						core.FUNCS.graphics.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
+						_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
 						obj.curFrame+=obj.frameDir;
 					}
 					else{
 						if(obj.repeat_cnt>= obj.repeatsTillDone){
 							obj.complete=true;
-							core.FUNCS.graphics.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
+							_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
 						}
 						else{
 							obj.repeat_cnt+=1;
 							obj.curFrame=0;
-							core.FUNCS.graphics.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
+							_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
 							obj.curFrame+=obj.frameDir;
 						}
 					}
@@ -172,7 +172,7 @@ game.gs.TITLE0 = {
 			if(vars.endDelay.started){
 				if(vars.endDelay.cnt >= vars.endDelay.delay){
 					vars.END=true;
-					core.GRAPHICS.FADER.FUNCS.FadeOut(1, true, false);
+					_CG.FADER.FUNCS.FadeOut(1, true, false);
 					game.setGamestate1("TITLE1", true);
 				}
 				else{

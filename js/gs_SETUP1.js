@@ -13,8 +13,8 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// MENUS
 
@@ -148,11 +148,11 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
 
 		// Draw the menu title and box.
 		vars.currentScreen="mainmenu";
@@ -160,7 +160,7 @@ game.gs.SETUP1 = {
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 16, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "-- MAIN MENU--";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// Draw the menus.
 		game.SHARED.drawMenus(gs);
@@ -170,11 +170,11 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
 
 		// Draw the main menu title and box.
 		vars.currentScreen="instructions1";
@@ -182,7 +182,7 @@ game.gs.SETUP1 = {
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 18, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "- INSTRUCTIONS -";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT (break into individual words. Add a space after periods.)
 		let text1 = (
@@ -194,7 +194,7 @@ game.gs.SETUP1 = {
 		).split(" ");
 
 		// Get the font map.
-		let fontmap   = core.ASSETS.graphics.tilemaps[core.GRAPHICS.fontSettings.fontmap];
+		let fontmap   = core.ASSETS.graphics.tilemaps[_CG.fontSettings.fontmap];
 
 		// Draw the text.
 		let xOffset = 2;
@@ -208,7 +208,7 @@ game.gs.SETUP1 = {
 			let text = text1[i];
 
 			// Will the word fit?
-			if(x+text.length>=core.SETTINGS.VRAM_TILES_H-xOffset-1){ x=0; y+=2; }
+			if(x+text.length>=_CS.VRAM_TILES_H-xOffset-1){ x=0; y+=2; }
 
 			// Convert the word to an array. Add a space to the end.
 			let arrText = Array.from(text); arrText.push(" ");
@@ -217,7 +217,7 @@ game.gs.SETUP1 = {
 			arrText.map(
 				function(d){
 					let tileid = d.toUpperCase().charCodeAt() - 32;
-					core.FUNCS.graphics.SetTile(x+xOffset, y+yOffset, fontmap[ tileid+2 ], "VRAM2");
+					_CFG.SetTile(x+xOffset, y+yOffset, fontmap[ tileid+2 ], "VRAM2");
 					x+=1;
 				}
 			);
@@ -229,11 +229,11 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
 
 		// Draw the main menu title and box.
 		vars.currentScreen="controls";
@@ -241,7 +241,7 @@ game.gs.SETUP1 = {
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 14, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "- CONTROLS -";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT
 		let text1 = [
@@ -272,7 +272,7 @@ game.gs.SETUP1 = {
 		let xOffset = 2;
 		let yOffset = 5;
 		for(let y=0; y<text1.length; y+=1){
-			core.FUNCS.graphics.Print(xOffset, (y+yOffset), text1[y], "VRAM2");
+			_CFG.Print(xOffset, (y+yOffset), text1[y], "VRAM2");
 		}
 
 	},
@@ -284,12 +284,12 @@ game.gs.SETUP1 = {
 		// gs.show_mainMenu();
 		// return;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Draw the border around the screen.
-		// game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.blacktile);
+		// game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.blacktile);
 
 		// Draw the main menu title and box.
 		vars.currentScreen="highScores";
@@ -297,13 +297,13 @@ game.gs.SETUP1 = {
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 18, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "- HIGH  SCORES -";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// Display the loading indicator.
 		let str="...LOADING";
-		let loading_x=((core.SETTINGS.VRAM_TILES_H-1) - str.length) ;
-		let loading_y=((core.SETTINGS.VRAM_TILES_V-2));
-		core.FUNCS.graphics.Print(loading_x, loading_y, str, "VRAM2");
+		let loading_x=((_CS.VRAM_TILES_H-1) - str.length) ;
+		let loading_y=((_CS.VRAM_TILES_V-2));
+		_CFG.Print(loading_x, loading_y, str, "VRAM2");
 
 		// Get the high scores.
 		let prom = gs.getHighScores();
@@ -312,7 +312,7 @@ game.gs.SETUP1 = {
 		prom.then(
 			function(res){
 				// Clear the loading indicator.
-				core.FUNCS.graphics.Print(loading_x, loading_y, "          ", "VRAM2");
+				_CFG.Print(loading_x, loading_y, "          ", "VRAM2");
 
 				// Update the display.
 				let maxRecordsToDisplay=6;
@@ -324,7 +324,7 @@ game.gs.SETUP1 = {
 				// If still on the high scores screen.
 				if(vars.currentScreen=="highScores"){
 					// Type A.
-					core.FUNCS.graphics.Print_multiFont(
+					_CFG.Print_multiFont(
 						startX+0, startY+y,
 						{
 							"text"  : "=======[ TYPE A ]=======" ,
@@ -335,8 +335,8 @@ game.gs.SETUP1 = {
 					);
 					y+=1;
 
-					core.FUNCS.graphics.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
-					core.FUNCS.graphics.Print(startX   , startY+y, "========================", "VRAM2", "fonts3"); y+=1;
+					_CFG.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
+					_CFG.Print(startX   , startY+y, "========================", "VRAM2", "fonts3"); y+=1;
 					y+=1;
 					res.type_a.forEach(function(d){
 						if(recsDisplayed >= maxRecordsToDisplay){ return; }
@@ -347,7 +347,7 @@ game.gs.SETUP1 = {
 							(d.level.toString()).padStart(2," ") + " " +
 							""
 						;
-						core.FUNCS.graphics.Print(startX, startY+y, text, "VRAM2");
+						_CFG.Print(startX, startY+y, text, "VRAM2");
 						y+=1;
 						recsDisplayed+=1;
 					});
@@ -356,7 +356,7 @@ game.gs.SETUP1 = {
 					recsDisplayed=0;
 					y+=1;
 					y+=1;
-					core.FUNCS.graphics.Print_multiFont(
+					_CFG.Print_multiFont(
 						startX+0, startY+y,
 						{
 							"text"  : "=======[ TYPE B ]=======" ,
@@ -366,8 +366,8 @@ game.gs.SETUP1 = {
 						"VRAM2"
 					);
 					y+=1;
-					core.FUNCS.graphics.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
-					core.FUNCS.graphics.Print(startX   , startY+y, "========================", "VRAM2", "fonts4"); y+=1;
+					_CFG.Print(startX   , startY+y, "NAME     SCORE  LINES LV", "VRAM2", "fonts1"); y+=1;
+					_CFG.Print(startX   , startY+y, "========================", "VRAM2", "fonts4"); y+=1;
 					y+=1;
 
 					res.type_b.forEach(function(d){
@@ -379,7 +379,7 @@ game.gs.SETUP1 = {
 							(d.level.toString()).padStart(2," ") + " " +
 							""
 						;
-						core.FUNCS.graphics.Print(startX, startY+y, text, "VRAM2");
+						_CFG.Print(startX, startY+y, text, "VRAM2");
 						y+=1;
 						recsDisplayed+=1;
 					});
@@ -399,11 +399,11 @@ game.gs.SETUP1 = {
 		let gs   = this;
 		let vars = gs.vars;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
 
 		// Draw the main menu title and box.
 		vars.currentScreen="credits";
@@ -411,7 +411,7 @@ game.gs.SETUP1 = {
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 13, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "- CREDITS -";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// TEXT
 		let text1 = [
@@ -442,7 +442,7 @@ game.gs.SETUP1 = {
 		let xOffset = 0;
 		let yOffset = 5;
 		for(let y=0; y<text1.length; y+=1){
-			core.FUNCS.graphics.Print(xOffset, (y+yOffset), text1[y], "VRAM2");
+			_CFG.Print(xOffset, (y+yOffset), text1[y], "VRAM2");
 		}
 	},
 	//

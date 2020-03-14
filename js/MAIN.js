@@ -95,8 +95,8 @@ game.SHARED = {
 			let OPTIONS        = menu.OPTIONS                                                 ;
 			let CURSOR         = menu.CURSOR                                                  ;
 			let selectedIndex  = vars.menuSettings[key].option                                ;
-			let cursor_x       = (OPTIONS[ selectedIndex ].cx+mx) * core.SETTINGS.TILE_WIDTH  ;
-			let cursor_y       = (OPTIONS[ selectedIndex ].cy+my) * core.SETTINGS.TILE_HEIGHT ;
+			let cursor_x       = (OPTIONS[ selectedIndex ].cx+mx) * _CS.TILE_WIDTH  ;
+			let cursor_y       = (OPTIONS[ selectedIndex ].cy+my) * _CS.TILE_HEIGHT ;
 			let cursor_tilemap = core.ASSETS.graphics.tilemaps[ CURSOR ]                      ;
 			let cursor_width   = cursor_tilemap[0]                                            ;
 			let cursor_height  = cursor_tilemap[1]                                            ;
@@ -135,7 +135,7 @@ game.SHARED = {
 			let menuKeys  = style.keys;
 
 			// Fill it (inside)
-			if(fillTile != null){ core.FUNCS.graphics.Fill(mx, my, mw, mh, fillTile, "VRAM1"); }
+			if(fillTile != null){ _CFG.Fill(mx, my, mw, mh, fillTile, "VRAM1"); }
 
 			// Draw it (borders)
 			for(let y=0; y<mh; y+=1){
@@ -160,7 +160,7 @@ game.SHARED = {
 						continue;
 					}
 
-					core.FUNCS.graphics.SetTile(x+mx, y+my, tileid, "VRAM1");
+					_CFG.SetTile(x+mx, y+my, tileid, "VRAM1");
 				}
 			}
 
@@ -188,7 +188,7 @@ game.SHARED = {
 				);
 
 				// Print the title text.
-				core.FUNCS.graphics.Print(data.title_x+data.mx, data.title_y+data.my , data.title_text, "VRAM2");
+				_CFG.Print(data.title_x+data.mx, data.title_y+data.my , data.title_text, "VRAM2");
 
 				// Print the options text.
 				for(let i2=0; i2<data.OPTIONS.length; i2+=1){
@@ -196,7 +196,7 @@ game.SHARED = {
 					let text = option.text;
 					let tx   = option.tx + data.mx ;
 					let ty   = option.ty + data.my ;
-					core.FUNCS.graphics.Print(tx, ty , text, "VRAM2");
+					_CFG.Print(tx, ty , text, "VRAM2");
 				}
 
 				// Show the sprite for this menu.
@@ -210,10 +210,10 @@ game.SHARED = {
 				let tileid = vars.empty_square;
 
 				// Clear this portion of VRAM1.
-				core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, tileid, "VRAM1");
+				_CFG.Fill(data.mx, data.my, data.mw, data.mh, tileid, "VRAM1");
 
 				// Clear this portion of VRAM2.
-				core.FUNCS.graphics.Fill(data.mx, data.my, data.mw, data.mh, 0     , "VRAM2");
+				_CFG.Fill(data.mx, data.my, data.mw, data.mh, 0     , "VRAM2");
 
 				// Hide the sprite for this menu.
 				game.SHARED.changeCursorState(which, newState, gs);
@@ -240,11 +240,11 @@ game.SHARED = {
 				let data = game.SHARED.getMenuData(key, gs);
 
 				// Set bank and also SPRITE_OFF.
-				let flags = core.CONSTS["SPRITE_OFF"] | core.CONSTS["SPRITE_BANK0"] ;
+				let flags = _CC["SPRITE_OFF"] | _CC["SPRITE_BANK0"] ;
 
 				// Map/Move the sprites.
-				core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
-				core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x+(data.mx*core.SETTINGS.TILE_WIDTH) , data.cursor_y+(data.my*core.SETTINGS.TILE_HEIGHT) , data.cursor_width, data.cursor_height );
+				_CFG.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+				_CFG.MoveSprite( spriteNum, data.cursor_x+(data.mx*_CS.TILE_WIDTH) , data.cursor_y+(data.my*_CS.TILE_HEIGHT) , data.cursor_width, data.cursor_height );
 
 				// Set the cursor sprite numbers.
 				vars.currSprite_indexes[key]=spriteNum;
@@ -270,7 +270,7 @@ game.SHARED = {
 				data = game.SHARED.getMenuData(key,gs);
 
 				if(vars.menu_visibility[key]==true){
-					core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, vars.bg1_tile, "VRAM1");
+					_CFG.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, vars.bg1_tile, "VRAM1");
 				}
 				else{
 				}
@@ -290,7 +290,7 @@ game.SHARED = {
 			if     (state=="ON" ){ tileid = vars.bg2_tile; }
 			else if(state=="OFF"){ tileid = vars.bg1_tile; }
 
-			core.FUNCS.graphics.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, tileid, "VRAM1");
+			_CFG.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, tileid, "VRAM1");
 		},
 		// Show/hides the specified cursor.
 		game.SHARED.changeCursorState = function(which, newState, gs){
@@ -300,7 +300,7 @@ game.SHARED = {
 			let spriteNum = vars.currSprite_indexes[which];
 			let flags;
 			try{
-				flags = core.GRAPHICS.sprites[spriteNum].flags;
+				flags = _CG.sprites[spriteNum].flags;
 			}
 			catch(e){
 				console.log("Invalid sprite data.", which, newState, vars.currSprite_indexes);
@@ -310,13 +310,13 @@ game.SHARED = {
 			let data = game.SHARED.getMenuData(which,gs);
 
 			// Adjust flags.
-			if     (newState=="ON") { flags &= ~( core.CONSTS["SPRITE_OFF"] ); } // Clear the bit.
-			else if(newState=="OFF"){ flags |=  ( core.CONSTS["SPRITE_OFF"] ); } // Set the bit.
+			if     (newState=="ON") { flags &= ~( _CC["SPRITE_OFF"] ); } // Clear the bit.
+			else if(newState=="OFF"){ flags |=  ( _CC["SPRITE_OFF"] ); } // Set the bit.
 			else                    { return; }
 
 			// Update the sprite.
-			core.FUNCS.graphics.MapSprite2( spriteNum, data.cursor_tilemap, flags );
-			core.FUNCS.graphics.MoveSprite( spriteNum, data.cursor_x, data.cursor_y , data.cursor_width, data.cursor_height );
+			_CFG.MapSprite2( spriteNum, data.cursor_tilemap, flags );
+			_CFG.MoveSprite( spriteNum, data.cursor_x, data.cursor_y , data.cursor_width, data.cursor_height );
 		};
 	},
 };
@@ -393,7 +393,7 @@ game.runOnce = function(){
 		let proms1 = [];
 
 		// Graphics and audio setup.
-		proms1.push( core.FUNCS.graphics.init() ) ; // Comes from the selected video kernel.
+		proms1.push( _CFG.init() ) ; // Comes from the selected video kernel.
 		proms1.push( core.FUNCS.audio   .init() ) ; // Comes from the selected sound kernel.
 
 		// When the above promises have been completed...
@@ -410,7 +410,7 @@ game.runOnce = function(){
 				delete core.ASSETS.graphics.ramtiles
 
 				// Remove these functions since they will not be needed again.
-				delete core.FUNCS.graphics.init ;
+				delete _CFG.init ;
 				delete core.FUNCS.audio.init    ;
 
 				// Remove the population function since it is only needed once.
@@ -462,17 +462,17 @@ game.firstLoop = function(){
 		// *** TIMING ***
 
 		// https://codetheory.in/controlling-the-frame-rate-with-requestanimationframe/
-		JSGAME.SHARED.timing.adjust( core.SETTINGS.fps );
+		JSGAME.SHARED.timing.adjust( _CS.fps );
 
 		// *** VRAM ***
 
 		// VRAM1 - SET INITIAL TILESET.
-		core.FUNCS.graphics.SetTileTable("tilesBG1", "BG");
-		core.FUNCS.graphics.SetTileTable("tilesBG1", "BG2");
+		_CFG.SetTileTable("tilesBG1", "BG");
+		_CFG.SetTileTable("tilesBG1", "BG2");
 
 		// VRAM2 - SET INTITAL FONT.
-		core.FUNCS.graphics.SetFont("fonts1"); // White
-		// core.FUNCS.graphics.SetFont("fonts2"); // Dark gray.
+		_CFG.SetFont("fonts1"); // White
+		// _CFG.SetFont("fonts2"); // Dark gray.
 
 		// *** AUDIO ***
 
@@ -480,20 +480,19 @@ game.firstLoop = function(){
 		core.FUNCS.audio.changeMasterVolume(75);
 
 		// Set the volume:
-		if( JSGAME.PRELOAD.PHP_VARS.queryString.mastervol != undefined)       {
-			// console.log("Setting volume.");
+		if( JSGAME.PRELOAD.PHP_VARS.mastervol != undefined)       {
 			// Set the volume (within range.)
-			if( !isNaN( JSGAME.PRELOAD.PHP_VARS.queryString.mastervol ) ){
-				core.FUNCS.audio.changeMasterVolume( Math.min(Math.max(JSGAME.PRELOAD.PHP_VARS.queryString.mastervol, 0), 100) );
+			if( !isNaN( JSGAME.PRELOAD.PHP_VARS.mastervol ) ){
+				core.FUNCS.audio.changeMasterVolume( Math.min(Math.max(JSGAME.PRELOAD.PHP_VARS.mastervol, 0), 100) );
 			}
 		}
 
 		// *** SPRITES ***
 
-		core.FUNCS.graphics.SetSpritesTileBank(0, "tilesSP1"); // SPRITE_BANK0
-		core.FUNCS.graphics.SetSpritesTileBank(1, "tilesBG1"); // SPRITE_BANK1
-		core.FUNCS.graphics.SetSpritesTileBank(2, "tilesTX1"); // SPRITE_BANK2
-		// core.FUNCS.graphics.SetSpritesTileBank(3, "");         // SPRITE_BANK3
+		_CFG.SetSpritesTileBank(0, "tilesSP1"); // SPRITE_BANK0
+		_CFG.SetSpritesTileBank(1, "tilesBG1"); // SPRITE_BANK1
+		_CFG.SetSpritesTileBank(2, "tilesTX1"); // SPRITE_BANK2
+		// _CFG.SetSpritesTileBank(3, "");         // SPRITE_BANK3
 
 		// *** GAMESTATES RESET ***
 
@@ -502,22 +501,22 @@ game.firstLoop = function(){
 		gamestates.forEach(function(d){ game.gs[d].vars = {}; });
 
 		// CLEAR ALL CANVASES AND GRAPHICS ARRAYS.
-		core.FUNCS.graphics.clearAllCanvases();
+		_CFG.clearAllCanvases();
 
-		// core.FUNCS.graphics.update_allLayers();
+		// _CFG.update_allLayers();
 
 		// Resolve this since we are done.
 		setTimeout(
 			function(){
 				// Blank the screen.
-				let outputCanvasCtx = core.GRAPHICS["ctx"].OUTPUT;
+				let outputCanvasCtx = _CG["ctx"].OUTPUT;
 				outputCanvasCtx.fillStyle = "#000";
 				outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
 
 				resolve(
 					function(){
 						// CLEAR ALL CANVASES AND GRAPHICS ARRAYS.
-						core.FUNCS.graphics.clearAllCanvases();
+						_CFG.clearAllCanvases();
 
 						// Again, make sure the output is is clear.
 						outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
@@ -605,7 +604,7 @@ game.game_full_restart = function(){
 	JSGAME.SHARED.raf_id=null;
 
 	// Blank the screen.
-	let outputCanvasCtx = core.GRAPHICS["ctx"].OUTPUT;
+	let outputCanvasCtx = _CG["ctx"].OUTPUT;
 	outputCanvasCtx.fillStyle = "#BB3";
 	outputCanvasCtx.fillRect(0, 0, outputCanvasCtx.canvas.width, outputCanvasCtx.canvas.height);
 
@@ -642,11 +641,11 @@ game.loop = function(){
 	// Should the gameloop run or be skipped?
 	if(
 		  JSGAME.FLAGS.windowIsFocused       && // Window in focus?
-		! core.GRAPHICS.flags.INLAYERUPDATE  && // Not in a graphics update?
+		! _CG.flags.INLAYERUPDATE  && // Not in a graphics update?
 		! JSGAME.FLAGS.paused                && // Game NOT paused? (Automatic.)
 		! JSGAME.FLAGS.manuallyPaused        && // Game NOT paused? (By user.)
-		! core.GRAPHICS.FADER.blocking       && // Fader NOT set to block?
-		! core.GRAPHICS.FADER.blockAfterFade && // Fade done but set to block logic?
+		! _CG.FADER.blocking       && // Fader NOT set to block?
+		! _CG.FADER.blockAfterFade && // Fade done but set to block logic?
 		  JSGAME.FLAGS.gameReady                // Game is ready.
 	){
 		// *** Get inputs ***
@@ -670,7 +669,7 @@ game.loop = function(){
 
 	// *** Output any graphical changes to the canvas. ***
 
-	core.FUNCS.graphics.update_allLayers();
+	_CFG.update_allLayers();
 };
 //
 game.gameloop = function(timestamp){
@@ -707,7 +706,7 @@ game.gameloop = function(timestamp){
 			let secondsToWait_debugDisplay = game.DEBUG.VALS.secondsToWait_debugDisplay ;
 
 			// Update the debug display?
-			if(timeSince >= (JSGAME.SHARED.timing.interval * core.SETTINGS.fps) * secondsToWait_debugDisplay ){
+			if(timeSince >= (JSGAME.SHARED.timing.interval * _CS.fps) * secondsToWait_debugDisplay ){
 				game.DEBUG.updateDebugDisplay();
 				game.DEBUG.VALS.lastDebugDisplay=performance.now();
 			}

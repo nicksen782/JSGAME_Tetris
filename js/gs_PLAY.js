@@ -18,8 +18,8 @@ game.gs.PLAY = {
 		let consts = gs.consts;
 
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		// Constants.
 		consts.min_x_tile  = 2  ;
@@ -137,9 +137,9 @@ game.gs.PLAY = {
 		let vars  = gs.vars;
 		let consts = gs.consts;
 
-		core.FUNCS.graphics.ClearVram();
+		_CFG.ClearVram();
 
-		core.FUNCS.graphics.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["main_game"], "VRAM1"); // PLAY
+		_CFG.DrawMap2(0,0, core.ASSETS.graphics.tilemaps["main_game"], "VRAM1"); // PLAY
 
 		// Determine the first piece.
 		vars.nextPiece = consts.validPieces[ game.getRandomInt_inRange(0, consts.validPieces.length-1) ];
@@ -186,14 +186,14 @@ game.gs.PLAY = {
 				if(vars.paused){
 					if( game.chkBtn("BTN_START"    , "btnPressed1") ){
 						// Restore previous VRAMs.
-						core.FUNCS.graphics.DrawMap2(0, 0, vars.prev_vram1, "VRAM1");
-						core.FUNCS.graphics.DrawMap2(0, 0, vars.prev_vram2, "VRAM2");
+						_CFG.DrawMap2(0, 0, vars.prev_vram1, "VRAM1");
+						_CFG.DrawMap2(0, 0, vars.prev_vram2, "VRAM2");
 
 						vars.currSprite_indexes.forEach(function(d){
-							let flags = JSGAME.SHARED.get_new_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 0);
-							core.FUNCS.graphics.changeSpriteFlags(d, flags);
+							let flags = _CFG.setSpriteFlag(_CG.sprites[d].flags, "SPRITE_OFF", "OFF");
+							_CFG.changeSpriteFlags(d, flags);
 						});
-						core.GRAPHICS.flags.SPRITE=true;
+						_CG.flags.SPRITE=true;
 
 						// Clear the paused flag.
 						vars.paused=false;
@@ -217,17 +217,17 @@ game.gs.PLAY = {
 							vars.linesCleared=false;
 
 							// Draw the new field.
-							core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.new );
+							_CFG.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.new );
 
 							gs.updatePieceCounts(vars.currentPiece);
 							gs.startNextTurn();
 						}
 						else{
 							if(vars.linesCleared_f_Cnt%2==0){
-								core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.adj );
+								_CFG.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.adj );
 							}
 							else{
-								core.FUNCS.graphics.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.org );
+								_CFG.DrawMap2(consts.min_x_tile, consts.min_y_tile, vars.field.org );
 							}
 
 							vars.linesCleared_f_Cnt +=1 ;
@@ -268,7 +268,7 @@ game.gs.PLAY = {
 							gs.currentPiecetoVRAM1();
 
 							// Clear the sprites.
-							core.FUNCS.graphics.clearSprites();
+							_CFG.clearSprites();
 
 							// Detect completed lines!
 							let linesCleared = gs.detectCompletedLines();
@@ -289,26 +289,26 @@ game.gs.PLAY = {
 				// Pause?
 				if     ( game.chkBtn("BTN_START"    , "btnPressed1") ){
 					// Copy VRAM1 and VRAM2.
-					vars.prev_vram1 = core.FUNCS.graphics.vramRegionToTilemap(0,0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, "VRAM1");
-					vars.prev_vram2 = core.FUNCS.graphics.vramRegionToTilemap(0,0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, "VRAM2");
+					vars.prev_vram1 = _CFG.vramRegionToTilemap(0,0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, "VRAM1");
+					vars.prev_vram2 = _CFG.vramRegionToTilemap(0,0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, "VRAM2");
 
 					// Clear VRAM1 and VRAM2.
-					core.FUNCS.graphics.Fill(0,0,core.SETTINGS.VRAM_TILES_H,core.SETTINGS.VRAM_TILES_V, vars.blacktile, "VRAM1");
-					core.FUNCS.graphics.Fill(0,0,core.SETTINGS.VRAM_TILES_H,core.SETTINGS.VRAM_TILES_V, vars.blacktile, "VRAM2");
+					_CFG.Fill(0,0,_CS.VRAM_TILES_H,_CS.VRAM_TILES_V, vars.blacktile, "VRAM1");
+					_CFG.Fill(0,0,_CS.VRAM_TILES_H,_CS.VRAM_TILES_V, vars.blacktile, "VRAM2");
 
 					// Draw the pause text.
 					let text = "-- PAUSED --";
-					let x    = (core.SETTINGS.VRAM_TILES_H/2)-text.length+(text.length/2);
-					let y    = (core.SETTINGS.VRAM_TILES_V/2)-1;
+					let x    = (_CS.VRAM_TILES_H/2)-text.length+(text.length/2);
+					let y    = (_CS.VRAM_TILES_V/2)-1;
 					game.SHARED.drawMenu_box(x-2, y-2, 16, 5, game.SHARED.menuStyle1, vars.blacktile);
-					core.FUNCS.graphics.Print(x, y, text, "VRAM2");
+					_CFG.Print(x, y, text, "VRAM2");
 
 					// Turn off the active sprites.
 					vars.currSprite_indexes.forEach(function(d){
-						let flags = JSGAME.SHARED.get_new_bitMask(core.GRAPHICS.sprites[d].flags, core.CONSTS["SPRITE_OFF"], 1);
-						core.FUNCS.graphics.changeSpriteFlags(d, flags);
+						let flags = _CFG.setSpriteFlag(_CG.sprites[d].flags, "SPRITE_OFF", "ON");
+						_CFG.changeSpriteFlags(d, flags);
 					});
-					core.GRAPHICS.flags.SPRITE=true;
+					_CG.flags.SPRITE=true;
 
 					// Set the paused flag.
 					vars.paused=true;
@@ -437,11 +437,11 @@ game.gs.PLAY = {
 			// let newRow=[];
 			// Populate the row from VRAM data.
 			// for(let x=0; x<x_lines.length; x+=1){
-			// 	newRow.push( core.GRAPHICS.VRAM1[ ( ( y_lines[y] ) * core.SETTINGS.VRAM_TILES_H) + ( x_lines[x] ) ] );
+			// 	newRow.push( _CG.VRAM1[ ( ( y_lines[y] ) * _CS.VRAM_TILES_H) + ( x_lines[x] ) ] );
 			// }
 
 			// NEW WAY
-			let newRow = core.FUNCS.graphics.vramRegionToTilemap(x_lines[0], y_lines[y], x_lines.length, 1, "VRAM1");
+			let newRow = _CFG.vramRegionToTilemap(x_lines[0], y_lines[y], x_lines.length, 1, "VRAM1");
 			// Remove the indexes containing width and height since they are not needed.
 			newRow.shift();
 			newRow.shift();
@@ -578,7 +578,7 @@ game.gs.PLAY = {
 		gs.updateType();
 		gs.updateNextPiece();
 
-		core.FUNCS.graphics.Print(17, 11, "-STATS-", "VRAM2");
+		_CFG.Print(17, 11, "-STATS-", "VRAM2");
 	},
 	//
 	updateLineCount       : function(){
@@ -588,13 +588,13 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(15, 19, 5,1, blacktile, "VRAM1");
+		_CFG.Fill(15, 19, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.lines.toString().padStart(5, " ");
-		core.FUNCS.graphics.Print(15, 19-1, "LINES", "VRAM2");
-		core.FUNCS.graphics.Print(15, 19, str, "VRAM2");
+		_CFG.Print(15, 19-1, "LINES", "VRAM2");
+		_CFG.Print(15, 19, str, "VRAM2");
 	},
 	//
 	updateType            : function(){
@@ -604,13 +604,13 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(15, 22, 5,1, blacktile, "VRAM1");
+		_CFG.Fill(15, 22, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.type.toString().padStart(5, " ");
-		core.FUNCS.graphics.Print(15, 22-1, "TYPE "   , "VRAM2");
-		core.FUNCS.graphics.Print(15, 22, str, "VRAM2");
+		_CFG.Print(15, 22-1, "TYPE "   , "VRAM2");
+		_CFG.Print(15, 22, str, "VRAM2");
 
 	},
 	//
@@ -621,13 +621,13 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(21, 22, 5,1, blacktile, "VRAM1");
+		_CFG.Fill(21, 22, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=vars.score.toString().padStart(5, " ");
-		core.FUNCS.graphics.Print(21, 22-1, "SCORE", "VRAM2");
-		core.FUNCS.graphics.Print(21, 22, str, "VRAM2");
+		_CFG.Print(21, 22-1, "SCORE", "VRAM2");
+		_CFG.Print(21, 22, str, "VRAM2");
 	},
 	//
 	updateLevel           : function(){
@@ -640,13 +640,13 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(21, 19, 5,1, blacktile, "VRAM1");
+		_CFG.Fill(21, 19, 5,1, blacktile, "VRAM1");
 
 		// Write the value.
 		let str;
 		str=(vars.level+gs.temp.level).toString().padStart(5, " ");
-		core.FUNCS.graphics.Print(21, 19-1, "LEVEL", "VRAM2");
-		core.FUNCS.graphics.Print(21, 19, str, "VRAM2");
+		_CFG.Print(21, 19-1, "LEVEL", "VRAM2");
+		_CFG.Print(21, 19, str, "VRAM2");
 	},
 	//
 	updateNextPiece       : function(){
@@ -667,16 +667,16 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(19, 5, 5, 4, blacktile, "VRAM1");
+		_CFG.Fill(19, 5, 5, 4, blacktile, "VRAM1");
 
 		// Draw the tile map.
-		core.FUNCS.graphics.DrawMap2(20,6, map, "VRAM1");
+		_CFG.DrawMap2(20,6, map, "VRAM1");
 
 		// Draw the "NEXT".
-		core.FUNCS.graphics.Print(18, 5 , "N"      , "VRAM2");
-		core.FUNCS.graphics.Print(18, 6 , "E"      , "VRAM2");
-		core.FUNCS.graphics.Print(18, 7 , "X"      , "VRAM2");
-		core.FUNCS.graphics.Print(18, 8 , "T"      , "VRAM2");
+		_CFG.Print(18, 5 , "N"      , "VRAM2");
+		_CFG.Print(18, 6 , "E"      , "VRAM2");
+		_CFG.Print(18, 7 , "X"      , "VRAM2");
+		_CFG.Print(18, 8 , "T"      , "VRAM2");
 
 	},
 	//
@@ -693,33 +693,33 @@ game.gs.PLAY = {
 		let str;
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
 
-		core.FUNCS.graphics.Fill(17, 13, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(17, 13, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[0] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(17, 13, str, "VRAM2");
+		_CFG.Print(17, 13, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 14, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(17, 14, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[1] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(17, 14, str, "VRAM2");
+		_CFG.Print(17, 14, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 15, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(17, 15, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[2] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(17, 15, str, "VRAM2");
+		_CFG.Print(17, 15, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(17, 16, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(17, 16, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[3] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(17, 16, str, "VRAM2");
+		_CFG.Print(17, 16, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 14, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(23, 14, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[4] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(23, 14, str, "VRAM2");
+		_CFG.Print(23, 14, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 13, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(23, 13, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[5] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(23, 13, str, "VRAM2");
+		_CFG.Print(23, 13, str, "VRAM2");
 
-		core.FUNCS.graphics.Fill(23, 15, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(23, 15, 3,1, blacktile, "VRAM1");
 		str=vars.pieceCounts[ keys[6] ].toString().padStart(3, "0");
-		core.FUNCS.graphics.Print(23, 15, str, "VRAM2");
+		_CFG.Print(23, 15, str, "VRAM2");
 	},
 	//
 	updatePieceCounts     : function(type){
@@ -750,11 +750,11 @@ game.gs.PLAY = {
 
 		// Clear the area.
 		let blacktile    = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.Fill(x, y, 3,1, blacktile, "VRAM1");
+		_CFG.Fill(x, y, 3,1, blacktile, "VRAM1");
 
 		// Draw the count text.
 		let str = vars.pieceCounts[type].toString().padStart(3, "0") ;
-		core.FUNCS.graphics.Print(x, y, str, "VRAM2");
+		_CFG.Print(x, y, str, "VRAM2");
 	},
 	//
 	clearBoard            : function(){
@@ -765,7 +765,7 @@ game.gs.PLAY = {
 		let consts = gs.consts;
 
 		let empty_square = core.ASSETS.graphics.tilemaps[ "empty_square" ][2];
-		core.FUNCS.graphics.Fill(consts.min_x_tile, consts.min_y_tile, 10, 20, empty_square, "VRAM1");
+		_CFG.Fill(consts.min_x_tile, consts.min_y_tile, 10, 20, empty_square, "VRAM1");
 	},
 	//
 	setDropSpeed          : function(index){
@@ -817,7 +817,7 @@ game.gs.PLAY = {
 		let len = vars.currSprite_indexes.length;
 		for(let i=0; i<len; i+=1){
 			let index  = vars.currSprite_indexes[i]   ;
-			let sprite = core.GRAPHICS.sprites[index] ;
+			let sprite = _CG.sprites[index] ;
 			let map;
 			let sprTileId;
 			let bgTileIndex;
@@ -863,9 +863,9 @@ game.gs.PLAY = {
 			};
 
 			// Write this to VRAM at the correct position. (Expects that sprite and bg x,y are fully aligned.
-			core.FUNCS.graphics.SetTile(
-				sprite.x/core.SETTINGS.TILE_WIDTH,
-				sprite.y/core.SETTINGS.TILE_HEIGHT,
+			_CFG.SetTile(
+				sprite.x/_CS.TILE_WIDTH,
+				sprite.y/_CS.TILE_HEIGHT,
 				bgTileIndex,
 				"VRAM1"
 			);
@@ -927,10 +927,10 @@ game.gs.PLAY = {
 			let checking_sprite;
 			if(type=="DIR"){
 				checking_sprite = {
-					"x" : core.GRAPHICS.sprites[ vars.currSprite_indexes[i] ].x,
-					"y" : core.GRAPHICS.sprites[ vars.currSprite_indexes[i] ].y,
-					"w" : core.SETTINGS.TILE_WIDTH                             ,
-					"h" : core.SETTINGS.TILE_HEIGHT                            ,
+					"x" : _CG.sprites[ vars.currSprite_indexes[i] ].x,
+					"y" : _CG.sprites[ vars.currSprite_indexes[i] ].y,
+					"w" : _CS.TILE_WIDTH                             ,
+					"h" : _CS.TILE_HEIGHT                            ,
 				};
 			}
 			// Get the next rotation position for this sprite.
@@ -948,23 +948,23 @@ game.gs.PLAY = {
 				}
 				else{ console.log("ERROR!"); }
 
-				let _x = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][0] * core.SETTINGS.TILE_WIDTH ) + ((3+vars.matrix_x  ) * core.SETTINGS.TILE_WIDTH  ); // x;
-				let _y = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][1] * core.SETTINGS.TILE_HEIGHT) + (  (vars.matrix_y-2) * core.SETTINGS.TILE_HEIGHT ); // y;
+				let _x = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][0] * _CS.TILE_WIDTH ) + ((3+vars.matrix_x  ) * _CS.TILE_WIDTH  ); // x;
+				let _y = (game.pieces[ vars.currentPiece ][ temp_rotationIndex ][i][1] * _CS.TILE_HEIGHT) + (  (vars.matrix_y-2) * _CS.TILE_HEIGHT ); // y;
 
 				checking_sprite = {
 					"x" : _x                        ,
 					"y" : _y                        ,
-					"w" : core.SETTINGS.TILE_WIDTH  ,
-					"h" : core.SETTINGS.TILE_HEIGHT ,
+					"w" : _CS.TILE_WIDTH  ,
+					"h" : _CS.TILE_HEIGHT ,
 				};
 			}
 
 			// Adjust the sprite location that will be checked.
 			switch(movement){
-				case "UP"      : { checking_sprite.y -= core.SETTINGS.TILE_HEIGHT; break; }
-				case "DOWN"    : { checking_sprite.y += core.SETTINGS.TILE_HEIGHT; break; }
-				case "LEFT"    : { checking_sprite.x -= core.SETTINGS.TILE_WIDTH ; break; }
-				case "RIGHT"   : { checking_sprite.x += core.SETTINGS.TILE_WIDTH ; break; }
+				case "UP"      : { checking_sprite.y -= _CS.TILE_HEIGHT; break; }
+				case "DOWN"    : { checking_sprite.y += _CS.TILE_HEIGHT; break; }
+				case "LEFT"    : { checking_sprite.x -= _CS.TILE_WIDTH ; break; }
+				case "RIGHT"   : { checking_sprite.x += _CS.TILE_WIDTH ; break; }
 				case "R_LEFT"  : { break; }
 				case "R_RIGHT" : { break; }
 				default        : { return; break; }
@@ -973,22 +973,22 @@ game.gs.PLAY = {
 			// Determine the x, y for the bg tile based on the checking_sprite.
 			let checking_bgtile = {
 				// Get the pixel coords for the tile.
-				"x" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ) * core.SETTINGS.TILE_WIDTH , 10) ,
-				"y" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT) * core.SETTINGS.TILE_HEIGHT, 10) ,
+				"x" : parseInt((checking_sprite.x / _CS.TILE_WIDTH ) * _CS.TILE_WIDTH , 10) ,
+				"y" : parseInt((checking_sprite.y / _CS.TILE_HEIGHT) * _CS.TILE_HEIGHT, 10) ,
 
 				// Get the tile grid coords for the tile.
-				"xT" : parseInt((checking_sprite.x / core.SETTINGS.TILE_WIDTH ), 10) ,
-				"yT" : parseInt((checking_sprite.y / core.SETTINGS.TILE_HEIGHT), 10) ,
+				"xT" : parseInt((checking_sprite.x / _CS.TILE_WIDTH ), 10) ,
+				"yT" : parseInt((checking_sprite.y / _CS.TILE_HEIGHT), 10) ,
 
-				"w" : core.SETTINGS.TILE_WIDTH  ,
-				"h" : core.SETTINGS.TILE_HEIGHT ,
+				"w" : _CS.TILE_WIDTH  ,
+				"h" : _CS.TILE_HEIGHT ,
 			};
 
 			let fullOverlap = ( (checking_sprite.x == checking_bgtile.x) && (checking_sprite.y == checking_bgtile.y) ? true : false );
 
 			// Perform the easier collision detection?
-			// let bg_tileId = core.GRAPHICS.VRAM1[ (core.SETTINGS.VRAM_TILES_H * checking_bgtile.yT) + checking_bgtile.xT ];
-			let bg_tileId = core.FUNCS.graphics.GetTile(checking_bgtile.xT, checking_bgtile.yT, "VRAM1");
+			// let bg_tileId = _CG.VRAM1[ (_CS.VRAM_TILES_H * checking_bgtile.yT) + checking_bgtile.xT ];
+			let bg_tileId = _CFG.GetTile(checking_bgtile.xT, checking_bgtile.yT, "VRAM1");
 
 			if(fullOverlap && game.SHARED.solidBg1Tiles.indexOf(bg_tileId) != -1){
 				// We have an exact overlap. And the bg_tileId is a solid tile.
@@ -1011,7 +1011,7 @@ game.gs.PLAY = {
 		let vars  = gs.vars;
 		let consts = gs.consts;
 
-		core.FUNCS.graphics.clearSprites();
+		_CFG.clearSprites();
 
 		// Draw the matrix.
 		let spriteNum=0;
@@ -1021,16 +1021,16 @@ game.gs.PLAY = {
 		// Draw 4 sprites (each block always has 4 sprites.)
 		for(let i=0; i<4; i+=1){
 
-			core.FUNCS.graphics.MapSprite2(
+			_CFG.MapSprite2(
 				spriteNum,
 				core.ASSETS.graphics.tilemaps[vars.currentMap],
-				0 | core.CONSTS["SPRITE_BANK0"]
+				0 | _CC["SPRITE_BANK0"]
 			);
 
-			core.FUNCS.graphics.MoveSprite(
+			_CFG.MoveSprite(
 				spriteNum,
-				(vars.currentMatrix[i][0] * core.SETTINGS.TILE_WIDTH)  + ((3+vars.matrix_x  ) * core.SETTINGS.TILE_WIDTH  ), // x
-				(vars.currentMatrix[i][1] * core.SETTINGS.TILE_HEIGHT) + (  (vars.matrix_y-2) * core.SETTINGS.TILE_HEIGHT ), // y
+				(vars.currentMatrix[i][0] * _CS.TILE_WIDTH)  + ((3+vars.matrix_x  ) * _CS.TILE_WIDTH  ), // x
+				(vars.currentMatrix[i][1] * _CS.TILE_HEIGHT) + (  (vars.matrix_y-2) * _CS.TILE_HEIGHT ), // y
 				core.ASSETS.graphics.tilemaps[vars.currentMap][0],
 				core.ASSETS.graphics.tilemaps[vars.currentMap][1]
 			);

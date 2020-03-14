@@ -19,8 +19,8 @@ game.gs.TEMPLATE = {
 		let consts = gs.consts;
 
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		vars.END = false;
 	},

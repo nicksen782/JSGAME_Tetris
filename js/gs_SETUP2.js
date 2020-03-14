@@ -14,8 +14,8 @@ game.gs.SETUP2 = {
 		let vars = gs.vars;
 		vars.init=false;
 
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		//
 		vars.menus = {
@@ -122,14 +122,14 @@ game.gs.SETUP2 = {
 		let vars  = gs.vars;
 
 		// Draw the border around the screen.
-		game.SHARED.drawMenu_box(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
+		game.SHARED.drawMenu_box(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, game.SHARED.menuStyle1, vars.empty_square);
 
 		// Draw the main menu title and box.
 		let x_mainmenu    = 2;
 		let y_mainmenu    = 2;
 		game.SHARED.drawMenu_box(x_mainmenu-1, y_mainmenu-1, 26, 3, game.SHARED.menuStyle1, vars.blacktile);
 		let text_mainmenu = "-MAIN MENU - ONE PLAYER-";
-		core.FUNCS.graphics.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
+		_CFG.Print(x_mainmenu, y_mainmenu, text_mainmenu, "VRAM2");
 
 		// Draw the menus.
 		game.SHARED.drawMenus(gs);

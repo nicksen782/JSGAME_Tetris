@@ -15,8 +15,8 @@ game.gs.TITLE1 = {
 		let gs   = this;
 		let vars = gs.vars;
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		// core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		// _CFG.ClearVram();
 
 		vars.END = false;
 		vars.text1 = [
@@ -51,18 +51,18 @@ game.gs.TITLE1 = {
 		let vars  = gs.vars;
 
 		let fillTile = core.ASSETS.graphics.tilemaps[ "blacktile" ][2];
-		core.FUNCS.graphics.ClearVram();
-		core.FUNCS.graphics.Fill(0, 0, core.SETTINGS.VRAM_TILES_H, core.SETTINGS.VRAM_TILES_V, fillTile, "VRAM1")
+		_CFG.ClearVram();
+		_CFG.Fill(0, 0, _CS.VRAM_TILES_H, _CS.VRAM_TILES_V, fillTile, "VRAM1")
 
 		let xOffset = 0;
 		let yOffset = 5;
 		for(let y=0; y<vars.text1.length; y+=1){
-			core.FUNCS.graphics.Print(xOffset, (y+yOffset), vars.text1[y], "VRAM2");
+			_CFG.Print(xOffset, (y+yOffset), vars.text1[y], "VRAM2");
 		}
 
 		// Fade this in.
-		core.GRAPHICS.FADER.FUNCS.FadeIn(1, true, false);
-		// core.GRAPHICS.FADER.FUNCS.FadeIn(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
+		_CG.FADER.FUNCS.FadeIn(1, true, false);
+		// _CG.FADER.FUNCS.FadeIn(game.secondsToFrames(0.1)/_CG.FADER.CONSTS["FADER_STEPS"], true, false);
 	},
 
 	//
@@ -84,8 +84,8 @@ game.gs.TITLE1 = {
 		// Run.
 		if(vars.init){
 			if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
-				core.GRAPHICS.FADER.FUNCS.FadeOut(1, true, false);
-				// core.GRAPHICS.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/core.GRAPHICS.FADER.CONSTS["FADER_STEPS"], true, false);
+				_CG.FADER.FUNCS.FadeOut(1, true, false);
+				// _CG.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/_CG.FADER.CONSTS["FADER_STEPS"], true, false);
 
 				vars.END = true;
 				game.setGamestate1("TITLE2", true);

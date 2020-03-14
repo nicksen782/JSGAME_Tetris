@@ -13,8 +13,8 @@ game.gs.ENTER_HIGH_SCORE = {
 		let gs   = this;
 		let vars = gs.vars;
 		vars.init=false;
-		core.FUNCS.graphics.clearSprites();
-		core.FUNCS.graphics.ClearVram();
+		_CFG.clearSprites();
+		_CFG.ClearVram();
 
 		vars.END = false;
 	},
