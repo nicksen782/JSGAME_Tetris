@@ -77,7 +77,7 @@ game.gs.SETUP2 = {
 		//
 		vars.menuSettings = {
 			"game"  : {"option":0, "len":vars.menus["game"]  .OPTIONS.length},
-			"music" : {"option":1, "len":vars.menus["music"] .OPTIONS.length},
+			"music" : {"option":0, "len":vars.menus["music"] .OPTIONS.length},
 			"level" : {"option":0, "len":vars.menus["level"] .OPTIONS.length},
 			"height": {"option":0, "len":vars.menus["height"].OPTIONS.length},
 		};
@@ -182,7 +182,10 @@ game.gs.SETUP2 = {
 				}
 
 				// Pressed A? (confirm)
-				else if( game.chkBtn("BTN_A"    , "btnPressed1") ){
+				else if(
+					game.chkBtn("BTN_A"    , "btnPressed1") ||
+					game.chkBtn("BTN_START", "btnPressed1")
+				){
 					switch(vars.currentMenuKey){
 						case "game"   : { vars.currentMenuKey="music"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }
 						case "music"  : { vars.currentMenuKey="level"       ; vars.blinkState=true; vars.blinkSpeed_cnt = vars.blinkSpeed ; break; }

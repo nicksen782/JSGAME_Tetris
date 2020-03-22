@@ -83,7 +83,12 @@ game.gs.TITLE1 = {
 
 		// Run.
 		if(vars.init){
-			if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
+			// Dismiss this screen when the user presses start.
+			if(
+				game.chkBtn("BTN_START" , "btnPressed1") ||
+				game.chkBtn("BTN_A"    , "btnPressed1") ||
+				vars.framesUntilDone_cnt >= vars.framesUntilDone
+			){
 				_CG.FADER.FUNCS.FadeOut(1, true, false);
 				// _CG.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/_CG.FADER.CONSTS["FADER_STEPS"], true, false);
 
@@ -93,6 +98,17 @@ game.gs.TITLE1 = {
 			else{
 				vars.framesUntilDone_cnt+=1;
 			}
+
+			// if( game.chkBtn("BTN_START" , "btnPressed1") || vars.framesUntilDone_cnt >= vars.framesUntilDone){
+			// 	_CG.FADER.FUNCS.FadeOut(1, true, false);
+			// 	// _CG.FADER.FUNCS.FadeOut(game.secondsToFrames(0.1)/_CG.FADER.CONSTS["FADER_STEPS"], true, false);
+
+			// 	vars.END = true;
+			// 	game.setGamestate1("TITLE2", true);
+			// }
+			// else{
+			// 	vars.framesUntilDone_cnt+=1;
+			// }
 
 		}
 	},

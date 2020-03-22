@@ -106,7 +106,10 @@ game.gs.SETUP1 = {
 				// gs.show_mainMenu
 
 				// Pressed A? (confirm)
-				else if( game.chkBtn("BTN_A"    , "btnPressed1") ){
+				else if(
+					game.chkBtn("BTN_A"    , "btnPressed1") ||
+					game.chkBtn("BTN_START", "btnPressed1")
+				){
 					switch( vars.menuSettings[vars.currentMenuKey].option ){
 						case 0 : { gs.show_instructions1(); break; } // "INSTRUCTIONS1"
 						case 1 : { gs.show_controls();      break; } // "CONTROLS"

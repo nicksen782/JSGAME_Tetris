@@ -114,15 +114,15 @@ game.DEBUG.init = function(){
 		// 	""
 		// );
 
-		var frag = document.createDocumentFragment();
+		let frag = document.createDocumentFragment();
 
 		for(let i=0; i<mp3_keys.length; i+=1){
 			let key = mp3_keys[i];
 			let rec = core.ASSETS.audio.lookups[key];
 
-			var temp_tr   = document.createElement("tr");
-			var temp_td1  = document.createElement("td"); temp_tr.appendChild(temp_td1); //
-			var temp_td2  = document.createElement("td"); temp_tr.appendChild(temp_td2); //
+			let temp_tr   = document.createElement("tr");
+			let temp_td1  = document.createElement("td"); temp_tr.appendChild(temp_td1); //
+			let temp_td2  = document.createElement("td"); temp_tr.appendChild(temp_td2); //
 
 			let extKey = key;
 			let intKey = rec.key;
@@ -143,9 +143,9 @@ game.DEBUG.init = function(){
 			let rec = core.AUDIO.midiData[key];
 			// core.FUNCS.audio.play_midi  ( "BGM1", "C_THEME" );
 
-			var temp_tr   = document.createElement("tr");
-			var temp_td1  = document.createElement("td"); temp_tr.appendChild(temp_td1); //
-			var temp_td2  = document.createElement("td"); temp_tr.appendChild(temp_td2); //
+			let temp_tr   = document.createElement("tr");
+			let temp_td1  = document.createElement("td"); temp_tr.appendChild(temp_td1); //
+			let temp_td2  = document.createElement("td"); temp_tr.appendChild(temp_td2); //
 
 			let extKey = key;
 			let intKey = rec.key;
@@ -162,6 +162,15 @@ game.DEBUG.init = function(){
 		elem.appendChild(frag);
 	};
 	populateSoundTest();
+
+	// Populate graphics.
+	document.getElementById("DEBUG_J_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/J.png']+"');"; delete JSGAME.TEMP['DEBUG/J.png'] ;
+	document.getElementById("DEBUG_T_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/T.png']+"');"; delete JSGAME.TEMP['DEBUG/T.png'] ;
+	document.getElementById("DEBUG_Z_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/Z.png']+"');"; delete JSGAME.TEMP['DEBUG/Z.png'] ;
+	document.getElementById("DEBUG_O_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/O.png']+"');"; delete JSGAME.TEMP['DEBUG/O.png'] ;
+	document.getElementById("DEBUG_S_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/S.png']+"');"; delete JSGAME.TEMP['DEBUG/S.png'] ;
+	document.getElementById("DEBUG_L_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/L.png']+"');"; delete JSGAME.TEMP['DEBUG/L.png'] ;
+	document.getElementById("DEBUG_I_button").style = "background-image: url('data:image/png;base64,"+JSGAME.TEMP['DEBUG/I.png']+"');"; delete JSGAME.TEMP['DEBUG/I.png'] ;
 
 	// *** Show the debug div. ***
 
@@ -281,7 +290,7 @@ game.DEBUG.fillVram2_random = function(){
 
 	let fontmap   = core.ASSETS.graphics.tilemaps[_CG.fontSettings.fontmap];
 	if(!fontmap){ console.log("Font map not selected!"); }
-	var numTiles  = fontmap.length-1 ;
+	let numTiles  = fontmap.length-1 ;
 
 	for(let y=0; y<_CS.VRAM_TILES_V; y+=1){
 		for(let x=0; x<_CS.VRAM_TILES_H; x+=1){
@@ -580,19 +589,19 @@ game.DEBUG.speedtest1 = function(){
 	let test4Arr=[];
 
 	for(let i=0; i<50000; i+=1){
-		var ts1=performance.now();
+		let ts1=performance.now();
 		_CG.sprites.map(a => Object.assign({}, a));
-		var te1=performance.now();
+		let te1=performance.now();
 
-		var ts2=performance.now();
+		let ts2=performance.now();
 		_CG.sprites_prev = JSON.parse(JSON.stringify(_CG.sprites));
-		var te2=performance.now();
+		let te2=performance.now();
 
-		// var ts3=performance.now();
+		// let ts3=performance.now();
 		// _CG.sprites_prev = _CG.sprites.map(x=>x);
-		// var te3=performance.now();
+		// let te3=performance.now();
 
-		var ts4=performance.now();
+		let ts4=performance.now();
 		_CG.sprites_prev.length=0;
 		for(let i=0; i<_CG.sprites.length; i+=1){
 			_CG.sprites_prev[i] = {
@@ -603,7 +612,7 @@ game.DEBUG.speedtest1 = function(){
 				"y"         : _CG.sprites[i].y         ,
 			};
 		}
-		var te4=performance.now();
+		let te4=performance.now();
 
 		test1Arr.push( (te1-ts1) );
 		test2Arr.push( (te2-ts2) );

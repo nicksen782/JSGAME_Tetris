@@ -25,8 +25,13 @@ $regex = [
 	[ '/^\s*[\r\n]/m'                      , ""     ] , // Blank lines.
 	[ '/const char/m'                      , ""     ] , // Remove const char
 	[ '/PROGMEM/m'                         , ""     ] , // Remove PROGMEM
+
 	[ '/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/m', ""     ] , // Single and Multi-line comments.
 	[ '/\s*[#;].+$/m'                      , ""     ] , // Hash and Comma comments.
+
+	// ['#^\s*//.+$#m'                        , ""     ] , // Single-line comments ( // )   // https://stackoverflow.com/a/5419241/2731377
+	// [ '/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/' , ""     ] , // Multi-line comments ( /* */ ) // https://www.regextester.com/94246
+
 	[ '/  +/'                              , ""     ] , // ?? Multiple spaces (to become 0 spaces)
 	[ '/^\s+|\s+$/'                        , ""     ] , // Strip leading and trailing spaces
 	[ '/= /m'                              , "="    ] , // Remove "= "

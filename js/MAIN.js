@@ -2,8 +2,6 @@
 
 'use strict';
 
-// Will hold each individual game state.
-game.gs = {};
 game.SHARED = {
 	// These are the tiles that are considered "solid". (populated via populate.)
 	solidBg1Tiles : [],
@@ -127,7 +125,7 @@ game.SHARED = {
 				"title_text"     : title_text     ,
 				"title_x"        : title_x        ,
 				"title_y"        : title_y        ,
-			}
+			};
 		};
 		// Draws the menu box itself.
 		game.SHARED.drawMenu_box = function(mx, my, mw, mh, style, fillTile ){
@@ -220,7 +218,7 @@ game.SHARED = {
 			}
 			else{ return; }
 
-		},
+		};
 		// Does the initial menu draw (all menus.)
 		game.SHARED.drawMenus = function(gs){
 			let vars  = gs.vars;
@@ -257,7 +255,7 @@ game.SHARED = {
 			}
 
 
-		},
+		};
 		// Turns the highlighting for all menus off.
 		game.SHARED.blink_menus_allOff = function(gs){
 			let vars  = gs.vars;
@@ -275,7 +273,7 @@ game.SHARED = {
 				else{
 				}
 			}
-		},
+		};
 		// Turns the highlighting for a specific menu either on or off.
 		game.SHARED.blink_menu = function( which, state, gs ){
 			let vars  = gs.vars;
@@ -291,7 +289,7 @@ game.SHARED = {
 			else if(state=="OFF"){ tileid = vars.bg1_tile; }
 
 			_CFG.Fill(data.mx+1, data.my+1, data.mw-2, data.mh-2, tileid, "VRAM1");
-		},
+		};
 		// Show/hides the specified cursor.
 		game.SHARED.changeCursorState = function(which, newState, gs){
 			let vars  = gs.vars;
@@ -407,7 +405,7 @@ game.runOnce = function(){
 
 				// Remove the initial graphics assets since they will not be needed again.
 				delete core.ASSETS.graphics.tiles ;
-				delete core.ASSETS.graphics.ramtiles
+				delete core.ASSETS.graphics.ramtiles;
 
 				// Remove these functions since they will not be needed again.
 				delete _CFG.init ;
@@ -434,8 +432,8 @@ game.runOnce = function(){
 
 				// Resolve the promise and allow the program to continue.
 				resolve();
-			}
-			,function(err){ console.log("ERROR: runOnce: ", err);  }
+			},
+			function(err){ console.log("ERROR: runOnce: ", err);  }
 		);
 
 	});
@@ -536,9 +534,9 @@ game.firstLoop = function(){
 							game.setGamestate1("TITLE0"          , true); // Init screen
 						}
 						else{
-							// game.setGamestate1("TITLE0"          , true); // Init screen
+							game.setGamestate1("TITLE0"          , true); // Init screen
 							// game.setGamestate1("TITLE1"          , true); // Copyright screen.
-							game.setGamestate1("TITLE2"          , true); // Title screen.
+							// game.setGamestate1("TITLE2"          , true); // Title screen.
 							// game.setGamestate1("SETUP1"          , true); // Setup screen 1
 							// game.setGamestate1("SETUP2"          , true); // Setup screen 2
 							// game.setGamestate1("PLAY"            , true); // Main game.

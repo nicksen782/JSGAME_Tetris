@@ -1,4 +1,33 @@
 {
+	/*
+	"__INSTRUCTIONS__" : [
+		"filelist"
+			"The 'filelist' key can take 3 options for 'deliverAs'." ,
+			" 'xhr'        : File will be retrieved by the front-end." ,
+			" 'text'       : File will be included with init and added by the front-end later as an individual blob. " ,
+			" 'base64'     : File will be included with init and base64 encoded. (needed for binaries.)" ,
+			" 'combinedjs' : Files will be combined and included with init and added by the front-end later as one blob." ,
+			"" ,
+			"NOTE : If a file is loaded as a blob AND it has source-maps then you will see the original data in the dev console." ,
+			"NOTE : If 'deliverAs' is set to 'xhr', and type is 'js' and debug is NOT on then it will become 'combinedjs' instead."
+
+		"INTRO_LOGO"
+			1 allows the JSGAME logo to appear.
+			0 prevents the JSGAME logo from appearing.
+			NOTE: If set to 1 and DEBUG is set then the display time will be much shorter.
+
+		"mp3_files"
+			Any mp3 files should be in filelist.
+			However, this key must still be populated because it supplies additional data.
+			Can be used as a backup if the file data in filelist is wrong.
+		"midi_bin"
+			This should be in the filelist.
+			This key is optional.
+			Can be used as a backup if the file data in filelist is wrong.
+	],
+	*/
+
+	// Core settings.
 	"TRANSLUCENT_COLOR" : "0xF2",
 	"TILE_WIDTH"        : 8     ,
 	"TILE_HEIGHT"       : 8     ,
@@ -8,32 +37,41 @@
 	"INTRO_LOGO"        : 1     ,
 	"VRAM_ADDR_SIZE"    : 1     ,
 
+	// Video and Sound kernel settings.
 	"custom_videokernel" : false,
 	"custom_soundkernel" : false,
-
 	"videokernel"       : "cores/videoMode_A/videoMode_A.js",
 	"soundkernel"       : "cores/soundMode_A/soundMode_A.js",
 
-	"js_files": [
-		{ "type":"js"  , "location":"js/MAIN.js"                } ,
-		{ "type":"js"  , "location":"js/gs_ENTER_HIGH_SCORE.js" } ,
-		{ "type":"js"  , "location":"js/gs_PLAY.js"             } ,
-		{ "type":"js"  , "location":"js/gs_SETUP1.js"           } ,
-		{ "type":"js"  , "location":"js/gs_SETUP2.js"           } ,
-		{ "type":"js"  , "location":"js/gs_TITLE0.js"           } ,
-		{ "type":"js"  , "location":"js/gs_TITLE1.js"           } ,
-		{ "type":"js"  , "location":"js/gs_TITLE2.js"           }
+	// List of files to download (specific to the game.)
+	"filelist":[
+		{ "key":"gfx_files"  , "deliverAs":"text"  , "type":"inc"     , "location":"UAM/PROGMEM/_min_combined_alltilegraphics.inc" } ,
+
+		{ "key":"mp3_files"  , "deliverAs":"base64", "type":"mp3"     , "location":"snd/tick.mp3"              } ,
+		{ "key":"midi_bin"   , "deliverAs":"base64", "type":"midi_bin", "location":"UAM/MUSIC/tetris_midi.bin" } ,
+
+		{ "key":"debug_files", "deliverAs":"xhr"   , "type":"css"     , "location":"DEBUG/debug.css"           } ,
+		{ "key":"debug_files", "deliverAs":"text"  , "type":"html"    , "location":"DEBUG/debug.html"          } ,
+		{ "key":"debug_files", "deliverAs":"xhr"   , "type":"js"      , "location":"DEBUG/debug.js"            } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/J.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/T.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/Z.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/O.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/S.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/L.png"               } ,
+		{ "key":"debug_files", "deliverAs":"base64", "type":"img"     , "location":"DEBUG/I.png"               } ,
+
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/MAIN.js"                } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_ENTER_HIGH_SCORE.js" } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_PLAY.js"             } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_SETUP1.js"           } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_SETUP2.js"           } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_TITLE0.js"           } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_TITLE1.js"           } ,
+		{ "key":"js_files"   , "deliverAs":"xhr"   , "type":"js"      , "location":"js/gs_TITLE2.js"           }
 	],
 
-	"debug_files": [
-		{ "type":"css" , "location":"DEBUG/debug.css"  } ,
-		{ "type":"js"  , "location":"DEBUG/debug.js"   } ,
-		{ "type":"html", "location":"DEBUG/debug.html" }
-	],
-
-	"game_files" : [
-	],
-
+	// These links will be displayed in the Information tab on the main menu drop-down.
 	"links":[
 		{ "text":"Instructions (game)", "href":"links/instructions.txt"                     , "target":"_blank" },
 		{ "text":"Credits (game)"     , "href":"links/credits.txt"                          , "target":"_blank" },

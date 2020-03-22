@@ -73,3 +73,11 @@
     color: gainsboro;
     background-color: black;
 }
+
+#DEBUG_J_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_T_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_Z_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_O_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_S_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_L_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }
+#DEBUG_I_button{ display:inline-block; width:64px; height:32px; background-position:center; background-repeat:no-repeat; background-size:contain; }

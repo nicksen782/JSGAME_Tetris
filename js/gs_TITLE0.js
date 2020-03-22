@@ -114,69 +114,79 @@ game.gs.TITLE0 = {
 
 		// Run.
 		if(vars.init){
-			// Lense flare animation.
-			if(!vars.lense.complete){
-				let obj = vars.lense;
-
-				if(obj.waitFrames >= obj.frameDelay){
-					obj.waitFrames=0;
-					if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
-						_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
-						obj.curFrame+=obj.frameDir;
-					}
-					else{
-						if(obj.repeat_cnt>= obj.repeatsTillDone){
-							obj.complete=true;
-							_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
-						}
-						else{
-							obj.repeat_cnt+=1;
-							obj.frameDir *= -1;
-							obj.curFrame+=obj.frameDir;
-						}
-					}
-				}
-				else{ obj.waitFrames+=1; }
+			if(
+				game.chkBtn("BTN_A"    , "btnPressed1") ||
+				game.chkBtn("BTN_START", "btnPressed1")
+			){
+				vars.END=true;
+					_CG.FADER.FUNCS.FadeOut(1, true, false);
+					game.setGamestate1("TITLE1", true);
 			}
+			else{
+				// Lense flare animation.
+				if(!vars.lense.complete){
+					let obj = vars.lense;
 
-			// Star animation.
-			if(!vars.stars.complete){
-				let obj = vars.stars;
-
-				if(obj.waitFrames >= obj.frameDelay){
-					obj.waitFrames=0;
-					if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
-						_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
-						obj.curFrame+=obj.frameDir;
-					}
-					else{
-						if(obj.repeat_cnt>= obj.repeatsTillDone){
-							obj.complete=true;
-							_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
-						}
-						else{
-							obj.repeat_cnt+=1;
-							obj.curFrame=0;
+					if(obj.waitFrames >= obj.frameDelay){
+						obj.waitFrames=0;
+						if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
 							_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
 							obj.curFrame+=obj.frameDir;
 						}
+						else{
+							if(obj.repeat_cnt>= obj.repeatsTillDone){
+								obj.complete=true;
+								_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_flare_f1"], "VRAM1");
+							}
+							else{
+								obj.repeat_cnt+=1;
+								obj.frameDir *= -1;
+								obj.curFrame+=obj.frameDir;
+							}
+						}
 					}
+					else{ obj.waitFrames+=1; }
 				}
-				else{ obj.waitFrames+=1; }
-			}
 
-			// Done with the animations?
-			if(vars.lense.complete && vars.stars.complete && !vars.endDelay.started){ vars.endDelay.started=true; }
+				// Star animation.
+				if(!vars.stars.complete){
+					let obj = vars.stars;
 
-			// Delay before progressing to the next gamestate?
-			if(vars.endDelay.started){
-				if(vars.endDelay.cnt >= vars.endDelay.delay){
-					vars.END=true;
-					_CG.FADER.FUNCS.FadeOut(1, true, false);
-					game.setGamestate1("TITLE1", true);
+					if(obj.waitFrames >= obj.frameDelay){
+						obj.waitFrames=0;
+						if(obj.curFrame<obj.frames.length && obj.curFrame >=0){
+							_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
+							obj.curFrame+=obj.frameDir;
+						}
+						else{
+							if(obj.repeat_cnt>= obj.repeatsTillDone){
+								obj.complete=true;
+								_CFG.DrawMap2(obj.pos.x,obj.pos.y, vars.tilemaps["n782_text_f1"], "VRAM1");
+							}
+							else{
+								obj.repeat_cnt+=1;
+								obj.curFrame=0;
+								_CFG.DrawMap2(obj.pos.x,obj.pos.y,vars.tilemaps[obj.frames[obj.curFrame]],"VRAM1");
+								obj.curFrame+=obj.frameDir;
+							}
+						}
+					}
+					else{ obj.waitFrames+=1; }
 				}
-				else{
-					vars.endDelay.cnt+=1;
+
+				// Done with the animations?
+				if(vars.lense.complete && vars.stars.complete && !vars.endDelay.started){ vars.endDelay.started=true; }
+
+				// Delay before progressing to the next gamestate?
+				if(vars.endDelay.started){
+					if(vars.endDelay.cnt >= vars.endDelay.delay){
+						vars.END=true;
+						_CG.FADER.FUNCS.FadeOut(1, true, false);
+						game.setGamestate1("TITLE1", true);
+					}
+					else{
+						vars.endDelay.cnt+=1;
+					}
 				}
 			}
 		}
