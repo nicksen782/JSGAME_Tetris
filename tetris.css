@@ -1,0 +1,152 @@
+/* tetris_app */
+/* tetris_app */
+/* tetris_app */
+#tetris_app {
+  height: 100%;
+  /* opacity:0.5; */
+  outline: none;
+}
+#tetris_app.focused{
+  background-color:initial;
+  opacity:1.00;
+}
+
+#tetris_app .tetris_app_flex_cols {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  height: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-evenly;
+}
+
+#tetris_app .tetris_app_flex_cols #tetris_app_options {
+  height: 100%;
+  background-color: #333333;
+  width: 150px;
+}
+
+#tetris_app .tetris_app_flex_rows {
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  align-items: center;
+  flex-direction: column;
+}
+
+#tetris_app #tetris_app_game {
+  background-color: #333333;
+  height: 100%;
+}
+
+#tetris_app #tetris_app_game canvas {
+  border:1px solid white;
+  /* background-color: #222222; */
+  background-color: #202020;
+  height: 95%;
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.tetris_app_options_header_container{background-color: cornflowerblue;padding: 5px;/* text-align: center; */margin-bottom: 5px;}
+.tetris_app_options_header_content{background-color: aliceblue;padding: 5px; text-align: center;}
+.tetris_app_options_header{background-color: aliceblue;padding: 5px;text-align: center;}
+#tetris_app #tetris_app_dpad {
+  /* background-color: blueviolet; */
+  margin: auto;
+}
+
+/* DEBUG NAV */
+/* DEBUG NAV */
+/* DEBUG NAV */
+
+
+.tetris_app_debug_nav {
+  min-height: 0.5em;
+  padding: 0.25em;
+  border-bottom: 1px solid black;
+  width: 650px;
+  /* background-color: blue; */
+}
+
+.tetris_app_debug_nav_tab {
+  border: 1px solid black;
+  display: inline-block;
+  vertical-align: top;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: blanchedalmond;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select : none;
+  /* Safari */
+  -khtml-user-select : none;
+  /* Konqueror HTML */
+  -moz-user-select : none;
+  /* Old versions of Firefox */
+  -ms-user-select : none;
+  /* Internet Explorer/Edge */
+  user-select : none;
+  /* Non-prefixed version */
+}
+
+.tetris_app_debug_nav_tab:hover {
+  background-color: greenyellow;
+}
+
+.tetris_app_debug_nav_tab.active {
+  background-color: yellow;
+}
+
+.tetris_app_debug_views {
+}
+
+.tetris_app_debug_view {
+  display: none;
+  padding: 0.25em;
+  background-color: #979da6;
+  min-height: 400px;
+  max-height: 600px;
+  overflow: auto;
+}
+
+.tetris_app_debug_view.active {
+  display: block;
+}
+
+#tetris_app_debug_runIndicator{ width:1em; height:1em; display:inline-block; vertical-align:top; background-color:red; }
+#tetris_app_debug_runIndicator.active{ background-color:green; }
+#tetris_app_debug_anim_lense{display: inline-block;border: 1px solid white;width: 49%;}
+#tetris_app_debug_anim_stars{display: inline-block;border: 1px solid white;width: 49%;}
+
+#tetris_app_debug_anim_lense table{border-collapse: separate;width: 100%;}
+#tetris_app_debug_anim_stars table{border-collapse: separate;width: 100%;}
+
+#tetris_app_debug_anim_lense table td{border:1px solid black;padding: 2px;}
+#tetris_app_debug_anim_stars table td{border:1px solid black;padding: 2px;}
+
+#tetris_app_debug_anim_lense table td:first-child{ width: 170px; }
+#tetris_app_debug_anim_stars table td:first-child{ width: 170px; }
+
+#tetris_app_debug_vars{display: inline-block;border: 1px solid white;width: 49%;}
+#tetris_app_debug_vars table{border-collapse: separate;width: 100%;}
+#tetris_app_debug_vars table td{border:1px solid black;padding: 2px;}
+#tetris_app_debug_vars table td:first-child{ width: 170px; }

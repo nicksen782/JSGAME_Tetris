@@ -1,0 +1,105 @@
+{
+    "meta":{
+        "debug": true,
+        "autoSwitchToLobbyDebugTab": true,
+        "defaultLobbyTab": "lobby",
+        "hideLobby": false, 
+        "createHiDPI_Canvas": false,
+        "dimensions":{
+            "tileWidth" : 8,
+            "tileHeight": 8,
+            "rows":28, 
+            "cols":28
+        }, 
+        "DOM": {
+            "gameDiv"             : "jsgame_app",
+            "lobbyDiv"            : "jsgame_lobby",
+            "lobby_nav_view_debug": "jsgame_lobby_nav_view_debug",
+            "app_debugDiv"        : "tetris_app_debugDiv",
+            "gameContDiv"         : "tetris_app",
+            "app_dpad_canvas"     : "tetris_app_dpad",
+            "app_game_canvas"     : "tetris_app_game_canvas"
+        },
+        "debugDOM": {
+            "nav":{
+                "defaultTabKey": "debug4",
+                "DOM":{
+                    "tabs": {
+                        "debug1": "tetris_app_debug_nav_tab_debug1",
+                        "debug2": "tetris_app_debug_nav_tab_debug2",
+                        "debug3": "tetris_app_debug_nav_tab_debug3",
+                        "debug4": "tetris_app_debug_nav_tab_debug4"
+                    },
+                    "views": {
+                        "debug1": "tetris_app_debug_nav_view_debug1",
+                        "debug2": "tetris_app_debug_nav_view_debug2",
+                        "debug3": "tetris_app_debug_nav_view_debug3",
+                        "debug4": "tetris_app_debug_nav_view_debug4"
+                    }
+                }
+            },
+            "main":{
+                "DOM": {
+                    "debug1Div": "tetris_app_debug_nav_view_debug1",
+                    "debug2Div": "tetris_app_debug_nav_view_debug2",
+                    "debug3Div": "tetris_app_debug_nav_view_debug3"
+                }
+            },
+            "debug3":{
+                "DOM": {
+                    "debug_clearAllLayers": "tetris_app_debug_clearAllLayers",
+                    "debug_clearLayer1": "tetris_app_debug_clearLayer1",
+                    "debug_clearLayer2": "tetris_app_debug_clearLayer2",
+                    "debug_clearLayer3": "tetris_app_debug_clearLayer3",
+
+                    "debug_drawTileSelect"   : "tetris_app_debug_drawTileSelect",
+                    "debug_drawTileMapSelect": "tetris_app_debug_drawTileMapSelect",
+                    "debug_drawTileButton"   : "tetris_app_debug_drawTileButton",
+                    "debug_drawTileMapButton1": "tetris_app_debug_drawTileMapButton1"
+                }
+            },
+            "gs_title0":{
+                "DOM": {
+                    "tetris_app_debug_runIndicator": "tetris_app_debug_runIndicator",
+                    "tetris_app_debug_runGsTitle0_main": "tetris_app_debug_runGsTitle0_main",
+                    "tetris_app_debug_anim_lense": "tetris_app_debug_anim_lense",
+                    "tetris_app_debug_anim_stars": "tetris_app_debug_anim_stars",
+                    "tetris_app_debug_run_anim_lense": "tetris_app_debug_run_anim_lense",
+                    "tetris_app_debug_uninit_gsTitle0": "tetris_app_debug_uninit_gsTitle0",
+                    "tetris_app_debug_vars": "tetris_app_debug_vars"
+                }
+            }
+        },
+        "tilesets":[
+            "tilesBG1",
+            "tilesSP1",
+            "tilesTX1",
+            "tilesTX2"
+        ],
+        "layers":[
+            "BG1",
+            "SP1",
+            "TEXT"
+        ],
+        
+        "jsgame_shared_plugins":[
+            { "f":"shared/plugins/VIDEO_A/videoModeA.js", "t": "js", "n":"videoModeA", "o":{} }
+        ]
+    },
+
+    "files":[
+        { "f":"tetris.js"              , "t":"js"   , "n":"tetris"        },
+        { "f":"tetris_config.js"       , "t":"js"   , "n":"tetris_config" },
+        { "f":"tetris_debug.js"        , "t":"js"   , "n":"tetris_debug"  },
+        { "f":"tetris_game.js"         , "t":"js"   , "n":"tetris_game"   },
+        { "f":"game_logic/tetris_gs_SHARED.js"         , "t":"js"   , "n":"tetris_gs_SHARED"   },
+        { "f":"game_logic/tetris_gs_title0.js"         , "t":"js"   , "n":"tetris_gs_title0"   },
+        { "f":"tetris.css"             , "t":"css"  , "n":"tetris_css"    },
+        { "f":"tetris.html"            , "t":"html" , "n":"tetris_html"   },
+        { "f":"UAM/JSON/tilesBG1.json" , "t":"json" , "n":"tilesBG1"      },
+        { "f":"UAM/JSON/tilesSP1.json" , "t":"json" , "n":"tilesSP1"      },
+        { "f":"UAM/JSON/tilesTX1.json" , "t":"json" , "n":"tilesTX1"      },
+        { "f":"UAM/JSON/tilesTX2.json" , "t":"json" , "n":"tilesTX2"      }
+    ]
+}
+

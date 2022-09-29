@@ -1,14 +1,16 @@
 <?xml version="1.0" ?>
 <gfx-xform version="SINGLE_TS">
- <input file="/web/ACTIVE/J/JS_GAMES/Tetris/UAM/IMG/tiles.png" type="png" tile-width="8" tile-height="8" />
- <output file="UAM/PROGMEM/tilesBG1.inc">
- <tiles var-name="tilesBG1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" />
+ <input file="/JSG_GAMES/JSGAME_Tetris/UAM/IMG/tiles.png" type="png" tile-width="8" tile-height="8" />
+ <output file="UAM/JSON/tilesBG1.json">
+ <tiles var-name="tilesBG1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" outputAsJson="1" translucent_color="253" />
  <maps pointers-size="8">
+  <map var-name="transparent_tile" left="0" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="bg1_tile" left="2" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="bg2_tile" left="2" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="empty_square" left="1" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="X_tile" left="18" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="X_tile782" left="3" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="T_bgtile" left="6" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="J_bgtile" left="7" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="Z_bgtile" left="8" top="2" width="1" height="1" mapOutputTo="PROGMEM" /> 
@@ -49,6 +51,16 @@
   <map var-name="n782_text_f7" left="44" top="27" width="7" height="3" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_text_f8" left="44" top="31" width="7" height="3" mapOutputTo="PROGMEM" /> 
   <map var-name="n782_text_f9" left="44" top="35" width="7" height="3" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad_all_off" left="85" top="3" width="22" height="6" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad_all_on" left="85" top="10" width="22" height="6" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_up" left="87" top="3" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_down" left="87" top="7" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_left" left="85" top="5" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_right" left="89" top="5" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_up_active" left="87" top="10" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_down_active" left="87" top="14" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_left_active" left="85" top="12" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="dpad1_right_active" left="89" top="12" width="2" height="2" mapOutputTo="PROGMEM" /> 
  </maps> 
  </output> 
 </gfx-xform> 

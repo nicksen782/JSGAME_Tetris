@@ -1,9 +1,10 @@
 <?xml version="1.0" ?>
 <gfx-xform version="SINGLE_TS">
- <input file="/web/ACTIVE/J/JS_GAMES/Tetris/UAM/IMG/tiles.png" type="png" tile-width="8" tile-height="8" />
- <output file="UAM/PROGMEM/tilesSP1.inc">
- <tiles var-name="tilesSP1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" />
+ <input file="/JSG_GAMES/JSGAME_Tetris/UAM/IMG/tiles.png" type="png" tile-width="8" tile-height="8" />
+ <output file="UAM/JSON/tilesSP1.json">
+ <tiles var-name="tilesSP1" tilesetOutputTo="PROGMEM" removeDupeTiles="1" outputAsJson="1" translucent_color="253" />
  <maps pointers-size="8">
+  <map var-name="transparent_tile" left="0" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="T_sptile" left="6" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="J_sptile" left="7" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="Z_sptile" left="8" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 

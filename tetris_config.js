@@ -1,0 +1,1 @@
+_APP.config = {};
