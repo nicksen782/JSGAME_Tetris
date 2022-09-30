@@ -124,7 +124,7 @@
   padding: 0.25em;
   background-color: #979da6;
   min-height: 400px;
-  max-height: 600px;
+  max-height: 500px;
   overflow: auto;
 }
 
@@ -132,21 +132,16 @@
   display: block;
 }
 
-#tetris_app_debug_runIndicator{ width:1em; height:1em; display:inline-block; vertical-align:top; background-color:red; }
-#tetris_app_debug_runIndicator.active{ background-color:green; }
-#tetris_app_debug_anim_lense{display: inline-block;border: 1px solid white;width: 49%;}
-#tetris_app_debug_anim_stars{display: inline-block;border: 1px solid white;width: 49%;}
+#tetris_app_debug_runIndicator_gameLoop{ width:1em;height:1em; display:inline-block; vertical-align:top; background-color:red;text-align: center;padding: 2px;line-height: 16px;font-size: 20px;}
+#tetris_app_debug_runIndicator_gameLoop.active{ background-color:green; }
+#tetris_app_debug_runIndicator_debug{ width:1em; height:1em; display:inline-block; vertical-align:top; background-color:red;padding: 2px;line-height: 16px;font-size: 20px;}
+#tetris_app_debug_runIndicator_debug.active{ background-color:green; }
 
-#tetris_app_debug_anim_lense table{border-collapse: separate;width: 100%;}
-#tetris_app_debug_anim_stars table{border-collapse: separate;width: 100%;}
-
-#tetris_app_debug_anim_lense table td{border:1px solid black;padding: 2px;}
-#tetris_app_debug_anim_stars table td{border:1px solid black;padding: 2px;}
-
-#tetris_app_debug_anim_lense table td:first-child{ width: 170px; }
-#tetris_app_debug_anim_stars table td:first-child{ width: 170px; }
-
-#tetris_app_debug_vars{display: inline-block;border: 1px solid white;width: 49%;}
-#tetris_app_debug_vars table{border-collapse: separate;width: 100%;}
-#tetris_app_debug_vars table td{border:1px solid black;padding: 2px;}
-#tetris_app_debug_vars table td:first-child{ width: 170px; }
+.tetris_app_debug_div1{display: inline-block;vertical-align: top;background-color: yellowgreen;margin-bottom: 5px;}
+/* .tetris_app_debug_div1.gameLoop { background-color: #cdae62; } */
+.tetris_app_debug_div1.gameLoop { background-color: goldenrod; }
+.tetris_app_debug_div1 table{}
+.tetris_app_debug_div1 table{border-collapse: separate;width: 100%;}
+.tetris_app_debug_div1 table td{border:1px solid black;padding: 2px;}
+.tetris_app_debug_div1 td{ font-family:monospace;white-space: pre;}
+.tetris_app_debug_div1 td.updated{ background-color:lightsteelblue; }

@@ -111,7 +111,7 @@ _APP = {
             // Graphics init.
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Graphics.`, "loading");
             await _GFX.init();
-            await _APP.gameLoop.init(this);
+            await _APP.game.gameLoop.init(this);
             
             // DEBUG? Init and switch to the debug tab if debug is active.
             let defaultLobbyTab           = _JSG.loadedConfig.meta.defaultLobbyTab;

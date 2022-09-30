@@ -1,16 +1,15 @@
 _APP.shared = {
-    secondsToFrames : function(seconds, msPerFrame){
+    msToFrames : function(ms, msPerFrame){
 		// Convert seconds to ms then divide by msPerFrame.
-		let frames = ( (seconds * 1000) / msPerFrame);
+		let frames = ( (ms) / msPerFrame);
 
 		// DEBUG
 		// console.log(
-		// 	`secondsToFrames:` + "\n" + 
-		// 	`  Requested seconds: ${(seconds).toFixed(2)}`           + "\n" + 
-		// 	`  Actual ms        : ${((msPerFrame*frames)).toFixed(2)}` + "\n" + 
-		// 	`  Actual frames    : ${frames.toFixed(2)}`              + "\n" + 
-		// 	`  frames (ceil)    : ${Math.ceil(frames).toFixed(2)}`   + "\n" + 
-		// 	`  frames (floor)   : ${Math.floor(frames).toFixed(2)}`  + "\n" + 
+		// 	`msToFrames:` + "\n" + 
+		// 	`  Requested msPerFrame: ${(msPerFrame).toFixed(2)}` + "\n" + 
+		// 	`  Requested ms        : ${(ms).toFixed(2)}`         + "\n" + 
+		// 	`  Calculated frames   : ${frames}`                  + "\n" + 
+		// 	`  Returned frames     : ${Math.ceil(frames)}`       + "\n" + 
 		// 	``
 		// );
 
@@ -40,7 +39,7 @@ _APP.shared = {
 					reverseDirectionOnRepeat: false,
 					resetFrameIndexOnRepeat : true,
 					maxRepeats              : 2,
-					maxWaitFrames           : _APP.shared.secondsToFrames(0.75, _APP.gameLoop.msFrame),
+					maxWaitFrames           : _APP.shared.secondsToFrames(0.75, _APP.game.gameLoop.msFrame),
 					eraseBeforeDraw         : false,
 					frameDirection          : 1,
 					frames: [
@@ -115,7 +114,7 @@ _APP.shared = {
 							let thisFrame = this.firstFrameTilemap;
 							let x = thisFrame.x;
 							let y = thisFrame.y;
-							_GFX.draw.tiles.drawTilemap(thisFrame.tilemap, x, y, 0, 0);
+							_GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
 						}
 				},
 			};
@@ -131,8 +130,6 @@ _APP.shared = {
             // Is the animation already completed?
             if(this.finished){ return; }
 
-            // Math.min(Math.max(parsed, 0), this.frames.length);
-
             // Have enough frames been waited for?
             if(this.waitFrames >= this.maxWaitFrames){
                 // Can we draw? (currentFrameIndex within range of 0 to frames.length-1).
@@ -147,13 +144,13 @@ _APP.shared = {
                     let thisFrame = this.frames[this.currentFrameIndex];
                     let x = thisFrame.x;
                     let y = thisFrame.y;
-                    _GFX.draw.tiles.drawTilemap(thisFrame.tilemap, x, y, 0, 0);
+					_GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
 
                     // Increment currentFrameIndex by frameDirection.
                     this.currentFrameIndex += this.frameDirection;
 
                     // TODO: Detect out of range and set the animation cycle complete flag.
-                    //
+                    // Math.min(Math.max(parsed, 0), this.frames.length);
                 }
 
                 // Not in range. This cycle is completed.
@@ -184,7 +181,7 @@ _APP.shared = {
                         // Animation is finished. Set the finished flag.
                         this.finished = true; 
 
-                        console.log("Finished:", key);
+                        // console.log("Finished:", key);
     
                         // Clear ?
                         // if(this.eraseBeforeDraw){}
@@ -193,7 +190,7 @@ _APP.shared = {
                         let thisFrame = this.lastFrameTilemap;
                         let x = thisFrame.x;
                         let y = thisFrame.y;
-                        _GFX.draw.tiles.drawTilemap(thisFrame.tilemap, x, y, 0, 0);
+						_GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
                         return; 
                     }
                 }

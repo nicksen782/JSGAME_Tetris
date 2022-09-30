@@ -3,9 +3,22 @@ _APP.debug = {
     parent:null,
     DOM:{},
 
+    TinySimpleHash:s=>{for(var i=0,h=9;i<s.length;)h=Math.imul(h^s.charCodeAt(i++),9**9);return h^h>>>9},
+
+    // TinySimpleHash: function(s){
+    //     // _APP.debug.TinySimpleHash("string");
+    //     // https://stackoverflow.com/a/52171480/2731377
+    //     for(var i=0, h=9; i<s.length;) {
+    //         h = Math.imul(h^s.charCodeAt(i++), 9**9); 
+    //     }
+    //     return h^h>>>9; 
+    // },
+
     // Tile draw test.
     debug1:{
         parent:null,
+
+        // Tileset draw test.
         drawTiles: function(tilesetName, dest1){
             let div1a = document.createElement("div"); 
             let div1b = document.createElement("div"); div1b.innerText = `${tilesetName}: TILES`; div1b.style = "background-color:white;"
@@ -22,25 +35,9 @@ _APP.debug = {
                 div1c.append(div);
             });
             dest1.append( div1a, document.createElement("br") );
-            // dest1.append( document.createElement("br") );
         },
-        init: async function(parent){
-            return new Promise(async (resolve,reject)=>{
-                // Set parent(s)
-                this.parent = parent;
-    
-                for(let key in _GFX.cache){
-                    this.drawTiles(key, this.parent.DOM["debug1Div"]);
-                }
-    
-                resolve();
-            });
-        },
-    },
 
-    // Tilemap draw test.
-    debug2:{
-        parent:null,
+        // Tilemap draw test.
         drawTilemaps: function(tilesetName, dest2){
             let div2a = document.createElement("div"); 
             let div2b = document.createElement("div"); div2b.innerText = `${tilesetName}: MAPS`; div2b.style = "background-color:white;"
@@ -61,7 +58,6 @@ _APP.debug = {
             };
     
             dest2.append( div2a, document.createElement("br") );
-            // dest2.append( document.createElement("br") );
         },
 
         init: async function(parent){
@@ -70,7 +66,11 @@ _APP.debug = {
                 this.parent = parent;
     
                 for(let key in _GFX.cache){
-                    this.drawTilemaps(key, this.parent.DOM["debug2Div"]);
+                    this.drawTiles(key, this.parent.DOM["debug1Div"]);
+                }
+
+                for(let key in _GFX.cache){
+                    this.drawTilemaps(key, this.parent.DOM["debug1Div"]);
                 }
     
                 resolve();
@@ -78,318 +78,70 @@ _APP.debug = {
         },
     },
 
-    // Interactive tile/tilemap draw tests.
-    debug3:{
-        parent:null,
-        DOM: {},
-
-        clearLayer: async function(layers){
-            console.log("clearLayer:", layers);
-
-            // Clear the canvas.
-            _APP.ctx.clearRect(0,0, _APP.canvas.width, _APP.canvas.height);
-
-            return; 
-
-            // TODO
-            // Loop through the specified layer clears.
-            for(let i=0; i<layers.length; i+=1){
-                // Does the layer exist?
-
-                // Clear the layer (VRAM). ("cleartile")
-
-                // Clear the canvas.
-                // _APP.ctx.clearRect(0,0, _APP.canvas.width, _APP.canvas.height);
-
-                // Redraw the layer (CANVAS).
-            }
-        },
-        populateTileSelect: function(){
-            // console.log("populateTileSelect:");
-
-            let select = this.DOM["debug_drawTileSelect"];
-            let option;
-            let frag = document.createDocumentFragment();
-            for(let tilesetName in _GFX.cache){
-                let tileset_tiles = _GFX.cache[tilesetName].tileset;
-                // console.log("  TILESET:", tilesetName);
-                for(let tileId in tileset_tiles){
-                    // console.log("    TILEMAP:", tileId, tileset_tiles[tileId]);
-                    option = document.createElement("option");
-                    option.setAttribute("tilesetName", tilesetName);
-                    option.setAttribute("tileId", tileId);
-                    option.value = `TS: ${tilesetName}, "ID:" ${tileId}`;
-                    option.innerText = `TS: ${tilesetName}, "ID:" ${tileId}`;
-                    frag.append(option);
-                }
-            }
-            select.append(frag);
-        },
-        populateTilemapSelect: function(){
-            // console.log("populateTilemapSelect:");
-
-            let select = this.DOM["debug_drawTileMapSelect"];
-            let option;
-            let frag = document.createDocumentFragment();
-            for(let tilesetName in _GFX.cache){
-                let tileset_maps = _GFX.cache[tilesetName].tilemap;
-                // console.log("  TILEMAPS:", tilesetName);
-                for(let tilemapName in tileset_maps){
-                    // console.log("    TILEMAP:", tilemapName, tileset_maps[tilemapName]);
-                    option = document.createElement("option");
-                    option.setAttribute("tilesetName", tilesetName);
-                    option.setAttribute("tilemapName", tilemapName);
-                    option.value = `TS: ${tilesetName}, "NAME:" ${tilemapName}`;
-                    option.innerText = `TS: ${tilesetName}, "NAME:" ${tilemapName}`;
-                    frag.append(option);
-                }
-            }
-            select.append(frag);
-        },
-        drawFromTileSelect: function(){
-            // Get the select.
-            let select = this.DOM["debug_drawTileSelect"];
-            
-            // Confirm that a value is selected.
-            if(!select.value){ return; }
-
-            // Get the values.
-            let option = select.options[select.selectedIndex];
-            let tilesetName = option.getAttribute("tilesetname");
-            let tileId = option.getAttribute("tileId");
-
-            // Get the tile canvas.
-            let tileCanvas = _GFX.cache[tilesetName].tileset[tileId].canvas;
-            
-            // Draw the canvas to the main canvas. 
-            _APP.ctx.drawImage(tileCanvas, 0, 0);
-
-            // DEBUG
-            // console.log("drawFromTileSelect:", tilesetName, tileId, tileCanvas);
-        },
-        drawFromTilemapSelect: function(method=2, rotationIndex=0){
-            // Get the select.
-            let select = this.DOM["debug_drawTileMapSelect"];
-            
-            // Confirm that a value is selected.
-            if(!select.value){ return; }
-
-            // Get the values.
-            let option      = select.options[select.selectedIndex];
-            let tilesetName = option.getAttribute("tilesetname");
-            let tilemapName = option.getAttribute("tilemapName");
-            let tilemapObj  = _GFX.cache[tilesetName].tilemap[tilemapName];
-            
-            // Stop if the tilemapObj is not found. 
-            if(!tilemapObj){ console.log("ERROR: Tilemap object not found?", tilesetName, tilemapName); return ; }
-
-            // Draw from already created tilemap. 
-            if(method == 1){
-                // Get the tilemap canvas.
-                let canvas = tilemapObj[rotationIndex].canvas;
-
-                // Stop if the tilemap is not found. 
-                if(!canvas){ console.log("ERROR: Tilemap canvas not found?", tilesetName, tilemapName); return ; }
-
-                // Draw the canvas to the main canvas. 
-                _APP.ctx.drawImage(canvas, 0, 0);
-
-                // DEBUG
-                // console.log("drawFromTilemapSelect:", tilesetName, tilemapName, canvas, `method: ${method}`);
-            }
-
-            // Draw tilemap via the individual tiles of the tilemap.
-            else if(method == 2){
-                // Get the tilemap. 
-                let tilemap = tilemapObj[rotationIndex].orgTilemap;
-
-                // Stop if the tilemap is not found. 
-                if(!tilemap){ console.log("ERROR: Tilemap not found?", tilesetName, tilemapName); return ; }
-
-                // The width of the tilemap is first.
-                let w = tilemap[0];
-
-                // The height of the tilemap is second.
-                let h = tilemap[1];
-
-                // Strip off the width and height from the tilemap.
-                tilemap = tilemap.slice(2);
-
-                // Create a tilemap image canvas out of tiles for each tilemap.
-                let index = 0;
-                for(let y=0; y<h; y+=1){
-                    for(let x=0; x<w; x+=1){
-                        let tileId =  tilemap[index];
-                        let canvas = _GFX.cache[tilesetName].tileset[ tileId ].canvas;
-                        let dx = x * _GFX.cache[tilesetName].config.tileWidth ;
-                        let dy = y * _GFX.cache[tilesetName].config.tileHeight;
-                        _APP.ctx.drawImage( canvas, dx, dy );
-                        index += 1 ;
-                    }
-                }
-
-                // console.log("drawFromTilemapSelect:", tilesetName, tilemapName, [w, h, ...tilemap], `method: ${method}`);
-            }
-        },
-
-        init: async function(parent){
-            return new Promise(async (resolve,reject)=>{
-                // Set parent(s)
-                this.parent = parent;
-    
-                // Load in the DOM from meta.
-                this.DOM = _JSG.loadedConfig.meta.debugDOM.debug3.DOM;
-                await _JSG.shared.parseObjectStringDOM(this.DOM, false);
-    
-                // Event listeners.
-                this.DOM["debug_clearAllLayers"]   .addEventListener("click", () => this.clearLayer([0]), false); 
-                this.DOM["debug_clearLayer1"]      .addEventListener("click", () => this.clearLayer([0,1]), false); 
-                this.DOM["debug_clearLayer2"]      .addEventListener("click", () => this.clearLayer([0,1,2]), false); 
-                this.DOM["debug_clearLayer3"]      .addEventListener("click", () => this.clearLayer([0,1,2,3]), false); 
-                
-                // Populate the selects.
-                this.populateTileSelect();
-                this.populateTilemapSelect();
-                
-                this.DOM["debug_drawTileButton"]   .addEventListener("click", () => this.drawFromTileSelect(), false); 
-                this.DOM["debug_drawTileMapButton1"].addEventListener("click", () => this.drawFromTilemapSelect(2, 0), false); 
-                resolve();
-            });
-        },
-    },
-    
     gs_title0: {
         parent: null,
         gs: null,
         DOM: {},
 
-        runDebugDisplay: function(){
-            this.debug_animation("anim_lense");
-            this.debug_animation("anim_stars");
-            this.debug_vars();
-            this.DOM["tetris_app_debug_runIndicator"].classList.toggle("active");
-        },
-
-        debug_animation:function(key){ 
+        getVarsObj_anim:function(key){
             // Get the data for the table display. 
             let anim = this.gs.animations[key];
-
-            try{
-                let obj = {
-                    [key] : {
-                        NAME: key,
-                    },
-                };
-                obj[key].finished          = anim.finished;
-                obj[key].repeatCounter     = `${anim.repeatCounter} / ${anim.maxRepeats}`;
-                obj[key].waitFrames        = `${anim.waitFrames} / ${anim.maxWaitFrames}`;
-
-                obj[key].frameDirection    = anim.frameDirection;
-                obj[key].eraseBeforeDraw   = anim.eraseBeforeDraw;
-                obj[key].currentFrameIndex = anim.currentFrameIndex;
-                
-                if(anim.currentFrameIndex >= 0 && anim.currentFrameIndex < anim.frames.length ){
-                    obj[key]._currentFrame_tilemap = anim.frames[anim.currentFrameIndex].tilemap;
-                    obj[key]._currentFrame_x       = anim.frames[anim.currentFrameIndex].x;
-                    obj[key]._currentFrame_y       = anim.frames[anim.currentFrameIndex].y;
-                }
-                else{
-                    obj[key]._currentFrame_tilemap = "**CYCLE_END**";
-                    obj[key]._currentFrame_x       = "**CYCLE_END**";
-                    obj[key]._currentFrame_y       = "**CYCLE_END**";
-                }
-                
-                // Create the base table structure. 
-                let table = document.createElement("table");
-                let thead = document.createElement("thead");
-                let tbody = document.createElement("tbody");
-                table.append(thead,tbody);
-
-                // Create the rows and columns for the table. 
-                let rec, tr, td;
-                for(let key1 in obj[key]){
-                    rec = obj[key][key1];
-                    tr = tbody.insertRow(-1);
-
-                    td = tr.insertCell(-1);
-                    td.innerText = key1;
-                    
-                    td = tr.insertCell(-1);
-                    td.innerText = rec;
-                }
-
-                if(key == "anim_lense"){
-                    // Clear the destination. 
-                    this.DOM.tetris_app_debug_anim_lense.innerHTML = "";
-        
-                    // Add the table to the destination.
-                    this.DOM.tetris_app_debug_anim_lense.append(table);
-                }
-                else if(key == "anim_stars"){
-                    // Clear the destination. 
-                    this.DOM.tetris_app_debug_anim_stars.innerHTML = "";
-        
-                    // Add the table to the destination.
-                    this.DOM.tetris_app_debug_anim_stars.append(table);
-                }
+            let div  ;
+            let table;
+            let obj = { "NAME": key };
+            
+            if(key == "anim_lense"){
+                div   = this.DOM.tetris_app_debug_anim_lense;
+                table = this.DOM.tetris_app_debug_anim_lense.querySelector("table");
             }
-            catch(e){
-                console.log("ERROR: debug_animation:", key, e, anim);
-                return; 
+            else if(key == "anim_stars"){
+                div   = this.DOM.tetris_app_debug_anim_stars;
+                table = this.DOM.tetris_app_debug_anim_stars.querySelector("table");
             }
-        },
-        debug_vars: function(){
-            // let anim = this.gs.animations[key];
-            let obj = {
-                "NAME": "gs_title0 vars",
-                "endDelay.started": this.gs.endDelay.started,
-                "endDelay.finished": this.gs.endDelay.finished,
-                "endDelay:waitFrames": `${this.gs.endDelay.frameCount} / ${this.gs.endDelay.maxFrames}`,
-                "inited": this.gs.inited,
+            else{
+                console.log("getVarsObj_anim: INVALID KEY:", key);
+                throw "";
+            }
+
+            obj.finished        = anim.finished;
+            obj.repeats         = `${anim.repeatCounter} / ${anim.maxRepeats}`;
+            obj.waitFrames      = `${anim.waitFrames} / ${anim.maxWaitFrames}`;
+            obj.dir             = anim.frameDirection;
+            obj.eraseBefore     = anim.eraseBeforeDraw;
+            obj.currentFrame    = anim.currentFrameIndex;
+            
+            if(anim.currentFrameIndex >= 0 && anim.currentFrameIndex < anim.frames.length ){
+                obj._f_tilemap = anim.frames[anim.currentFrameIndex].tilemap;
+                obj._f_x       = anim.frames[anim.currentFrameIndex].x;
+                obj._f_y       = anim.frames[anim.currentFrameIndex].y;
+            }
+            else{
+                obj._f_tilemap = "**CYCLE_END**";
+                obj._f_x       = "**CYCLE_END**";
+                obj._f_y       = "**CYCLE_END**";
+            }
+            return {
+                obj  : obj,
+                div  : div,
+                table: table,
             };
 
-            // Create the base table structure. 
-            let table = document.createElement("table");
-            let thead = document.createElement("thead");
-            let tbody = document.createElement("tbody");
-            table.append(thead,tbody);
-
-            // Create the rows and columns for the table. 
-            let rec, tr, td;
-            for(let key1 in obj){
-                rec = obj[key1];
-                tr = tbody.insertRow(-1);
-
-                td = tr.insertCell(-1);
-                td.innerText = key1;
-                
-                td = tr.insertCell(-1);
-                td.innerText = rec;
-            }
-
-            // Clear the destination. 
-            this.DOM.tetris_app_debug_vars.innerHTML = "";
-        
-            // Add the table to the destination.
-            this.DOM.tetris_app_debug_vars.append(table);
-
         },
-        run_gamestate: function(){
-            let ts1 = performance.now();
-            let anim_lense = this.gs.animations.anim_lense;
-            let anim_stars = this.gs.animations.anim_stars;
-            let id1 = setInterval(()=>{ 
-                document.getElementById("tetris_app_debug_runGsTitle0_main").click(); 
-                _GFX.VRAM.draw();
-                // if( (anim_lense.finished && anim_stars.finished) || performance.now() - ts1 > 30000){ 
-                if( this.gs.endDelay.finished || performance.now() - ts1 > 30000){ 
-                    console.log(`Clearing interval. Interval lasted for: ${(performance.now() - ts1).toFixed(2)} ms`);
-                    clearInterval(id1); 
-                }
-            }, 25);
-        },
-        uninit_gsTitle0: function(){
-            this.gs.inited = false; 
+        getVarsObj_vars: function(){
+            let div   = this.DOM.tetris_app_debug_vars;
+            let table = this.DOM.tetris_app_debug_vars.querySelector("table");
+            let obj = {
+                "NAME": "gs_title0 vars",
+                "endDelay.start" : this.gs.endDelay.started,
+                "endDelay.finish": this.gs.endDelay.finished,
+                "endDelay:w f"   : `${this.gs.endDelay.frameCount}/${this.gs.endDelay.maxFrames} (ms:${this.gs.endDelay.maxFrames * _APP.game.gameLoop["msFrame"]})`,
+                "inited": this.gs.inited,
+            };
+            return {
+                obj   : obj,
+                div   : div,
+                table : table,
+            };
         },
 
         init: async function(parent){
@@ -398,16 +150,13 @@ _APP.debug = {
                 this.parent = parent;
 
                 // Save shorthand to the game state object. 
-                this.gs = _APP.game["gs_title0"];
+                this.gs = _APP.game.gamestates["gs_title0"];
     
                 // Load in the DOM from meta.
                 this.DOM = _JSG.loadedConfig.meta.debugDOM.gs_title0.DOM;
                 await _JSG.shared.parseObjectStringDOM(this.DOM, false);
     
                 // Event listeners.
-                this.DOM["tetris_app_debug_runGsTitle0_main"].addEventListener("click", () => this.gs.main(), false); 
-                this.DOM["tetris_app_debug_run_anim_lense"]  .addEventListener("click", () => this.run_gamestate(), false); 
-                this.DOM["tetris_app_debug_uninit_gsTitle0"] .addEventListener("click", () => this.uninit_gsTitle0(), false); 
                 
                 resolve();
             });
@@ -469,6 +218,184 @@ _APP.debug = {
         }
     },
 
+    debugDisplays: {
+        runDebugDisplay: function(){
+            let gamestate1 = _APP.game.gameLoop["gamestate1"];
+            let gamestate2 = _APP.game.gameLoop["gamestate2"];
+            let data;
+            
+            // Toggle the debug indicator.
+            _APP.debug.DOM["runIndicator_debug"].classList.toggle("active");
+
+            // Always show the gameLoop debug.
+            data = _APP.debug.debug_gameloop_div.getVarsObj_gameLoop_div1();
+            this.generateDebugTable1(data);
+            data = _APP.debug.debug_gameloop_div.getVarsObj_gameLoop_div2();
+            this.generateDebugTable1(data);
+            
+            if(gamestate1 == "gs_title0"){
+                // Anim_lense debug.
+                data =_APP.debug.gs_title0.getVarsObj_anim("anim_lense");
+                this.generateDebugTable1(data);
+                
+                // Anim_stars debug.
+                data =_APP.debug.gs_title0.getVarsObj_anim("anim_stars");
+                this.generateDebugTable1(data);
+
+                // Anim_stars debug.
+                data =_APP.debug.gs_title0.getVarsObj_vars();
+                this.generateDebugTable1(data);
+            }
+        },
+
+        generateDebugTable1: function(data){
+            let obj   = data.obj;
+            let div   = data.div;
+            let table = data.table;
+
+            if(table){
+                // Update the rows and columns for the table. 
+                let rec, recHash, td, valueHash, value;
+                for(let key1 in obj){
+                    // New data.
+                    rec       = obj[key1].toString().trim();
+                    recHash   = _APP.debug.TinySimpleHash(rec);
+
+                    // Previous data.
+                    td        = table.querySelector(`td[key="${key1}"]`);
+                    valueHash = td.getAttribute("valuehash");
+                    value     = td.getAttribute("value");
+
+                    //.Are the hashes different?
+                    if(valueHash != recHash){
+                        td.innerText = rec.toString().trim().padEnd(17, " ");
+                        td.setAttribute("valuehash", recHash)
+                        td.setAttribute("value", rec)
+                        td.classList.add("updated");
+                    }
+                    else{
+                        td.classList.remove("updated");
+                    }
+                }
+            }
+            else{
+                // Create the base table structure. 
+                table = document.createElement("table");
+                let thead = document.createElement("thead");
+                let tbody = document.createElement("tbody");
+                table.append(thead,tbody);
+        
+                // Create the rows and columns for the table. 
+                let rec, tr, td;
+                for(let key1 in obj){
+                    rec = obj[key1];
+                    tr = tbody.insertRow(-1);
+                    
+                    td = tr.insertCell(-1);
+                    td.innerText = key1.toString().padEnd(17, " ");
+                    
+                    td = tr.insertCell(-1);
+                    td.innerText = rec.toString().trim().padEnd(17, " ");
+                    td.setAttribute("key", key1);
+                    td.setAttribute("value", rec.toString().trim());
+                    td.setAttribute("valueHash", _APP.debug.TinySimpleHash(rec.toString().trim()))
+                }
+        
+                // Clear the destination. 
+                div.innerHTML = "";
+            
+                // Add the table to the destination.
+                div.append(table);
+            }
+        },
+    },
+
+    // Runs during the gameLoop on a frame count timer.
+    debug_gameloop_div: {
+        parent: null,
+        
+        getVarsObj_gameLoop_div1: function(){
+            let div   = this.parent.DOM.gameLoopVars_div1;
+            let table = this.parent.DOM.gameLoopVars_div1.querySelector("table");
+            return {
+                obj : {
+                    // "NAME": "gameLoop vars 1",
+                    "gameLoop running" : _APP.game.gameLoop["running"] ,
+                    "gamestate1"       : `'${_APP.game.gameLoop["gamestate1"]}'` ,
+                    "gamestate2"       : `'${_APP.game.gameLoop["gamestate2"]}'` ,
+                    "netGame"     : `${_APP.game.gameLoop["netGame"]}` ,
+                },
+                div  : div,
+                table: table,
+            };
+        },
+        getVarsObj_gameLoop_div2: function(){
+            let div   = this.parent.DOM.gameLoopVars_div2;
+            let table = this.parent.DOM.gameLoopVars_div2.querySelector("table");
+            return {
+                obj : {
+                    // "NAME": "gameLoop vars 2",
+                    "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop["msFrame"].toFixed(1)}ms/f)` ,
+                    "debugTiming" : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}f, (${(_APP.game.gameLoop["debugDelay"] * _APP.game.gameLoop["msFrame"]).toFixed(1)}ms)` ,
+                    ""            : "" ,
+                    "frameCounter"     : _APP.game.gameLoop["frameCounter"] ,
+                },
+                div  : div,
+                table: table,
+            };
+        },
+
+        startGameLoop:function(){
+            // Cancel the current animation frame. 
+            window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
+
+            // Trigger gamestate change but keep the same gamestates.
+            _APP.game.gameLoop.changeGamestate1( _APP.game.gameLoop.gamestate1 );
+            _APP.game.gameLoop.changeGamestate2( _APP.game.gameLoop.gamestate2 );
+            
+            // Set the gameLoop.running to true. 
+            _APP.game.gameLoop.running = true; 
+
+            // Start the gameLoop.
+            _APP.game.gameLoop.loop();
+        },
+        stopGameLoop:function(){
+            // Cancel the current animation frame. 
+            window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
+
+            // Set the gameLoop.running to false. 
+            _APP.game.gameLoop.running = false;
+
+            // DEBUG.
+            if(_JSG.loadedConfig.meta.debug){
+                // Display the debug data one more time. 
+                _APP.debug.debugDisplays.runDebugDisplay();
+
+                // Update gameLoop.lastDebug.
+                _APP.game.gameLoop.lastDebug = performance.now();
+            }
+        },
+        init: async function(parent){
+            return new Promise(async (resolve,reject)=>{
+                // Set parent(s)
+                this.parent = parent;
+
+                // Save shorthand to the game state object. 
+                // this.gs = _APP.game["gs_title0"];
+    
+                // Load in the DOM from meta.
+                // this.DOM = _JSG.loadedConfig.meta.debugDOM.gs_title0.DOM;
+                // await _JSG.shared.parseObjectStringDOM(this.DOM, false);
+    
+                // Event listeners.
+                this.parent.DOM["startBtn"].addEventListener("click", () => this.startGameLoop(), false); 
+                this.parent.DOM["stopBtn"] .addEventListener("click", () => this.stopGameLoop(), false); 
+                
+                resolve();
+            });
+        },
+        
+    },
     init: async function(parent){
         return new Promise(async (resolve,reject)=>{
             // Set parent(s)
@@ -480,9 +407,8 @@ _APP.debug = {
 
             // Init(s).
             await this.nav.init(this);
+            await this.debug_gameloop_div.init(this);
             await this.debug1.init(this);
-            await this.debug2.init(this);
-            await this.debug3.init(this);
             await this.gs_title0.init(this);
             
             resolve();

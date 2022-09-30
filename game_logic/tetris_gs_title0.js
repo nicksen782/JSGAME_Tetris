@@ -1,4 +1,4 @@
-_APP.game["gs_title0"] = {
+_APP.game.gamestates["gs_title0"] = {
     // Variables within this game state.
 
     // Animations. (Populated via _APP.shared.animations1.generator).
@@ -42,7 +42,7 @@ _APP.game["gs_title0"] = {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
                 maxRepeats              : 2,
-                maxWaitFrames           : _APP.shared.secondsToFrames(0.75, _APP.gameLoop.msFrame),
+                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
@@ -65,10 +65,11 @@ _APP.game["gs_title0"] = {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
                 maxRepeats              : 4,
-                maxWaitFrames           : _APP.shared.secondsToFrames(0.5/4, _APP.gameLoop.msFrame),
+                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
+                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f3", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f4", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f5", x:10, y:16 },
@@ -76,9 +77,8 @@ _APP.game["gs_title0"] = {
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f7", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f8", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f9", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f3", x:10, y:16 },
+                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
                 lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
             }
         );
@@ -87,10 +87,13 @@ _APP.game["gs_title0"] = {
         // Init the endDelay values. 
         this.endDelay.finished   = false
         this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.shared.secondsToFrames(1, _APP.gameLoop.msFrame);
+        this.endDelay.maxFrames  = _APP.shared.msToFrames(1000, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
-        this._debug.init(this);
+        // DEBUG: Swtich to the debug tab for this gamestate.
+        if(_JSG.loadedConfig.meta.debug){
+            _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
+        }
 
         this.inited = true; 
     },
@@ -98,9 +101,6 @@ _APP.game["gs_title0"] = {
     // Main function of this game state. Calls other functions/handles logic, etc.
     main: async function(){
         if(!this.inited){ this.init(); return; }
-
-        // DEBUG.
-        if(this._debug.debugActive){ this._debug.run(); }
 
         // Run the lense animation.
         this.animations.draw("anim_lense");
@@ -129,6 +129,7 @@ _APP.game["gs_title0"] = {
 
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
+                _APP.game.gameLoop.changeGamestate1("gs_title0");
 
                 console.log("gs_title0 DONE");
             }
@@ -138,25 +139,5 @@ _APP.game["gs_title0"] = {
             }
         }
     },
-    
 
-    // DEBUG functions.
-    _debug: {
-        parent: null,
-        debugActive: true,
-
-        run: function(){
-            // console.log("debug run");
-            _APP.debug.gs_title0.runDebugDisplay();
-        },
-
-        init: async function(parent){
-            return new Promise(async (resolve, reject)=>{
-                this.parent = parent; 
-
-                // console.log("debug init");
-                resolve();
-            });
-        },
-    },
 };
