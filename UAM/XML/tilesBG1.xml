@@ -61,6 +61,8 @@
   <map var-name="dpad1_down_active" left="87" top="14" width="2" height="2" mapOutputTo="PROGMEM" /> 
   <map var-name="dpad1_left_active" left="85" top="12" width="2" height="2" mapOutputTo="PROGMEM" /> 
   <map var-name="dpad1_right_active" left="89" top="12" width="2" height="2" mapOutputTo="PROGMEM" /> 
+  <map var-name="jsgame_logo1" left="54" top="21" width="24" height="20" mapOutputTo="PROGMEM" /> 
+  <map var-name="jsgame_logo2" left="54" top="42" width="24" height="20" mapOutputTo="PROGMEM" /> 
  </maps> 
  </output> 
 </gfx-xform> 

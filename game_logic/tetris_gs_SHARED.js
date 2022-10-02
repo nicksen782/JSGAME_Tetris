@@ -1,5 +1,20 @@
 _APP.shared = {
-    msToFrames : function(ms, msPerFrame){
+	tests: {
+		msToFramesTEST: function(){
+			for(let i=0; i<11; i+=0.25){ 
+				let msFrame = _APP.game.gameLoop.msFrame;
+				let ms      = i * msFrame;
+				let frames  = _APP.shared.msToFrames(ms, msFrame);
+				let totalMs = frames*msFrame;
+				let overage = totalMs - ms;
+
+				let textOutput = `Wanted: ${ms.toFixed(2)} ms. Received: ${totalMs.toFixed(2)}. Frames needed: ${frames}.`;
+				if(overage){ textOutput += ` (Overage: ${overage.toFixed(2)} ms.)`; }
+				console.log(textOutput);
+			}
+		},
+	},
+	msToFrames : function(ms, msPerFrame){
 		// Convert seconds to ms then divide by msPerFrame.
 		let frames = ( (ms) / msPerFrame);
 
@@ -16,6 +31,7 @@ _APP.shared = {
 		// Return the number of frames rounded up.
 		return Math.ceil(frames);
 	},
+
 	animations1: {
 		/*
 			WHEN/WHERE TO USE THIS:
@@ -101,16 +117,16 @@ _APP.shared = {
 				lastFrameTilemap:  confObj.lastFrameTilemap,
 	
 				// Resets the variables to their default.
-				init: function(immediatelyDrawFirstFrame = true){
+				init: function(){
 						// These changes and will need to be reset if the animation is to run again.
 						this.finished          = false;
 						this.repeatCounter     = 0;
-						this.waitFrames        = 0;
+						this.waitFrames        = -1;
 						this.currentFrameIndex = 0;
 						this.frameDirection    = confObj.frameDirection;
 			
 						// Draw the first frame. 
-						if(immediatelyDrawFirstFrame){
+						if(this.firstFrameTilemap){
 							let thisFrame = this.firstFrameTilemap;
 							let x = thisFrame.x;
 							let y = thisFrame.y;
@@ -187,10 +203,12 @@ _APP.shared = {
                         // if(this.eraseBeforeDraw){}
                         
                         // Draw the last frame. 
-                        let thisFrame = this.lastFrameTilemap;
-                        let x = thisFrame.x;
-                        let y = thisFrame.y;
-						_GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
+						if(this.lastFrameTilemap){
+							let thisFrame = this.lastFrameTilemap;
+							let x = thisFrame.x;
+							let y = thisFrame.y;
+							_GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
+						}
                         return; 
                     }
                 }
@@ -202,5 +220,10 @@ _APP.shared = {
                 return;
             }
         },
+	},
+
+	// https://www.arduino.cc/reference/en/language/functions/math/map/
+	mapNumberToRange: function(x, in_min, in_max, out_min, out_max){
+		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	},
 };

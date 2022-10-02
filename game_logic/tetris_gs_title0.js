@@ -4,8 +4,7 @@ _APP.game.gamestates["gs_title0"] = {
     // Animations. (Populated via _APP.shared.animations1.generator).
     animations: {
         // Placeholder animation objects.
-        anim_lense : {},
-        anim_stars : {},
+        anim_jsgameLogo : {},
         
         // Placeholder draw objects.
         draw       : {},
@@ -27,7 +26,7 @@ _APP.game.gamestates["gs_title0"] = {
 
     // Run once upon changing to this game state.
     init: async function(){
-        console.log("gs_title0 init");
+        console.log("gs_title1 init");
 
         // Clear the screen.
         _GFX.VRAM.clearVram();
@@ -37,57 +36,29 @@ _APP.game.gamestates["gs_title0"] = {
         this.animations._draw = _APP.shared.animations1._draw;
 
         // Generate and init the lense animation.
-        this.animations["anim_lense"] = _APP.shared.animations1.generator(
+        this.animations["anim_jsgameLogo"] = _APP.shared.animations1.generator(
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
-                maxRepeats              : 2,
-                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
+                maxRepeats              : 1,
+                maxWaitFrames           : _APP.shared.msToFrames(105, _APP.game.gameLoop.msFrame),
+                // maxWaitFrames           : _APP.shared.msToFrames(55, _APP.game.gameLoop.fpsCalc["average"]),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f2", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f3", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f4", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f5", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
+                    { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo2", x:2, y:4, },
+                    { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4, },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
+                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4 },
+                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4 },
             }
         );
-        this.animations["anim_lense"].init(); 
-
-        // Generate and init the stars animation.
-        this.animations["anim_stars"] = _APP.shared.animations1.generator(
-            {
-                reverseDirectionOnRepeat: false,
-                resetFrameIndexOnRepeat : true,
-                maxRepeats              : 4,
-                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
-                eraseBeforeDraw         : false,
-                frameDirection          : 1,
-                frames: [
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f3", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f4", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f5", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f6", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f7", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f8", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f9", x:10, y:16 },
-                ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
-            }
-        );
-        this.animations["anim_stars"].init(); 
+        this.animations["anim_jsgameLogo"].init(); 
 
         // Init the endDelay values. 
         this.endDelay.finished   = false
         this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.shared.msToFrames(1000, _APP.game.gameLoop.msFrame);
+        this.endDelay.maxFrames  = _APP.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
         // DEBUG: Swtich to the debug tab for this gamestate.
@@ -102,20 +73,12 @@ _APP.game.gamestates["gs_title0"] = {
     main: async function(){
         if(!this.inited){ this.init(); return; }
 
-        // Run the lense animation.
-        this.animations.draw("anim_lense");
-        
-        // Run the stars animation.
-        this.animations.draw("anim_stars");
-        
-        // Are both animations complete?
-        if(this.animations.anim_lense.finished && this.animations.anim_stars.finished && !this.endDelay.started){
-            // Yes, start the endDelay.
-            // console.log("endDelay started.");
+        this.animations.draw("anim_jsgameLogo"); 
+        if(this.animations.anim_jsgameLogo.finished && !this.endDelay.started){
             this.endDelay.started = true; 
             return;
         }
-        
+
         // Delay before progressing to the next game state?
         if(this.endDelay.started){
             // console.log("endDelay is running.");
@@ -129,7 +92,8 @@ _APP.game.gamestates["gs_title0"] = {
 
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
-                _APP.game.gameLoop.changeGamestate1("gs_title0");
+                _APP.game.gameLoop.changeGamestate1("gs_title1");
+                // _APP.game.gameLoop.changeGamestate1("gs_title0");
 
                 console.log("gs_title0 DONE");
             }

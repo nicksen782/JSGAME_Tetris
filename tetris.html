@@ -45,36 +45,51 @@
         <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_highscores" view="tetris_app_debug_nav_view_debug_gs_gs_highscores">gs_highscores</div>
     </div>
     
+    <!-- GAMELOOP AND CORE DATA -->
     <div id="tetris_app_debug_gameloop_div">
         <div id="tetris_app_debug_runIndicator_gameLoop">L</div>
         <div id="tetris_app_debug_runIndicator_debug">D</div>
         <button id="tetris_app_debug_gameLoopVars_startBtn">startBtn</button>
         <button id="tetris_app_debug_gameLoopVars_stopBtn">stopBtn</button>
+        <button id="tetris_app_debug_gameLoopVars_toggleLoopType_btn">toggleLoopType</button>
+        <select id="tetris_app_debug_gameLoopVars_gamestateSelect"></select>
+
         <br>
+        <div class="tetris_app_debug_div1 gameLoop block" id="tetris_app_debug_gameDebugDiv_timeIt"></div>
         <div class="tetris_app_debug_div1 gameLoop" id="tetris_app_debug_gameLoopVars_div1"></div>
         <div class="tetris_app_debug_div1 gameLoop" id="tetris_app_debug_gameLoopVars_div2"></div>
     </div>
 
     <div class="tetris_app_debug_views">
-        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug1">
-        </div>
+        <!-- TILES AND TILEMAPS -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug1"></div>
 
+        <!-- GS_TITLE0 -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title0">
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_gs0_anim_jsgameLogo"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_gs0_debug_vars"></div>
+        </div>
+        
+        <!-- GS_TITLE1 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title1">
             <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_lense"></div>
             <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_stars"></div>
             <div class="tetris_app_debug_div1" id="tetris_app_debug_vars"></div>
         </div>
 
-        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title1">gs_title1</div>
-
+        <!-- gs_title2 -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title2">gs_title2</div>
 
+        <!-- gs_setup1 -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_setup1">gs_setup1</div>
 
+        <!-- gs_setup2 -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_setup2">gs_setup2</div>
 
+        <!-- gs_play -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_play">gs_play</div>
 
+        <!-- gs_highscores -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_highscores">gs_highscores</div>
     </div>
 </div>
