@@ -1,7 +1,7 @@
 _APP.game.gamestates["gs_title0"] = {
     // Variables within this game state.
 
-    // Animations. (Populated via _APP.shared.animations1.generator).
+    // Animations. (Populated via _APP.game.shared.animations1.generator).
     animations: {
         // Placeholder animation objects.
         anim_jsgameLogo : {},
@@ -26,23 +26,22 @@ _APP.game.gamestates["gs_title0"] = {
 
     // Run once upon changing to this game state.
     init: async function(){
-        console.log("gs_title1 init");
+        console.log("gs_title0 init");
 
         // Clear the screen.
         _GFX.VRAM.clearVram();
 
         // Animations: drawing functions.
-        this.animations.draw = _APP.shared.animations1.draw;
-        this.animations._draw = _APP.shared.animations1._draw;
+        this.animations.draw = _APP.game.shared.animations1.draw;
+        this.animations._draw = _APP.game.shared.animations1._draw;
 
         // Generate and init the lense animation.
-        this.animations["anim_jsgameLogo"] = _APP.shared.animations1.generator(
+        this.animations["anim_jsgameLogo"] = _APP.game.shared.animations1.generator(
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
                 maxRepeats              : 1,
-                maxWaitFrames           : _APP.shared.msToFrames(105, _APP.game.gameLoop.msFrame),
-                // maxWaitFrames           : _APP.shared.msToFrames(55, _APP.game.gameLoop.fpsCalc["average"]),
+                maxWaitFrames           : _APP.game.shared.msToFrames(105, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
@@ -50,7 +49,7 @@ _APP.game.gamestates["gs_title0"] = {
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4, },
                 ],
                 firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4 },
+                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo2", x:2, y:4 },
             }
         );
         this.animations["anim_jsgameLogo"].init(); 
@@ -58,13 +57,8 @@ _APP.game.gamestates["gs_title0"] = {
         // Init the endDelay values. 
         this.endDelay.finished   = false
         this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
+        this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
-
-        // DEBUG: Swtich to the debug tab for this gamestate.
-        if(_JSG.loadedConfig.meta.debug){
-            _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
-        }
 
         this.inited = true; 
     },

@@ -1,7 +1,7 @@
 _APP.game.gamestates["gs_title1"] = {
     // Variables within this game state.
 
-    // Animations. (Populated via _APP.shared.animations1.generator).
+    // Animations. (Populated via _APP.game.shared.animations1.generator).
     animations: {
         // Placeholder animation objects.
         anim_lense : {},
@@ -33,16 +33,16 @@ _APP.game.gamestates["gs_title1"] = {
         _GFX.VRAM.clearVram();
 
         // Animations: drawing functions.
-        this.animations.draw = _APP.shared.animations1.draw;
-        this.animations._draw = _APP.shared.animations1._draw;
+        this.animations.draw = _APP.game.shared.animations1.draw;
+        this.animations._draw = _APP.game.shared.animations1._draw;
 
         // Generate and init the lense animation.
-        this.animations["anim_lense"] = _APP.shared.animations1.generator(
+        this.animations["anim_lense"] = _APP.game.shared.animations1.generator(
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
                 maxRepeats              : 2,
-                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
+                maxWaitFrames           : _APP.game.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
@@ -60,12 +60,12 @@ _APP.game.gamestates["gs_title1"] = {
         this.animations["anim_lense"].init(); 
 
         // Generate and init the stars animation.
-        this.animations["anim_stars"] = _APP.shared.animations1.generator(
+        this.animations["anim_stars"] = _APP.game.shared.animations1.generator(
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
                 maxRepeats              : 4,
-                maxWaitFrames           : _APP.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
+                maxWaitFrames           : _APP.game.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
@@ -87,13 +87,8 @@ _APP.game.gamestates["gs_title1"] = {
         // Init the endDelay values. 
         this.endDelay.finished   = false
         this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.shared.msToFrames(1000, _APP.game.gameLoop.msFrame);
+        this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
-
-        // DEBUG: Swtich to the debug tab for this gamestate.
-        if(_JSG.loadedConfig.meta.debug){
-            _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
-        }
 
         this.inited = true; 
     },
@@ -129,9 +124,11 @@ _APP.game.gamestates["gs_title1"] = {
 
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
-                _APP.game.gameLoop.changeGamestate1("gs_title1");
+                // _APP.game.gameLoop.changeGamestate1("gs_title0");
+                // _APP.game.gameLoop.changeGamestate1("gs_title1");
+                _APP.game.gameLoop.changeGamestate1("gs_title2");
 
-                console.log("gs_title0 DONE");
+                console.log("gs_title1 DONE");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");

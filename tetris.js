@@ -89,6 +89,13 @@ _APP = {
 
     init: async function(){
         return new Promise(async (resolve, reject)=>{
+            // appConfig overrides.
+            console.log(_JSG.params);
+            if(_JSG.params.debug){
+                if(_JSG.params.debug=="0"){ _JSG.loadedConfig.meta.debug = false; }
+                else if(_JSG.params.debug=="1"){ _JSG.loadedConfig.meta.debug = true; }
+            }
+
             // Load in the DOM from meta.
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init.`, "loading");
             _APP.DOM = _JSG.loadedConfig.meta.DOM;
@@ -126,6 +133,10 @@ _APP = {
                 resolve();
             }
             else{ resolve(); }
+
+            // Start the gameLoop.
+            _APP.game.gameLoop.running = true; 
+            _APP.game.gameLoop.loop();
         });
     },
 };

@@ -4,6 +4,8 @@ _APP.game = {
     },
     gamestates_list: [],
 
+    shared: {}, 
+    
     gameLoop : {
         frameCounter: 0,
         raf_id     : null,
@@ -48,6 +50,7 @@ _APP.game = {
             sampleSize : undefined,
             _sample_   : undefined,
             average    : undefined,
+            avgMsPerFrame : undefined,
             _index_    : undefined,
             _lastTick_ : undefined,
 
@@ -75,6 +78,7 @@ _APP.game = {
         
                 // Set the new FPS average.
                 this.average = __average_;
+                this.avgMsPerFrame = 1000 / __average_;
 
                 // Store current timestamp
                 this._lastTick_ = now;
@@ -92,6 +96,7 @@ _APP.game = {
                 this.sampleSize = sampleSize;
                 this._index_    = 0 ;
                 this.average    = 0 ;
+                this.avgMsPerFrame = 0 ;
                 this._lastTick_ = 0 ;
 
                 // Create new samples Uint8Array and fill with the default value.
@@ -131,7 +136,7 @@ _APP.game = {
                     // DEBUG.
                     _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop"); 
                     if(_JSG.loadedConfig.meta.debug){
-                        _APP.debug.DOM["runIndicator_gameLoop"].classList.toggle("active");
+                        _APP.debug.gameLoop.DOM["runIndicator_gameLoop"].classList.toggle("active");
                         if(_APP.game.gamestates[this.gamestate1].inited){
                             if(timestamp - this.lastDebug > this.debugDelay){
                                 _APP.debug.debugDisplays.runDebugDisplay();

@@ -1,10 +1,10 @@
-_APP.shared = {
+_APP.game.shared = {
 	tests: {
 		msToFramesTEST: function(){
 			for(let i=0; i<11; i+=0.25){ 
 				let msFrame = _APP.game.gameLoop.msFrame;
 				let ms      = i * msFrame;
-				let frames  = _APP.shared.msToFrames(ms, msFrame);
+				let frames  = _APP.game.shared.msToFrames(ms, msFrame);
 				let totalMs = frames*msFrame;
 				let overage = totalMs - ms;
 
@@ -16,6 +16,7 @@ _APP.shared = {
 	},
 	msToFrames : function(ms, msPerFrame){
 		// Convert seconds to ms then divide by msPerFrame.
+		if(!msPerFrame){ msPerFrame = _APP.game.gameLoop.msFrame; }
 		let frames = ( (ms) / msPerFrame);
 
 		// DEBUG
@@ -46,16 +47,16 @@ _APP.shared = {
 			this.animations = {};
 			
 			// Get a reference to the draw and _draw functions. 
-			this.animations.draw = _APP.shared.animations1.draw;
-			this.animations._draw = _APP.shared.animations1._draw;
+			this.animations.draw = _APP.game.shared.animations1.draw;
+			this.animations._draw = _APP.game.shared.animations1._draw;
 
 			// Create the animation object:
-			this.animations["new_animation_key"] = _APP.shared.animations1.generator(
+			this.animations["new_animation_key"] = _APP.game.shared.animations1.generator(
 				{
 					reverseDirectionOnRepeat: false,
 					resetFrameIndexOnRepeat : true,
 					maxRepeats              : 2,
-					maxWaitFrames           : _APP.shared.secondsToFrames(0.75, _APP.game.gameLoop.msFrame),
+					maxWaitFrames           : _APP.game.shared.secondsToFrames(0.75, _APP.game.gameLoop.msFrame),
 					eraseBeforeDraw         : false,
 					frameDirection          : 1,
 					frames: [
@@ -77,7 +78,7 @@ _APP.shared = {
 
 
 			// Run a frame of animation.
-			_APP.shared.animations1.draw("new_animation_key", this.animations["new_animation_key"]);
+			_APP.game.shared.animations1.draw("new_animation_key", this.animations["new_animation_key"]);
 		*/
 
 		// Generates an animation object. 
