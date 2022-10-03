@@ -25,48 +25,186 @@ _APP.debug.gameLoop = {
     getVarsObj_gameLoop_div2: function(){
         let div   = this.DOM.gameLoopVars_div2;
         let table = this.DOM.gameLoopVars_div2.querySelector("table");
+        let lastLoopTimeMs = _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop");
+        let lastLoopTimeMsTooLong = lastLoopTimeMs > (_APP.game.gameLoop["msFrame"]) ? true : false;
+        if(lastLoopTimeMsTooLong){
+            console.log(`lastLoopTimeMsTooLong: ${lastLoopTimeMs.toFixed(1)} vs ${_APP.game.gameLoop["msFrame"].toFixed(1)}`);
+        }
         return {
             obj : {
                 // "NAME": "gameLoop vars 2",
                 // "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop["msFrame"].toFixed(1)}ms/f)` ,
-                "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
-                "debugTiming" : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}f, (${(_APP.game.gameLoop["debugDelay"] * _APP.game.gameLoop["msFrame"]).toFixed(1)}ms)` ,
-                ""            : "" ,
-                "frameCounter"     : _APP.game.gameLoop["frameCounter"] ,
+                "Calc FPS"      : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
+                "debugTiming"   : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}f, (${(_APP.game.gameLoop["debugDelay"] * _APP.game.gameLoop["msFrame"]).toFixed(1)}ms)` ,
+                "LastLoop time" : lastLoopTimeMsTooLong ? `!!!!!` : `GOOD`,
+                "frameCounter"  : _APP.game.gameLoop["frameCounter"] ,
             },
             div  : div,
             table: table,
         };
     },
+
+    avgs: {
+        keys: {
+            full_gameLoop : { index: 0, max: 60, times: [] },
+            do_fade       : { index: 0, max: 60, times: [] },
+            get_input     : { index: 0, max: 60, times: [] },
+            do_logic      : { index: 0, max: 60, times: [] },
+            do_draw       : { index: 0, max: 60, times: [] },
+            do_debug      : { index: 0, max: 60, times: [] },
+        },
+        getAvg: function(key){
+            // Get the record.
+            let rec = this.keys[key];
+
+            // Get the average by summing all samples and dividing by the sample count. 
+            let avg = 0;
+            let i = rec.max; 
+            while (i--) { avg += rec.times[i]; } 
+            avg = ( avg / rec.max);
+
+            // Return the average.
+            return avg;
+        },
+        addTime: function(key, newValue){
+            // Get the record.
+            let rec = this.keys[key];
+
+            // if(newValue == undefined){ newValue = 0; }
+            if( isNaN(newValue) ){ return; }
+            rec.times[rec.index] = newValue;
+
+            // Increment the index.
+            rec.index +=1;
+
+            // Reset the index if it gets to max.
+            if(rec.index >= rec.max){ rec.index = 0; }
+        },
+        init: function(){
+            for(let key in this.keys){
+                // Get the record.
+                let rec = this.keys[key];
+        
+                // Fill the array.
+                for(let i=0, l=rec.max; i<l; i+=1){ rec.times.push(0); }
+        
+                // Set index to 0.
+                rec.index == 0;
+            }
+        },
+    
+    },
     getVarsObj_gameLoop_div3: function(){
         let div   = this.DOM.gameDebugDiv_timeIt;
         let table = this.DOM.gameDebugDiv_timeIt.querySelector("table");
+        let classes = [
+            "divPercentRange_00", // 0
+            "divPercentRange_10", // 1
+            "divPercentRange_20", // 2
+            "divPercentRange_30", // 3
+            "divPercentRange_40", // 4
+            "divPercentRange_50", // 5
+            "divPercentRange_60", // 6
+            "divPercentRange_70", // 7
+            "divPercentRange_80", // 8
+            "divPercentRange_90", // 9
+            "divPercentRange_99", // 10
+        ];
+
+        let obj = {};
+        let func1 = function(rec){ 
+            // Get percent.
+            // rec["%"] = rec.pt ? rec.pt/_APP.game.gameLoop.msFrame : 0; 
+
+            // if(rec.key == "do_debug"){ 
+            //     console.log(_APP.debug.gameLoop.avgs.keys.do_debug, rec);
+            // }
+
+            // Get number within range (constrain to 0 - 10);.
+            if(undefined == rec.pt){ rec.pt = 0.0; }
+            // mapNumberToRange: function(x, in_min, in_max, out_min, out_max){
+            tmp = Math.ceil( _APP.game.shared.mapNumberToRange(rec.pt, 0, _APP.game.gameLoop.msFrame, 0, 10));
+            tmp = Math.ceil( _APP.game.shared.mapNumberToRange(tmp   , 0, _APP.game.gameLoop.msFrame, 0, 10));
+            tmp = Math.min(10, tmp);
+            tmp = Math.max(0, tmp);
+            rec.C.push("divPercentRange");
+            if(tmp < classes.length){
+                rec.C.push(classes[tmp]);
+            }
+            else{
+                console.log("uh oh", tmp, classes.length, rec.key);
+            }
+            rec.len = tmp;
+            rec.len2 = tmp;
+        };
+
+        this.avgs.addTime("full_gameLoop", _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop"));
+        this.avgs.addTime("do_fade"      , _JSG.shared.timeIt.stamp("do_fade"       , "pt", "gameLoop"));
+        this.avgs.addTime("get_input"    , _JSG.shared.timeIt.stamp("get_input"     , "pt", "gameLoop"));
+        this.avgs.addTime("do_logic"     , _JSG.shared.timeIt.stamp("do_logic"      , "pt", "gameLoop"));
+        this.avgs.addTime("do_draw"      , _JSG.shared.timeIt.stamp("do_draw"       , "pt", "gameLoop"));
+        this.avgs.addTime("do_debug"     , _JSG.shared.timeIt.stamp("do_debug"      , "pt", "gameLoop"));
+
+        let entries = [
+            { "key": "full_gameLoop", "pt": this.avgs.getAvg("full_gameLoop"), "%":0, "G":"", "C":[] },
+            { "key": "do_fade"      , "pt": this.avgs.getAvg("do_fade")      , "%":0, "G":"", "C":[] },
+            { "key": "get_input"    , "pt": this.avgs.getAvg("get_input")    , "%":0, "G":"", "C":[] },
+            { "key": "do_logic"     , "pt": this.avgs.getAvg("do_logic")     , "%":0, "G":"", "C":[] },
+            { "key": "do_draw"      , "pt": this.avgs.getAvg("do_draw")      , "%":0, "G":"", "C":[] },
+            { "key": "do_debug"     , "pt": this.avgs.getAvg("do_debug")     , "%":0, "G":"", "C":[] },
+        ];
+            
+        for(let i=0, l=entries.length; i<l; i+=1){ 
+            // Get the record. 
+            let rec = entries[i];
+            
+            // Replace undefined values with 0.
+            if(rec.pt == undefined){ rec.pt = 0; }
+
+            // Get the % value of this time vs a full frame.
+            // Get the "graphical" % of this time vs a full frame.
+            func1(rec);
+
+            // Final text value.
+            obj[rec.key] = rec;
+        }
+        return {
+            obj  : obj,
+            div  : div,
+            table: table,
+            classes: classes,
+        };
+        
+    },
+    OLDgetVarsObj_gameLoop_div3: function(){
+        let div   = this.DOM.gameDebugDiv_timeIt;
+        let table = this.DOM.gameDebugDiv_timeIt.querySelector("table");
+        let classes = [
+            "divPercentRange_00", // 0
+            "divPercentRange_10", // 1
+            "divPercentRange_20", // 2
+            "divPercentRange_30", // 3
+            "divPercentRange_40", // 4
+            "divPercentRange_50", // 5
+            "divPercentRange_60", // 6
+            "divPercentRange_70", // 7
+            "divPercentRange_80", // 8
+            "divPercentRange_90", // 9
+            "divPercentRange_99", // 10
+        ];
         // let classes = [
-        //     "divPercentRange_00", //
-        //     "divPercentRange_10", //
-        //     "divPercentRange_20", //
-        //     "divPercentRange_30", //
-        //     "divPercentRange_40", //
-        //     "divPercentRange_50", //
-        //     "divPercentRange_60", //
-        //     "divPercentRange_70", //
-        //     "divPercentRange_80", //
-        //     "divPercentRange_90", //
+        //     "divPercentRange_00", // x
+        //     "divPercentRange_00", // x
+        //     "divPercentRange_20", // x
+        //     "divPercentRange_20", // x
+        //     "divPercentRange_40", // x
+        //     "divPercentRange_40", // x
+        //     "divPercentRange_60", // x
+        //     "divPercentRange_60", // x
+        //     "divPercentRange_80", // x
+        //     "divPercentRange_90", // x
         //     "divPercentRange_99", //
         // ];
-        let classes = [
-            "divPercentRange_00", // x
-            "divPercentRange_00", // x
-            "divPercentRange_20", // x
-            "divPercentRange_20", // x
-            "divPercentRange_40", // x
-            "divPercentRange_40", // x
-            "divPercentRange_60", // x
-            "divPercentRange_60", // x
-            "divPercentRange_80", // x
-            "divPercentRange_90", // x
-            "divPercentRange_99", //
-        ];
         let obj = {};
         let func1 = function(rec){ 
             // Get percent.
@@ -76,48 +214,27 @@ _APP.debug.gameLoop = {
             rec.C.push("divPercentRange");
 
             // Get number within range (constrain to 0 - 10);.
-            if(undefined == rec.pt){ 
-                rec.G = ">".padEnd(22, " "); 
-                rec.C.push(classes[0]);
-                return; 
-            }
+            if(undefined == rec.pt){ rec.pt = 0.0; }
             // mapNumberToRange: function(x, in_min, in_max, out_min, out_max){
-            tmp = Math.ceil(_APP.game.shared.mapNumberToRange(rec.pt, 0, _APP.game.gameLoop.msFrame, 0, 10));
-            tmp = Math.ceil( _APP.game.shared.mapNumberToRange(tmp, 0, _APP.game.gameLoop.msFrame, 0, 10) );
+            tmp = Math.ceil( _APP.game.shared.mapNumberToRange(rec.pt, 0, _APP.game.gameLoop.msFrame, 0, 10));
+            tmp = Math.floor( _APP.game.shared.mapNumberToRange(tmp, 0, _APP.game.gameLoop.msFrame, 0, 10) );
             tmp = Math.min(10, tmp);
             tmp = Math.max(0, tmp);
-            
-            let v1 = "=".repeat(tmp).padEnd(10, " ");
-            let v2 = ((rec["%"] * 100) << 0);
-            if(v2 >= 100){ 
-                v2 = " 101".padStart(3, "."); 
-                rec.C.push(classes[classes.length-1]);
-            }
-            else{
-                rec.C.push(classes[tmp]);
-            }
+            rec.C.push(classes[tmp]);
             rec.len = tmp;
             rec.len2 = tmp;
-            rec.G = `${v1}> ${v2.toString().padStart(3, ".")}%`.padEnd(22, " ");
-
-            // rec.C = "black";
-            
-            // let in_min = 0;
-            // let in_max = _APP.game.gameLoop.msFrame;
-            // let out_min = 0;
-            // let out_max = 10;
-            // if(!rec.pt){ rec.G = ">"; return; }
-            // let tmp = Math.min(_APP.game.gameLoop.msFrame<<0, Math.ceil((rec.pt - in_min) * (out_max - out_min) / (in_max - in_min) + out_min) );
-            // let v2= ((rec["%"] * 100).toFixed(2)).padStart(6, " ");
-            // tmp = Math.min(_APP.game.gameLoop.msFrame<<0, tmp);
-            // console.log(tmp);
-            // rec.G = tmp;return;
-            // rec.G = ("=".repeat(tmp).padEnd(12, " ") +`> ${v2}%` ).trim().padEnd(25, " ");
         };
         let entries = [
             {
                 "key": "full_gameLoop",
                 "pt": _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop"),
+                "%":0,
+                "G":"",
+                "C":[],
+            },
+            {
+                "key": "do_fade",
+                "pt": _JSG.shared.timeIt.stamp("do_fade" , "pt", "gameLoop"),
                 "%":0,
                 "G":"",
                 "C":[],
@@ -208,13 +325,27 @@ _APP.debug.gameLoop = {
         _APP.game.gameLoop.loop();
     },
 
-    startGameLoop:function(){
+    // Stops the gameLoop but does not re-init any values on toggle on/off.
+    toggleGameLoop: function(){
+        if(_APP.game.gameLoop.running){
+            this.stopGameLoop();
+        }
+        else{
+            // Set the gameLoop.running to true. 
+            _APP.game.gameLoop.running = true; 
+    
+            // Start the gameLoop.
+            _APP.game.gameLoop.loop();
+        }
+    },
+    // Restart the gameLoop.
+    restartGameLoop:function(){
         // Cancel the current animation frame. 
         window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
 
         this.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
 
-        // Trigger gamestate change but keep the same gamestates.
+        // Trigger gamestate change (re-inits) but keep the same gamestates.
         _APP.game.gameLoop.changeGamestate1( _APP.game.gameLoop.gamestate1 );
         _APP.game.gameLoop.changeGamestate2( _APP.game.gameLoop.gamestate2 );
         
@@ -224,6 +355,7 @@ _APP.debug.gameLoop = {
         // Start the gameLoop.
         _APP.game.gameLoop.loop();
     },
+    // Stops the gameloop.
     stopGameLoop:function(){
         // Cancel the current animation frame. 
         window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
@@ -254,10 +386,16 @@ _APP.debug.gameLoop = {
             await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
             // Event listeners.
-            this.DOM["startBtn"].addEventListener("click", () => this.startGameLoop(), false); 
+            this.DOM["togglePauseBtn"].addEventListener("click", () => { this.toggleGameLoop(); }, false); 
+            this.DOM["restartBtn"].addEventListener("click", () => this.restartGameLoop(), false); 
             this.DOM["stopBtn"] .addEventListener("click", () => this.stopGameLoop(), false); 
             this.DOM["toggleLoopType_btn"] .addEventListener("click", () => this.toggleLoopType(), false); 
             this.DOM["gamestateSelect"].addEventListener("change", (ev)=>{this.changeGamestate(ev.target.value);}, false);
+
+            this.avgs.init();
+
+            // this.DOM["fadeUp_btn"] .addEventListener("click", () => _APP.fadeLayer.testUp(), false); 
+            // this.DOM["fadeDown_btn"].addEventListener("click", () => _APP.fadeLayer.testDown(), false); 
             //
             this.populateGamestatesSelect();
             

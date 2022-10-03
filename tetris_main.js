@@ -1,9 +1,10 @@
 _APP.game = {
-    //
+    // This is populated by individual gs_ files. 
     gamestates: {
     },
     gamestates_list: [],
 
+    // Populated by tetris_SHARED.js.
     shared: {}, 
     
     gameLoop : {
@@ -12,11 +13,11 @@ _APP.game = {
         running    : false,
         fps        : 60,
         msFrame    : null,
-        lastLoop   : performance.now(),
+        lastLoop   : 0,
         delta      : undefined,
-        loopType: "raf", // Can be "raf" or "to".
+        loopType   : "raf", // Can be "raf" or "to".
 
-        lastDebug: performance.now(),
+        lastDebug: 0,
         debugDelay: undefined,
         netGame: false,
 
@@ -24,6 +25,8 @@ _APP.game = {
         start: function(){},
         pause: function(){},
 
+        prev_gamestate1: "",
+        prev_gamestate2: "",
         gamestate1: "gs_title0",
         gamestate2: "",
         changeGamestate1: function changeGamestate1(new_gamestate){
@@ -33,12 +36,18 @@ _APP.game = {
             // Remove the inited flag of the current gamestate.
             _APP.game.gamestates[this.gamestate1].inited = false;
 
+            // Set the previous gamestate. 
+            this.prev_gamestate1 = this.gamestate1;
+
             // Change the current gamestate to the new gamestate.
             this.gamestate1 = new_gamestate;
         },
         changeGamestate2: function changeGamestate2(new_gamestate){
             // Is this a valid gamestate key?
             // if(!1){ console.log("Unknown new_gamestate:", new_gamestate); throw ""; }
+
+            // Set the previous gamestate. 
+            this.prev_gamestate2 = this.gamestate2;
 
             // Change the current gamestate to the new gamestate.
             this.gamestate2 = new_gamestate;
@@ -47,12 +56,12 @@ _APP.game = {
         // Calculates the average frames per second.
         fpsCalc : {
             // colxi: https://stackoverflow.com/a/55644176/2731377
-            sampleSize : undefined,
-            _sample_   : undefined,
-            average    : undefined,
-            avgMsPerFrame : undefined,
-            _index_    : undefined,
-            _lastTick_ : undefined,
+            sampleSize   : undefined,
+            _sample_     : undefined,
+            average      : undefined,
+            avgMsPerFrame: undefined,
+            _index_      : undefined,
+            _lastTick_   : undefined,
 
             // Internal within tick.
             __delta_   : undefined,
@@ -106,6 +115,33 @@ _APP.game = {
             },
         },	
 
+        doDebug: function(timestamp){
+            _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop"); 
+            if(_JSG.loadedConfig.meta.debug){
+                _APP.debug.gameLoop.DOM["runIndicator_gameLoop"].classList.toggle("active");
+                if(_APP.game.gamestates[this.gamestate1].inited){
+                    if(timestamp - this.lastDebug > this.debugDelay){
+                        _APP.debug.debugDisplays.runDebugDisplay();
+                        this.lastDebug = timestamp;
+                    }
+                }
+            }
+            _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
+        },
+        doFade: function(timestamp){
+            // Is a fade happening? (Fades are blocking.)
+            if( _APP.fadeLayer.fadeActive || _APP.fadeLayer.blocking || _APP.fadeLayer.blockAfterFade ){
+                _JSG.shared.timeIt.stamp("do_fade", "s", "gameLoop"); 
+
+                // Process fading.
+                // 
+
+                _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop"); 
+                
+                return true;
+            }
+            return false;
+        },
         loop: async function loop(timestamp){
             // Is the loop running?
             if( this.running ){
@@ -114,8 +150,19 @@ _APP.game = {
                 
                 // Is it time to run the next loop?
                 if( (this.delta >= this.msFrame) ){
-                    _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); 
+                    // Fading?
+                    if( this.doFade(timestamp) ) { 
+                        // DEBUG.
+                        this.doDebug(timestamp);
 
+                        // Request the next frame.
+                        if     (this.loopType == "raf"){ this.raf_id = window.requestAnimationFrame( (ts)=>{ this.loop( ts ); } ); }
+                        else if(this.loopType == "to") { this.raf_id = setTimeout( ()=>{ this.loop( performance.now() ); }, 0 ); }
+                        return; 
+                    }
+
+                    _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); 
+                    
                     // Update this.lastLoop with this timestamp.
                     this.lastLoop = timestamp - (this.delta % this.msFrame);
 
@@ -134,18 +181,8 @@ _APP.game = {
                     _JSG.shared.timeIt.stamp("do_logic", "e", "gameLoop"); 
                     
                     // DEBUG.
-                    _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop"); 
-                    if(_JSG.loadedConfig.meta.debug){
-                        _APP.debug.gameLoop.DOM["runIndicator_gameLoop"].classList.toggle("active");
-                        if(_APP.game.gamestates[this.gamestate1].inited){
-                            if(timestamp - this.lastDebug > this.debugDelay){
-                                _APP.debug.debugDisplays.runDebugDisplay();
-                                this.lastDebug = timestamp;
-                            }
-                        }
-                    }
-                    _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
-                    
+                    this.doDebug(timestamp);
+
                     _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
                     // Update graphics.
                     await _GFX.VRAM.draw();
@@ -158,6 +195,7 @@ _APP.game = {
                     if     (this.loopType == "raf"){ this.raf_id = window.requestAnimationFrame( (ts)=>{ this.loop( ts ); } ); }
                     else if(this.loopType == "to") { this.raf_id = setTimeout( ()=>{ this.loop( performance.now() ); }, 0 ); }
                 }
+
                 // No.
                 else{
                     // Request the next frame.
@@ -175,6 +213,12 @@ _APP.game = {
     
         init: function init(parent){
             return new Promise(async (resolve,reject) => {
+                _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("get_input"    , "s", "gameLoop"); _JSG.shared.timeIt.stamp("get_input"    , "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("do_logic"     , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_logic"     , "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("do_draw"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_draw"      , "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("do_fade"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_fade"      , "e", "gameLoop");
+                
                 // Calculate the ms required per frame.
                 this.msFrame = 1000 / this.fps;
 

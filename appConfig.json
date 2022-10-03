@@ -4,7 +4,7 @@
         "autoSwitchToLobbyDebugTab": true,
         "defaultLobbyTab": "lobby",
         "hideLobby": false, 
-        "createHiDPI_Canvas": false,
+        "defaultGameCanvasHeightPercent": 90,
         "dimensions":{
             "pointersSize" : 8,
             "tileWidth" : 8,
@@ -19,7 +19,10 @@
             "app_debugDiv"        : "tetris_app_debugDiv",
             "gameContDiv"         : "tetris_app",
             "app_dpad_canvas"     : "tetris_app_dpad",
-            "app_game_canvas"     : "tetris_app_game_canvas"
+            "app_game"            : "tetris_app_game",
+            "option_size_div"     : "tetris_option_size_div",
+            "option_size_range"   : "tetris_option_size_range",
+            "option_size_value"   : "tetris_option_size_value"
         },
         "debugDOM": {
             "nav":{
@@ -49,7 +52,8 @@
             },
             "gameLoop":{
                 "DOM": {
-                    "startBtn"             : "tetris_app_debug_gameLoopVars_startBtn",
+                    "togglePauseBtn"       : "tetris_app_debug_gameLoopVars_togglePauseBtn",
+                    "restartBtn"             : "tetris_app_debug_gameLoopVars_restartBtn",
                     "stopBtn"              : "tetris_app_debug_gameLoopVars_stopBtn",
                     "toggleLoopType_btn"   : "tetris_app_debug_gameLoopVars_toggleLoopType_btn",
                     "gamestateSelect"      : "tetris_app_debug_gameLoopVars_gamestateSelect",
@@ -57,7 +61,9 @@
                     "gameLoopVars_div2"    : "tetris_app_debug_gameLoopVars_div2",
                     "gameDebugDiv_timeIt"  : "tetris_app_debug_gameDebugDiv_timeIt",
                     "runIndicator_debug"   : "tetris_app_debug_runIndicator_debug",
-                    "runIndicator_gameLoop": "tetris_app_debug_runIndicator_gameLoop"
+                    "runIndicator_gameLoop": "tetris_app_debug_runIndicator_gameLoop",
+                    "fadeUp_btn" : "tetris_app_debug_fadeUp_btn",
+                    "fadeDown_btn": "tetris_app_debug_fadeDown_btn"
                 }
             },
             "main":{
@@ -90,15 +96,15 @@
             "tilesTX2"
         ],
         "layers":[
-            "BG1",
-            "SP1",
-            "TEXT"
+            { "name": "BG1" , "canvasOptions": { "alpha": true }, "bg_color":"#202020" },
+            { "name": "SP1" , "canvasOptions": { "alpha": true }, "bg_color":"" },
+            { "name": "TEXT", "canvasOptions": { "alpha": true }, "bg_color":"" }
         ],
         
         "jsgame_shared_plugins":[
-            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js", "t": "js", "n":"videoModeA_core" },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_debug.js", "t": "js", "n":"videoModeA_debug" },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_user.js", "t": "js", "n":"videoModeA_user" }
+            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js"     , "t": "js", "n":"videoModeA_core"      },
+            { "f":"shared/plugins/VIDEO_A/videoModeA_debug.js"    , "t": "js", "n":"videoModeA_debug"     },
+            { "f":"shared/plugins/VIDEO_A/videoModeA_user.js"     , "t": "js", "n":"videoModeA_user"      }
         ]
     },
 

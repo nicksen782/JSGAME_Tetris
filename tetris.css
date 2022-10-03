@@ -25,7 +25,7 @@
 #tetris_app .tetris_app_flex_cols #tetris_app_options {
   height: 100%;
   background-color: #333333;
-  width: 150px;
+  width: 210px;
 }
 
 #tetris_app .tetris_app_flex_rows {
@@ -40,13 +40,13 @@
 #tetris_app #tetris_app_game {
   background-color: #333333;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+  position:relative;
 }
 
-#tetris_app #tetris_app_game canvas {
-  border: 1px solid white;
-  /* background-color: #222222; */
-  background-color: #202020;
-  height: 100%;
+#tetris_app canvas{
   /* Older versions of FF          */
   image-rendering: optimizeSpeed;
   /* FF 6.0+                       */
@@ -59,6 +59,67 @@
   image-rendering: pixelated;
   /* IE                            */
   -ms-interpolation-mode: nearest-neighbor;
+} 
+#tetris_app_game canvas{
+  height: 90%;
+  border: 5px solid cornflowerblue;
+  position: absolute;
+}
+
+#tetris_app canvas#tetris_app_game_canvas, 
+#tetris_app canvas#tetris_app_game_spriteLayer, 
+#tetris_app canvas#tetris_app_game_fadeLayer{
+  /* background-color: #222222; */
+  background-color: #202020;
+  height: 90%;
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+  border: 5px solid cornflowerblue;
+  position: absolute;
+}
+#tetris_app_game_canvas{
+    z-index: 5;
+    display: none;
+  }
+#tetris_app_game_spriteLayer{
+  z-index: 10;
+  background-color: unset !important;
+  display: none;
+}
+#tetris_app_game_fadeLayer{
+  z-index: 10;
+  background-color: unset !important;
+  display: none;
+}
+
+#tetris_app canvas#tetris_app_dpad {
+  border: 1px solid white;
+  /* background-color: #222222; */
+  background-color: #202020;
+  /* height: 10%; */
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+  border: 5px solid dimgray;
 }
 
 .tetris_app_options_header_container {
@@ -88,6 +149,9 @@
 /* DEBUG NAV */
 /* DEBUG NAV */
 /* DEBUG NAV */
+
+#tetris_app_debugDiv{}
+#tetris_app_debugDiv.hide{ display:none; }
 .tetris_app_debug_nav {
   min-height: 0.5em;
   padding: 0.25em;
@@ -185,6 +249,10 @@
   background-color: goldenrod;
   font-size: 12px;
 }
+#tetris_app_debug_gameDebugDiv_timeIt.tetris_app_debug_div1.gameLoop table tbody td {
+  background-color: #979da6;
+  font-size: 12px;
+}
 
 .tetris_app_debug_div1 table {
 }
@@ -216,71 +284,133 @@
 #tetris_app_debug_gameDebugDiv_timeIt.block {
   display: block;
 }
+#tetris_app_debug_gameDebugDiv_timeIt.block td{
+  width: 100px !important;
+  /* overflow: hidden; */
+}
 
 .divPercentRange {
   height: 1.5em;
-  line-height: 1.5em;
-  border: 1px solid white;
+  line-height: 2rem;
+  border: 1px solid black;
   color: black;
   overflow: hidden;
-  transition-duration: 0.5s;
+  /* transition-duration: 0.5s; */
   transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  max-width: 170px;
+  /* transition: width 0.25s; */
+  transition: width 16ms;
+  /* max-width: 170px; */
   font-size: 1.5em;
-  min-width: 1em;
+  font-size: 0px;
+  /* min-width: 1em; */
+  height: 2rem;
 }
 
 .divPercentRange.divPercentRange_00 {
   background-color: #00ff00;
-  width: 10% ;
+  width: 1%;
+  /* border-color: transparent; */
+  font-size: 0px;
 }
 
 .divPercentRange.divPercentRange_10 {
   background-color: #6fed00;
-  width: 20% ;
+  width: 10% ;
 }
 
 .divPercentRange.divPercentRange_20 {
   background-color: #98db00;
-  width: 30% ;
+  width: 20% ;
 }
 
 .divPercentRange.divPercentRange_30 {
   background-color: #b6c700;
-  width: 40% ;
+  width: 30% ;
 }
 
 .divPercentRange.divPercentRange_40 {
   background-color: #cdb200;
-  width: 50% ;
+  width: 40% ;
 }
 
 .divPercentRange.divPercentRange_50 {
   background-color: #df9b00;
-  width: 60% ;
+  width: 50% ;
 }
 
 .divPercentRange.divPercentRange_60 {
   background-color: #ee8200;
-  width: 70% ;
+  width: 60% ;
 }
 
 .divPercentRange.divPercentRange_70 {
   background-color: #f86600;
-  width: 80% ;
+  width: 70% ;
 }
 
 .divPercentRange.divPercentRange_80 {
   background-color: #fe4400;
-  width: 90% ;
+  width: 80% ;
 }
 
 .divPercentRange.divPercentRange_90 {
   background-color: #fe4400;
-  width: 95% ;
+  width: 90% ;
 }
 
 .divPercentRange.divPercentRange_99 {
   background-color: #ff0000;
   width: 100%;
+}
+
+
+/* OPTIONS */
+/* OPTIONS */
+/* OPTIONS */
+
+#tetris_option_size_range{}
+#tetris_option_size_value{
+    /* background-color: cadetblue; */
+    width: 5rem;
+    display: inline-block;
+    font-size: 2rem;
+    vertical-align: top;
+}
+#tetris_app .slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+#tetris_app .slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+#tetris_app .slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+#tetris_app .slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+#tetris_app .slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
 }

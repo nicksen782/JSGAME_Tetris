@@ -1,4 +1,7 @@
 // Activated if the debug mode is on.
+
+// Additional keys/objects can be added via other files in the debug folder. 
+
 _APP.debug = {
     parent:null,
     DOM:{},
@@ -15,13 +18,14 @@ _APP.debug = {
             let div1b = document.createElement("div"); div1b.innerText = `${tilesetName}: TILES`; div1b.style = "background-color:white;"
             let div1c = document.createElement("div");
             div1a.append(div1b, div1c);
-            _GFX.cache[tilesetName].tileset.forEach((d)=>{
+            _GFX.cache[tilesetName].tileset.forEach((d, i)=>{
                 let div = document.createElement("div"); 
                 div.style["display"] = "inline-block";
                 div.style["vertical-align"] = "top";
                 div.style["border"]  = "1px solid white";
                 div.style["margin"]  = "2px";
                 div.style["padding"] = "5px";
+                div.title = `tileId: ${i}`;
                 div.append(d.canvas);
                 div1c.append(div);
             });
@@ -43,6 +47,7 @@ _APP.debug = {
                     div.style["border"]  = "1px solid white";
                     div.style["margin"]  = "2px";
                     div.style["padding"]  = "5px";
+                    div.title = `Tilemap: ${key}`;
                     div.append(rec.canvas);
                     div2c.append(div);
                 }
@@ -147,7 +152,7 @@ _APP.debug = {
             this.generateDebugTable2b(data);
 
             // Change the gamestate select and the view if the gamestate has changed.
-            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value != _APP.game.gameLoop.gamestate1){
+            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.gameLoop.prev_gamestate1){
                 // Change gamestate select.
                 _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
 
@@ -303,6 +308,7 @@ _APP.debug = {
                     td = head_tr.insertCell(-1); 
                     td.innerText = key1.toString(); 
                     
+                    
                     // Data.
                     rec = obj[key1];
                     td = body_tr.insertCell(-1); 
@@ -310,6 +316,7 @@ _APP.debug = {
                     td.setAttribute("len", obj[key1].len);
                     div2 = document.createElement("div");
                     div2.classList.add(...rec.C);
+                    div2.innerText = obj[key1].len;
                     td.append(div2);
                 }
                 

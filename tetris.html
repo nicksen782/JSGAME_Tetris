@@ -6,6 +6,19 @@
                 <div class="tetris_app_options_header_container">
                     <div class="tetris_app_options_header">OPTIONS</div>
                     <div class="tetris_app_options_header_content">
+                        <div id="tetris_option_size_div" class="slidecontainer">
+                            <table>
+                                <tr>
+                                    <td>Size</td>
+                                    <td>
+                                        <input type="range" min="60" max="100" value="60" class="slider" id="tetris_option_size_range">
+                                    </td>
+                                    <td>
+                                        <span id="tetris_option_size_value">50%</span>
+                                    </td>
+                                </tr>
+                            </table>
+                          </div>
                     </div>
                 </div>
             </div>
@@ -15,7 +28,7 @@
                 <div class="tetris_app_options_header_container">
                     <div class="tetris_app_options_header">INPUT</div>
                     <div class="tetris_app_options_header_content">
-                        <canvas id="tetris_app_dpad" width="128" height="128">tetris_app_dpad</canvas>
+                        <canvas id="tetris_app_dpad" width="128" height="128"></canvas>
                     </div>
                 </div>
             </div>
@@ -25,7 +38,7 @@
         <div class="tetris_app_flex_rows">
             <div class="" id="tetris_app_game">
                  <!-- GAME -->
-                 <canvas id="tetris_app_game_canvas"></canvas>
+                 <!-- CANVASES ARE AUTO-GENERATED -->
             </div>
         </div>
     </div>
@@ -49,10 +62,14 @@
     <div id="tetris_app_debug_gameloop_div">
         <div id="tetris_app_debug_runIndicator_gameLoop">L</div>
         <div id="tetris_app_debug_runIndicator_debug">D</div>
-        <button id="tetris_app_debug_gameLoopVars_startBtn">startBtn</button>
+        <button id="tetris_app_debug_gameLoopVars_togglePauseBtn">togglePause</button>
         <button id="tetris_app_debug_gameLoopVars_stopBtn">stopBtn</button>
+        <button id="tetris_app_debug_gameLoopVars_restartBtn">restartBtn</button>
         <button id="tetris_app_debug_gameLoopVars_toggleLoopType_btn">toggleLoopType</button>
         <select id="tetris_app_debug_gameLoopVars_gamestateSelect"></select>
+        
+        <button id="tetris_app_debug_fadeUp_btn">fadeUp</button>
+        <button id="tetris_app_debug_fadeDown_btn">fadeDown</button>
 
         <br>
         <div class="tetris_app_debug_div1 gameLoop block" id="tetris_app_debug_gameDebugDiv_timeIt"></div>

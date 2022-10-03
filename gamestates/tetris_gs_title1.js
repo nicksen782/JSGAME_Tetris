@@ -27,7 +27,7 @@ _APP.game.gamestates["gs_title1"] = {
 
     // Run once upon changing to this game state.
     init: async function(){
-        console.log("gs_title1 init");
+        // console.log("gs_title1 init");
 
         // Clear the screen.
         _GFX.VRAM.clearVram();
@@ -69,7 +69,7 @@ _APP.game.gamestates["gs_title1"] = {
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
+                    // { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f3", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f4", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f5", x:10, y:16 },
@@ -77,8 +77,9 @@ _APP.game.gamestates["gs_title1"] = {
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f7", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f8", x:10, y:16 },
                     { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f9", x:10, y:16 },
+                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
+                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
                 lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
             }
         );
@@ -125,10 +126,10 @@ _APP.game.gamestates["gs_title1"] = {
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
                 // _APP.game.gameLoop.changeGamestate1("gs_title0");
-                // _APP.game.gameLoop.changeGamestate1("gs_title1");
-                _APP.game.gameLoop.changeGamestate1("gs_title2");
+                _APP.game.gameLoop.changeGamestate1("gs_title1");
+                // _APP.game.gameLoop.changeGamestate1("gs_title2");
 
-                console.log("gs_title1 DONE");
+                // console.log("gs_title1 DONE");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");
