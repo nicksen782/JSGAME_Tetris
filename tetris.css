@@ -242,16 +242,18 @@
   vertical-align: top;
   background-color: yellowgreen;
   margin-bottom: 5px;
+  font-size: 12px;
 }
 
 /* .tetris_app_debug_div1.gameLoop { background-color: #cdae62; } */
+
 .tetris_app_debug_div1.gameLoop {
   background-color: goldenrod;
-  font-size: 12px;
+/*   font-size: 12px; */
 }
 #tetris_app_debug_gameDebugDiv_timeIt.tetris_app_debug_div1.gameLoop table tbody td {
   background-color: #979da6;
-  font-size: 12px;
+/*   font-size: 12px; */
 }
 
 .tetris_app_debug_div1 table {

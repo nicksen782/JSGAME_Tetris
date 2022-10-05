@@ -14,9 +14,9 @@ _APP.debug.gameLoop = {
             obj : {
                 // "NAME": "gameLoop vars 1",
                 "gameLoop running" : `${_APP.game.gameLoop["running"]}, Type: ${_APP.game.gameLoop["loopType"]}` ,
-                "gamestate1"       : `'${_APP.game.gameLoop["gamestate1"]}'` ,
-                "gamestate2"       : `'${_APP.game.gameLoop["gamestate2"]}'` ,
-                "netGame"          : `${_APP.game.gameLoop["netGame"]}` ,
+                "gamestate1"       : `'${_APP.game["gamestate1"]}'` ,
+                "gamestate2"       : `'${_APP.game["gamestate2"]}'` ,
+                "netGame"          : `${_APP.game["netGame"]}` ,
             },
             div  : div,
             table: table,
@@ -47,26 +47,27 @@ _APP.debug.gameLoop = {
     getVarsObj_gameLoop_div4: function(){
         let div   = this.DOM.gameLoopVars_div4;
         let table = this.DOM.gameLoopVars_div4.querySelector("table");
-        let fade = ``;
+        let fade = "";
         // console.log("fadeStepDir", (_GFX.fade["fadeStepDir"]));
-        // if(!_GFX.fade.isComplete){
-            let type = `dir: ${(_GFX.fade["fadeStepDir"] == 1 ? "UP" : "DOWN").padEnd(4, " ")}`;
+        if(!_GFX.fade.isComplete){
+            let type = `${(_GFX.fade["fadeStepDir"] == 1 ? "fadeUp" : "fadeDown").padEnd(8, " ")}`;
             let step = `step: ${_GFX.fade["fadeStep"].toFixed(0).padStart(2, " ")}`;
             fade = `${type}, ${step}`;
-        // }
-        // else{
+        }
+        else{
             // console.log("NOT active");
-            // fade = `-----`;
-        // }
+            fade = `...<not_active>...`;
+        }
+        fade = fade.padEnd(18, "-");
 
         return {
             obj : {
-                // "NAME": "gameLoop vars 4",
+                "NAME": "gameLoop: FADE",
                 "isBlocking"     : `${_GFX.fade["isBlocking"]}` ,
-                "isActive"       : `${_GFX.fade["isActive"]}` ,
+                "isActive"       : `${_GFX.fade["isActive"] ? fade : _GFX.fade["isActive"]}` ,
                 "isComplete"     : `${_GFX.fade["isComplete"]}` ,
-                "fade"           : `${fade}` ,
-                "mode"     : `${_GFX.fade["mode"]}` ,
+                // "fade"           : `${fade}` ,
+                // "mode"     : `${_GFX.fade["mode"]}` ,
                 // "isRequested"    : `${_GFX.fade["isRequested"]}` ,
                 // "msBetweenDraws" : `${_GFX.fade["msBetweenDraws"]}` ,
                 // "lastDraw"       : `${_GFX.fade["lastDraw"]}` ,
@@ -78,6 +79,7 @@ _APP.debug.gameLoop = {
 
             div  : div,
             table: table,
+            padEnd: { len: 18, char: " " }
         };
     },
 
@@ -230,8 +232,8 @@ _APP.debug.gameLoop = {
         window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
 
         // Trigger gamestate change.
-        _APP.game.gameLoop.changeGamestate1( newGamestate );
-        _APP.game.gameLoop.changeGamestate2( "" );
+        _APP.game.changeGamestate1( newGamestate );
+        _APP.game.changeGamestate2( "" );
 
         // Set the gameLoop.running to true. 
         _APP.game.gameLoop.running = true; 
@@ -248,10 +250,10 @@ _APP.debug.gameLoop = {
     restartGameLoop:function(){
         _APP.game.gameLoop.loop_restart_sameStates();
     },
-    // Stops the gameloop.
-    stopGameLoop:function(){
-        _APP.game.gameLoop.loop_stop();
-    },
+    // // Stops the gameloop.
+    // stopGameLoop:function(){
+    //     _APP.game.gameLoop.loop_stop();
+    // },
     toggleLoopType: function(){
         if     (_APP.game.gameLoop.loopType == "raf"){ _APP.game.gameLoop.loopType = "to"; }
         else if(_APP.game.gameLoop.loopType == "to") { _APP.game.gameLoop.loopType = "raf"; }
@@ -268,7 +270,7 @@ _APP.debug.gameLoop = {
             // Event listeners.
             this.DOM["togglePauseBtn"].addEventListener("click", () => { this.toggleGameLoop(); }, false); 
             this.DOM["restartBtn"].addEventListener("click", () => this.restartGameLoop(), false); 
-            this.DOM["stopBtn"] .addEventListener("click", () => this.stopGameLoop(), false); 
+            // this.DOM["stopBtn"] .addEventListener("click", () => this.stopGameLoop(), false); 
             this.DOM["toggleLoopType_btn"] .addEventListener("click", () => this.toggleLoopType(), false); 
             this.DOM["gamestateSelect"].addEventListener("change", (ev)=>{this.changeGamestate(ev.target.value);}, false);
 

@@ -6,6 +6,17 @@ _APP.debug = {
     parent:null,
     DOM:{},
 
+    // DEBUG - This is the function that the gameLoop can run.
+    doDebug: function(force){
+        if( force || ( (_APP.game.gameLoop.thisLoopStart - _APP.game.gameLoop.lastDebug) > _APP.game.gameLoop.debugDelay) ){
+            // Display the debug data one more time. 
+            _APP.debug.debugDisplays.runDebugDisplay();
+
+            // Update gameLoop.lastDebug.
+            _APP.game.gameLoop.lastDebug = performance.now();
+        }
+    },
+
     TinySimpleHash:s=>{for(var i=0,h=9;i<s.length;)h=Math.imul(h^s.charCodeAt(i++),9**9);return h^h>>>9},
 
     // Tile draw test.
@@ -136,23 +147,23 @@ _APP.debug = {
     debugDisplays: {
         // Runs via the gameLoop debug.
         runDebugDisplay: function(){
-            let gamestate1 = _APP.game.gameLoop["gamestate1"];
-            let gamestate2 = _APP.game.gameLoop["gamestate2"];
+            let gamestate1 = _APP.game["gamestate1"];
+            let gamestate2 = _APP.game["gamestate2"];
             let data;
             
             // Do not continue if gamestate1 is not set yet.
             if(!gamestate1){ console.log("no gamestate1"); return; }
 
             // Change the gamestate select and the view if the gamestate has changed.
-            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.gameLoop.prev_gamestate1){
+            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.prev_gamestate1){
                 // Change gamestate select.
                 // console.log("switching debug gamestateselect select to: ", gamestate1);
-                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
+                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
 
                 // Change to the gamestate's debug nav tab/view.
-                if(_APP.debug.nav.doesViewExist(_APP.game.gameLoop.gamestate1)){
+                if(_APP.debug.nav.doesViewExist(_APP.game.gamestate1)){
                     // console.log("switching debug nav view to: ", gamestate1);
-                    _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
+                    _APP.debug.nav.showOneView(_APP.game.gamestate1);
                 }
                 else{
                     console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
@@ -206,6 +217,12 @@ _APP.debug = {
             let obj   = data.obj;
             let div   = data.div;
             let table = data.table;
+            let padEndLen  = 17;
+            let padEndChar = " ";
+            if(data.padEnd){
+                padEndLen  = data.padEnd.len ;
+                padEndChar = data.padEnd.char;
+            }
 
             if(table){
                 // Update the rows and columns for the table. 
@@ -222,7 +239,7 @@ _APP.debug = {
 
                     //.Are the hashes different?
                     if(valueHash != recHash){
-                        td.innerText = rec.toString().trim().padEnd(17, " ");
+                        td.innerText = rec.toString().trim().padEnd(padEndLen, padEndChar);
                         td.setAttribute("valuehash", recHash)
                         td.setAttribute("value", rec)
                         td.classList.add("updated");
@@ -246,11 +263,11 @@ _APP.debug = {
                     tr = tbody.insertRow(-1);
                     
                     td = tr.insertCell(-1);
-                    td.innerText = key1.toString().padEnd(17, " ");
+                    td.innerText = key1.toString().padEnd(padEndLen, padEndChar);
                     
                     td = tr.insertCell(-1);
                     if(rec == undefined){ rec = ""; }
-                    td.innerText = rec.toString().trim().padEnd(17, " ");
+                    td.innerText = rec.toString().trim().padEnd(padEndLen, padEndChar);
                     td.setAttribute("key", key1);
                     td.setAttribute("value", rec.toString().trim());
                     td.setAttribute("valueHash", _APP.debug.TinySimpleHash(rec.toString().trim()))
@@ -268,6 +285,12 @@ _APP.debug = {
             let obj   = data.obj;
             let div   = data.div;
             let table = data.table;
+            // let padEndLen  = 17;
+            // let padEndChar = " ";
+            // if(data.padEnd){
+            //     padEndLen  = data.padEnd.len ;
+            //     padEndChar = data.padEnd.char;
+            // }
             let classes = data.classes;
 
             if(table){

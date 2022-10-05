@@ -89,9 +89,9 @@ _APP.game.gamestates["gs_title0"] = {
             }
             else if(this.endDelay.finished){
                 // Set the next game state.
-                // game.setGamestate1("TITLE1", true);
-                // _APP.game.gameLoop.changeGamestate1("gs_title0");
-                _APP.game.gameLoop.changeGamestate1("gs_title1");
+                // game("TITLE1", true);
+                // _APP.game.changeGamestate1("gs_title0");
+                _APP.game.changeGamestate1("gs_title1");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");

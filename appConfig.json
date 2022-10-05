@@ -54,15 +54,12 @@
                 "DOM": {
                     "togglePauseBtn"       : "tetris_app_debug_gameLoopVars_togglePauseBtn",
                     "restartBtn"             : "tetris_app_debug_gameLoopVars_restartBtn",
-                    "stopBtn"              : "tetris_app_debug_gameLoopVars_stopBtn",
                     "toggleLoopType_btn"   : "tetris_app_debug_gameLoopVars_toggleLoopType_btn",
                     "gamestateSelect"      : "tetris_app_debug_gameLoopVars_gamestateSelect",
                     "gameLoopVars_div1"    : "tetris_app_debug_gameLoopVars_div1",
                     "gameLoopVars_div2"    : "tetris_app_debug_gameLoopVars_div2",
                     "gameLoopVars_div4"    : "tetris_app_debug_gameLoopVars_div4",
-                    "gameDebugDiv_timeIt"  : "tetris_app_debug_gameDebugDiv_timeIt",
-                    "fadeUp_btn" : "tetris_app_debug_fadeUp_btn",
-                    "fadeDown_btn": "tetris_app_debug_fadeDown_btn"
+                    "gameDebugDiv_timeIt"  : "tetris_app_debug_gameDebugDiv_timeIt"
                 }
             },
             "main":{

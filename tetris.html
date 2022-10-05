@@ -34,15 +34,15 @@
             </div>
 
             <!-- TEMP DEBUG -->
-            <div>
-                <div class="tetris_app_options_header_container">
-                    <div class="tetris_app_options_header">TEMP TESTS</div>
-                    <div class="tetris_app_options_header_content">
-                        <button id="tetris_app_tests_fadeIn" >fadeIn</button>
-                        <button id="tetris_app_tests_fadeOut">fadeOut</button>
-                    </div>
-                </div>
-            </div>
+            <!-- <div> -->
+                <!-- <div class="tetris_app_options_header_container"> -->
+                    <!-- <div class="tetris_app_options_header">TEMP TESTS</div> -->
+                    <!-- <div class="tetris_app_options_header_content"> -->
+                        <!-- <button id="tetris_app_tests_fadeIn" >fadeIn</button> -->
+                        <!-- <button id="tetris_app_tests_fadeOut">fadeOut</button> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
         </div>
 
         <!-- GAME/INPUT -->
@@ -71,14 +71,17 @@
     
     <!-- GAMELOOP AND CORE DATA -->
     <div id="tetris_app_debug_gameloop_div">
-        <button id="tetris_app_debug_gameLoopVars_togglePauseBtn">togglePause</button>
-        <button id="tetris_app_debug_gameLoopVars_stopBtn">stopBtn</button>
-        <button id="tetris_app_debug_gameLoopVars_restartBtn">restartBtn</button>
-        <button id="tetris_app_debug_gameLoopVars_toggleLoopType_btn">toggleLoopType</button>
-        <select id="tetris_app_debug_gameLoopVars_gamestateSelect"></select>
+        <button id="tetris_app_debug_gameLoopVars_togglePauseBtn">GL: Toggle 'running'</button>
+        <!-- <button id="tetris_app_debug_gameLoopVars_stopBtn">stopBtn</button> -->
+        <button id="tetris_app_debug_gameLoopVars_restartBtn">GL: Restart 'gamestate'</button>
+        <button id="tetris_app_debug_gameLoopVars_toggleLoopType_btn">GL: Toggle 'type'</button>
+        <label>
+            Change gamestate: 
+            <select id="tetris_app_debug_gameLoopVars_gamestateSelect"></select>
+        </label>
         
-        <button id="tetris_app_debug_fadeUp_btn">fadeUp</button>
-        <button id="tetris_app_debug_fadeDown_btn">fadeDown</button>
+        <!-- <button id="tetris_app_debug_fadeUp_btn">fadeUp</button> -->
+        <!-- <button id="tetris_app_debug_fadeDown_btn">fadeDown</button> -->
 
         <br>
         <div class="tetris_app_debug_div1 gameLoop block" id="tetris_app_debug_gameDebugDiv_timeIt"></div>
