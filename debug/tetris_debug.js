@@ -140,8 +140,27 @@ _APP.debug = {
             let gamestate2 = _APP.game.gameLoop["gamestate2"];
             let data;
             
-            // Toggle the debug indicator.
-            _APP.debug.gameLoop.DOM["runIndicator_debug"].classList.toggle("active");
+            // Do not continue if gamestate1 is not set yet.
+            if(!gamestate1){ console.log("no gamestate1"); return; }
+
+            // Change the gamestate select and the view if the gamestate has changed.
+            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.gameLoop.prev_gamestate1){
+                // Change gamestate select.
+                // console.log("switching debug gamestateselect select to: ", gamestate1);
+                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
+
+                // Change to the gamestate's debug nav tab/view.
+                if(_APP.debug.nav.doesViewExist(_APP.game.gameLoop.gamestate1)){
+                    // console.log("switching debug nav view to: ", gamestate1);
+                    _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
+                }
+                else{
+                    console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
+                }
+            }
+
+            // Do not continue if the current gamestate1 has it's inited flag unset.
+            if(!_APP.game.gamestates[gamestate1].inited){ return; }
 
             // Always show the gameLoop debug.
             data = _APP.debug.gameLoop.getVarsObj_gameLoop_div1();
@@ -150,20 +169,8 @@ _APP.debug = {
             this.generateDebugTable1(data);
             data = _APP.debug.gameLoop.getVarsObj_gameLoop_div3();
             this.generateDebugTable2b(data);
-
-            // Change the gamestate select and the view if the gamestate has changed.
-            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.gameLoop.prev_gamestate1){
-                // Change gamestate select.
-                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
-
-                // Change to the gamestate's debug nav tab/view.
-                if(_APP.debug.nav.doesViewExist(_APP.game.gameLoop.gamestate1)){
-                    _APP.debug.nav.showOneView(_APP.game.gameLoop.gamestate1);
-                }
-                else{
-                    console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
-                }
-            }
+            data = _APP.debug.gameLoop.getVarsObj_gameLoop_div4();
+            this.generateDebugTable1(data);
             
             if(gamestate1 == "gs_title0"){
                 // anim_jsgameLogo debug.
@@ -188,10 +195,6 @@ _APP.debug = {
                 this.generateDebugTable1(data);
             }
             else if(gamestate1 == "gs_title2"){
-                // anim_jsgameLogo debug.
-                // data =_APP.debug.gs_title0.getVarsObj_anim("anim_jsgameLogo");
-                // this.generateDebugTable1(data);
-
                 // debug
                 data =_APP.debug.gs_title2.getVarsObj_vars();
                 this.generateDebugTable1(data);

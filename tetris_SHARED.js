@@ -33,6 +33,17 @@ _APP.game.shared = {
 		return Math.ceil(frames);
 	},
 
+	// Convert a ms value to frames rounded up and then frames to ms. (May be a higher number that provided.)
+	msToFramesToMs : function(ms, msPerFrame){
+		// Convert seconds to ms then divide by msPerFrame.
+		if(!msPerFrame){ msPerFrame = _APP.game.gameLoop.msFrame; }
+		let frames = Math.ceil( (ms) / msPerFrame);
+
+		// Return the newMs.
+		let newMs = (frames * msPerFrame);
+		return newMs;
+	},
+
 	animations1: {
 		/*
 			WHEN/WHERE TO USE THIS:

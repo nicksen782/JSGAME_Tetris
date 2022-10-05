@@ -35,7 +35,7 @@ _APP.debug.gameLoop = {
                 // "NAME": "gameLoop vars 2",
                 // "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop["msFrame"].toFixed(1)}ms/f)` ,
                 "Calc FPS"      : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
-                "debugTiming"   : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}f, (${(_APP.game.gameLoop["debugDelay"] * _APP.game.gameLoop["msFrame"]).toFixed(1)}ms)` ,
+                "debugTiming"   : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}ms, (${(_APP.game.gameLoop["debugDelay"] / _APP.game.gameLoop["msFrame"]).toFixed(1)}f)` ,
                 "LastLoop time" : lastLoopTimeMsTooLong ? `!!!!!` : `GOOD`,
                 "frameCounter"  : _APP.game.gameLoop["frameCounter"] ,
             },
@@ -44,14 +44,51 @@ _APP.debug.gameLoop = {
         };
     },
 
+    getVarsObj_gameLoop_div4: function(){
+        let div   = this.DOM.gameLoopVars_div4;
+        let table = this.DOM.gameLoopVars_div4.querySelector("table");
+        let fade = ``;
+        // console.log("fadeStepDir", (_GFX.fade["fadeStepDir"]));
+        // if(!_GFX.fade.isComplete){
+            let type = `dir: ${(_GFX.fade["fadeStepDir"] == 1 ? "UP" : "DOWN").padEnd(4, " ")}`;
+            let step = `step: ${_GFX.fade["fadeStep"].toFixed(0).padStart(2, " ")}`;
+            fade = `${type}, ${step}`;
+        // }
+        // else{
+            // console.log("NOT active");
+            // fade = `-----`;
+        // }
+
+        return {
+            obj : {
+                // "NAME": "gameLoop vars 4",
+                "isBlocking"     : `${_GFX.fade["isBlocking"]}` ,
+                "isActive"       : `${_GFX.fade["isActive"]}` ,
+                "isComplete"     : `${_GFX.fade["isComplete"]}` ,
+                "fade"           : `${fade}` ,
+                "mode"     : `${_GFX.fade["mode"]}` ,
+                // "isRequested"    : `${_GFX.fade["isRequested"]}` ,
+                // "msBetweenDraws" : `${_GFX.fade["msBetweenDraws"]}` ,
+                // "lastDraw"       : `${_GFX.fade["lastDraw"]}` ,
+                // "fadeStep"       : `${_GFX.fade["fadeStep"]}` ,
+                // "fadeStepDir"    : `${_GFX.fade["fadeStepDir"]}` ,
+                // "maxFadeSteps"   : `${_GFX.fade["maxFadeSteps"]}` ,
+                // "fadeImages"     : `${_GFX.fade["fadeImages"].length}` ,
+            },
+
+            div  : div,
+            table: table,
+        };
+    },
+
     avgs: {
         keys: {
-            full_gameLoop : { index: 0, max: 60, times: [] },
-            do_fade       : { index: 0, max: 60, times: [] },
-            get_input     : { index: 0, max: 60, times: [] },
-            do_logic      : { index: 0, max: 60, times: [] },
-            do_draw       : { index: 0, max: 60, times: [] },
-            do_debug      : { index: 0, max: 60, times: [] },
+            full_gameLoop : { index: 0, max: 6, times: [] },
+            do_fade       : { index: 0, max: 6, times: [] },
+            get_input     : { index: 0, max: 6, times: [] },
+            do_logic      : { index: 0, max: 6, times: [] },
+            do_draw       : { index: 0, max: 6, times: [] },
+            do_debug      : { index: 0, max: 6, times: [] },
         },
         getAvg: function(key){
             // Get the record.
@@ -176,128 +213,6 @@ _APP.debug.gameLoop = {
         };
         
     },
-    OLDgetVarsObj_gameLoop_div3: function(){
-        let div   = this.DOM.gameDebugDiv_timeIt;
-        let table = this.DOM.gameDebugDiv_timeIt.querySelector("table");
-        let classes = [
-            "divPercentRange_00", // 0
-            "divPercentRange_10", // 1
-            "divPercentRange_20", // 2
-            "divPercentRange_30", // 3
-            "divPercentRange_40", // 4
-            "divPercentRange_50", // 5
-            "divPercentRange_60", // 6
-            "divPercentRange_70", // 7
-            "divPercentRange_80", // 8
-            "divPercentRange_90", // 9
-            "divPercentRange_99", // 10
-        ];
-        // let classes = [
-        //     "divPercentRange_00", // x
-        //     "divPercentRange_00", // x
-        //     "divPercentRange_20", // x
-        //     "divPercentRange_20", // x
-        //     "divPercentRange_40", // x
-        //     "divPercentRange_40", // x
-        //     "divPercentRange_60", // x
-        //     "divPercentRange_60", // x
-        //     "divPercentRange_80", // x
-        //     "divPercentRange_90", // x
-        //     "divPercentRange_99", //
-        // ];
-        let obj = {};
-        let func1 = function(rec){ 
-            // Get percent.
-            rec["%"] = rec.pt ? rec.pt/_APP.game.gameLoop.msFrame : 0; 
-
-            // Add first class.
-            rec.C.push("divPercentRange");
-
-            // Get number within range (constrain to 0 - 10);.
-            if(undefined == rec.pt){ rec.pt = 0.0; }
-            // mapNumberToRange: function(x, in_min, in_max, out_min, out_max){
-            tmp = Math.ceil( _APP.game.shared.mapNumberToRange(rec.pt, 0, _APP.game.gameLoop.msFrame, 0, 10));
-            tmp = Math.floor( _APP.game.shared.mapNumberToRange(tmp, 0, _APP.game.gameLoop.msFrame, 0, 10) );
-            tmp = Math.min(10, tmp);
-            tmp = Math.max(0, tmp);
-            rec.C.push(classes[tmp]);
-            rec.len = tmp;
-            rec.len2 = tmp;
-        };
-        let entries = [
-            {
-                "key": "full_gameLoop",
-                "pt": _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-            {
-                "key": "do_fade",
-                "pt": _JSG.shared.timeIt.stamp("do_fade" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-            {
-                "key": "get_input",
-                "pt": _JSG.shared.timeIt.stamp("get_input" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-            {
-                "key": "do_logic",
-                "pt": _JSG.shared.timeIt.stamp("do_logic" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-            {
-                "key": "do_draw",
-                "pt": _JSG.shared.timeIt.stamp("do_draw" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-            {
-                "key": "do_debug",
-                "pt": _JSG.shared.timeIt.stamp("do_debug" , "pt", "gameLoop"),
-                "%":0,
-                "G":"",
-                "C":[],
-            },
-        ];
-        for(let i=0, l=entries.length; i<l; i+=1){ 
-            // Get the record. 
-            let rec = entries[i];
-            
-            // Replace undefined values with 0.
-            if(rec.pt == undefined){ rec.pt = 0; }
-
-            // Get the % value of this time vs a full frame.
-            // Get the "graphical" % of this time vs a full frame.
-            func1(rec);
-
-            // Generate the text values. 
-            // let v1= rec.pt.toFixed(2).padStart(6, " ");
-            // let v2= (rec["%"] * 100).toFixed(2).padStart(6, " ");
-
-            // ================>3491.40)%
-            // Final text value.
-            // obj[rec.key] = `${v1}ms (${v2}%)`;
-            // obj[rec.key] = `${"-".repeat(rec.G)} > ${rec.G} > ${v2}%`;
-            obj[rec.key] = rec;
-            // obj[rec.key] = `${rec.G}`;
-            // console.log(rec);
-        }
-        return {
-            obj  : obj,
-            div  : div,
-            table: table,
-            classes: classes,
-        };
-    },
 
     populateGamestatesSelect: function(){
         let gamestates = _APP.game.gamestates_list;
@@ -327,50 +242,15 @@ _APP.debug.gameLoop = {
 
     // Stops the gameLoop but does not re-init any values on toggle on/off.
     toggleGameLoop: function(){
-        if(_APP.game.gameLoop.running){
-            this.stopGameLoop();
-        }
-        else{
-            // Set the gameLoop.running to true. 
-            _APP.game.gameLoop.running = true; 
-    
-            // Start the gameLoop.
-            _APP.game.gameLoop.loop();
-        }
+        _APP.game.gameLoop.loop_pause();
     },
     // Restart the gameLoop.
     restartGameLoop:function(){
-        // Cancel the current animation frame. 
-        window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
-
-        this.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
-
-        // Trigger gamestate change (re-inits) but keep the same gamestates.
-        _APP.game.gameLoop.changeGamestate1( _APP.game.gameLoop.gamestate1 );
-        _APP.game.gameLoop.changeGamestate2( _APP.game.gameLoop.gamestate2 );
-        
-        // Set the gameLoop.running to true. 
-        _APP.game.gameLoop.running = true; 
-
-        // Start the gameLoop.
-        _APP.game.gameLoop.loop();
+        _APP.game.gameLoop.loop_restart_sameStates();
     },
     // Stops the gameloop.
     stopGameLoop:function(){
-        // Cancel the current animation frame. 
-        window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
-
-        // Set the gameLoop.running to false. 
-        _APP.game.gameLoop.running = false;
-
-        // DEBUG.
-        if(_JSG.loadedConfig.meta.debug){
-            // Display the debug data one more time. 
-            _APP.debug.debugDisplays.runDebugDisplay();
-
-            // Update gameLoop.lastDebug.
-            _APP.game.gameLoop.lastDebug = performance.now();
-        }
+        _APP.game.gameLoop.loop_stop();
     },
     toggleLoopType: function(){
         if     (_APP.game.gameLoop.loopType == "raf"){ _APP.game.gameLoop.loopType = "to"; }

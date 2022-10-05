@@ -8,24 +8,24 @@ _APP.game = {
     shared: {}, 
     
     gameLoop : {
-        frameCounter: 0,
-        raf_id     : null,
-        running    : false,
-        fps        : 60,
-        msFrame    : null,
-        lastLoop   : 0,
-        delta      : undefined,
-        loopType   : "raf", // Can be "raf" or "to".
-
-        lastDebug: 0,
-        debugDelay: undefined,
-        netGame: false,
+        frameCounter : 0,
+        raf_id       : null,
+        running      : false,
+        fps          : 60,
+        msFrame      : null,
+        thisLoopStart: 0,
+        lastLoopRun  : 0,
+        delta        : undefined,
+        loopType     : "raf", // Can be "raf" or "to".
+        lastDebug    : 0,
+        debugDelay   : undefined,
+        netGame      : false,
 
         stop: function(){},
         start: function(){},
         pause: function(){},
 
-        prev_gamestate1: "",
+        prev_gamestate1: "gs_title0",
         prev_gamestate2: "",
         gamestate1: "gs_title0",
         gamestate2: "",
@@ -113,94 +113,149 @@ _APP.game = {
                 this._sample_.fill(0);
                 // this._sample_.fill(sampleSize);
             },
-        },	
+        },
 
-        doDebug: function(timestamp){
-            _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop"); 
+        // Starts the gameLoop.
+        loop_start: function(){
+            // Stop the gameLoop if it is running.
+            if(_APP.game.gameLoop.running){ this.loop_stop(); }
+            
+            // Start the gameLoop.
+            _APP.game.gameLoop.running = true; 
+            this.loop_schedule_nextRun();
+        },
+        loop_schedule_nextRun: function(){
+            if     (_APP.game.gameLoop.loopType == "raf"){ _APP.game.gameLoop.raf_id = window.requestAnimationFrame( (ts)=>{ _APP.game.gameLoop.loop( ts ); } ); }
+            else if(_APP.game.gameLoop.loopType == "to") { _APP.game.gameLoop.raf_id = setTimeout(                   (  )=>{ _APP.game.gameLoop.loop( performance.now() ); }, 0 ); }
+        },
+        loop_restart_sameStates: function(){
+            // Stop the gameloop and run debug if debug is enabled. 
+            this.loop_stop();
+
+            // DEBUG
             if(_JSG.loadedConfig.meta.debug){
-                _APP.debug.gameLoop.DOM["runIndicator_gameLoop"].classList.toggle("active");
-                if(_APP.game.gamestates[this.gamestate1].inited){
-                    if(timestamp - this.lastDebug > this.debugDelay){
-                        _APP.debug.debugDisplays.runDebugDisplay();
-                        this.lastDebug = timestamp;
-                    }
-                }
-            }
-            _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
-        },
-        doFade: function(timestamp){
-            // Is a fade happening? (Fades are blocking.)
-            if( _APP.fadeLayer.fadeActive || _APP.fadeLayer.blocking || _APP.fadeLayer.blockAfterFade ){
-                _JSG.shared.timeIt.stamp("do_fade", "s", "gameLoop"); 
+                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gameLoop.gamestate1;
+            };
 
-                // Process fading.
-                // 
+            // Trigger gamestate change (re-inits) but keep the same gamestates.
+            _APP.game.gameLoop.changeGamestate1( _APP.game.gameLoop.gamestate1 );
+            _APP.game.gameLoop.changeGamestate2( _APP.game.gameLoop.gamestate2 );
 
-                _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop"); 
-                
-                return true;
-            }
-            return false;
+            // Start the gameLoop.
+            _APP.game.gameLoop.running = true; 
+            this.loop_schedule_nextRun();
         },
+        // Stops the gameLoop if it is running. Starts the gameLoop if it is not running. 
+        loop_pause: function(){
+            // Stop the gameLoop if it is running.
+            if(_APP.game.gameLoop.running){ this.loop_stop(); }
+            
+            // Start the gameLoop.
+            else{ _APP.game.gameLoop.running = true; this.loop_schedule_nextRun(); }
+        },
+        // Stops the gameloop and runs debug if debug is enabled. 
+        loop_stop: function(){
+            // Cancel the current animation frame. 
+            window.cancelAnimationFrame(_APP.game.gameLoop.raf_id); 
+
+            // Set the gameLoop.running to false. 
+            _APP.game.gameLoop.running = false;
+
+            // DEBUG.
+            if(_JSG.loadedConfig.meta.debug){
+                // console.log("RUNNING DEBUG");
+                _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop");
+                this.doDebug(this.thisLoopStart, true);
+                _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
+            }
+        },
+        endOfLoopTasks: function(timestamp){
+            // Network tasks.
+            //
+
+            // DEBUG.
+            if(_JSG.loadedConfig.meta.debug){
+                // console.log("RUNNING DEBUG");
+                _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop");
+                this.doDebug(this.thisLoopStart);
+                _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
+            }
+
+            // Request the next frame.
+            this.loop_schedule_nextRun();
+        },
+
+        // DEBUG
+        doDebug: function(timestamp, force){
+            if( force || ( (this.thisLoopStart - this.lastDebug) > this.debugDelay) ){
+                // Display the debug data one more time. 
+                _APP.debug.debugDisplays.runDebugDisplay();
+
+                // Update gameLoop.lastDebug.
+                this.lastDebug = performance.now();
+            }
+        },
+
         loop: async function loop(timestamp){
             // Is the loop running?
             if( this.running ){
-                // Calculate the time difference between the timestamp and the last loop run. 
-                this.delta = timestamp - this.lastLoop;
+                // Calculate the time difference between the thisLoopStart and the last loop run. 
+                this.thisLoopStart = timestamp;
+                this.delta = timestamp - this.lastLoopRun;
                 
                 // Is it time to run the next loop?
                 if( (this.delta >= this.msFrame) ){
-                    // Fading?
-                    if( this.doFade(timestamp) ) { 
-                        // DEBUG.
-                        this.doDebug(timestamp);
-
-                        // Request the next frame.
-                        if     (this.loopType == "raf"){ this.raf_id = window.requestAnimationFrame( (ts)=>{ this.loop( ts ); } ); }
-                        else if(this.loopType == "to") { this.raf_id = setTimeout( ()=>{ this.loop( performance.now() ); }, 0 ); }
-                        return; 
-                    }
-
                     _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); 
-                    
-                    // Update this.lastLoop with this timestamp.
-                    this.lastLoop = timestamp - (this.delta % this.msFrame);
+
+                    // Update this.lastLoopRun with this timestamp.
+                    this.lastLoopRun = this.thisLoopStart - (this.delta % this.msFrame);
 
                     // Track performance.
-                    this.fpsCalc.tick(timestamp - (this.delta % this.msFrame));
+                    this.fpsCalc.tick(this.thisLoopStart - (this.delta % this.msFrame));
                     this.frameCounter += 1;
 
-                    // Get input.
+                    // FADE
+                    _JSG.shared.timeIt.stamp("do_fade", "s", "gameLoop");
+                    if(await _GFX.fade.blocking.doFade() ){
+                        _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop");
+    
+                        _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
+
+                        // Run the end of loop tasks and schedule the next loop. 
+                        this.endOfLoopTasks(this.thisLoopStart);
+                        return; 
+                    }
+                    else{
+                        _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop");
+                    }
+
+                    // INPUT
                     _JSG.shared.timeIt.stamp("get_input", "s", "gameLoop"); 
                     _JSG.shared.timeIt.stamp("get_input", "e", "gameLoop"); 
                     //
                     
-                    // Run logic.
+                    // LOGIC
                     _JSG.shared.timeIt.stamp("do_logic", "s", "gameLoop"); 
                     await _APP.game.gamestates[this.gamestate1].main();
                     _JSG.shared.timeIt.stamp("do_logic", "e", "gameLoop"); 
-                    
-                    // DEBUG.
-                    this.doDebug(timestamp);
 
+                    // DRAW
                     _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
-                    // Update graphics.
-                    await _GFX.VRAM.draw();
-                    // await _GFX.util.VRAM.draw();
+                    await _GFX.VRAM.draw(); // await _GFX.util.VRAM.draw();
                     _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
 
                     _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
 
-                    // Request the next frame.
-                    if     (this.loopType == "raf"){ this.raf_id = window.requestAnimationFrame( (ts)=>{ this.loop( ts ); } ); }
-                    else if(this.loopType == "to") { this.raf_id = setTimeout( ()=>{ this.loop( performance.now() ); }, 0 ); }
+                    // Run the end of loop tasks and schedule the next loop. 
+                    this.endOfLoopTasks(this.thisLoopStart);
+                    return;
                 }
 
                 // No.
                 else{
-                    // Request the next frame.
-                    if     (this.loopType == "raf"){ this.raf_id = window.requestAnimationFrame( (ts)=>{ this.loop( ts ); } ); }
-                    else if(this.loopType == "to") { this.raf_id = setTimeout( ()=>{ this.loop( performance.now() ); }, 0 ); }
+                    // Run the end of loop tasks and schedule the next loop. 
+                    this.endOfLoopTasks(this.thisLoopStart);
+                    return;
                 }
             }
             
@@ -214,10 +269,11 @@ _APP.game = {
         init: function init(parent){
             return new Promise(async (resolve,reject) => {
                 _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("do_fade"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_fade"      , "e", "gameLoop");
+                _JSG.shared.timeIt.stamp("do_debug"     , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_debug"     , "e", "gameLoop");
                 _JSG.shared.timeIt.stamp("get_input"    , "s", "gameLoop"); _JSG.shared.timeIt.stamp("get_input"    , "e", "gameLoop");
                 _JSG.shared.timeIt.stamp("do_logic"     , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_logic"     , "e", "gameLoop");
                 _JSG.shared.timeIt.stamp("do_draw"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_draw"      , "e", "gameLoop");
-                _JSG.shared.timeIt.stamp("do_fade"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_fade"      , "e", "gameLoop");
                 
                 // Calculate the ms required per frame.
                 this.msFrame = 1000 / this.fps;
@@ -229,10 +285,40 @@ _APP.game = {
                 _APP.game.gamestates_list = Object.keys(_APP.game.gamestates);
 
                 //
-                this.debugDelay = 1;
+                // this.debugDelay = this.msFrame*1 ;
+                // this.debugDelay = 1000 ;
+                this.debugDelay = 0 ;
+
+                // TEMP DEBUG
+                _APP.game.tests.init();
 
                 resolve();
             });
+        },
+
+    },
+
+    tests: {
+        fadeInTest: async function(){
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 0, _APP.game.gameLoop.msFrame);
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 1, _APP.game.gameLoop.msFrame);
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
+            let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 10, _APP.game.gameLoop.msFrame);
+            await _GFX.fade.blocking.fadeIn(speedMs, true);
+            console.log("DONE: fadeInTest");
+        },
+        fadeOutTest: async function(){
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 0, _APP.game.gameLoop.msFrame);
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 1, _APP.game.gameLoop.msFrame);
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 2, _APP.game.gameLoop.msFrame);
+            // let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
+            let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 10, _APP.game.gameLoop.msFrame);
+            await _GFX.fade.blocking.fadeOut(speedMs, true);
+            console.log("DONE: fadeInTest");
+        },
+        init: function(){
+            document.getElementById("tetris_app_tests_fadeIn") .addEventListener("click", ()=>{ this.fadeInTest(); }, false);
+            document.getElementById("tetris_app_tests_fadeOut").addEventListener("click", ()=>{ this.fadeOutTest(); }, false);
         },
     },
 };

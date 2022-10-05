@@ -59,9 +59,8 @@
                     "gamestateSelect"      : "tetris_app_debug_gameLoopVars_gamestateSelect",
                     "gameLoopVars_div1"    : "tetris_app_debug_gameLoopVars_div1",
                     "gameLoopVars_div2"    : "tetris_app_debug_gameLoopVars_div2",
+                    "gameLoopVars_div4"    : "tetris_app_debug_gameLoopVars_div4",
                     "gameDebugDiv_timeIt"  : "tetris_app_debug_gameDebugDiv_timeIt",
-                    "runIndicator_debug"   : "tetris_app_debug_runIndicator_debug",
-                    "runIndicator_gameLoop": "tetris_app_debug_runIndicator_gameLoop",
                     "fadeUp_btn" : "tetris_app_debug_fadeUp_btn",
                     "fadeDown_btn": "tetris_app_debug_fadeDown_btn"
                 }
@@ -101,10 +100,15 @@
             { "name": "TEXT", "canvasOptions": { "alpha": true }, "bg_color":"" }
         ],
         
+        "jsgame_shared_plugins_config":{
+            "videoModeA": {
+                "useFade":true
+            }
+        },
         "jsgame_shared_plugins":[
-            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js"     , "t": "js", "n":"videoModeA_core"      },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_debug.js"    , "t": "js", "n":"videoModeA_debug"     },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_user.js"     , "t": "js", "n":"videoModeA_user"      }
+            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js"     , "t": "js", "n":"videoModeA_core"  },
+            { "f":"shared/plugins/VIDEO_A/videoModeA_debug.js"    , "t": "js", "n":"videoModeA_debug" },
+            { "f":"shared/plugins/VIDEO_A/videoModeA_user.js"     , "t": "js", "n":"videoModeA_user"  }
         ]
     },
 

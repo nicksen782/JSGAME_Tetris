@@ -197,8 +197,8 @@
   display: none;
   padding: 0.25em;
   background-color: #979da6;
-  min-height: 400px;
-  max-height: 500px;
+  min-height: 250px;
+  max-height: 250px;
   overflow: auto;
 }
 

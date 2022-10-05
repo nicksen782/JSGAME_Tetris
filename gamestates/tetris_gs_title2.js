@@ -36,6 +36,9 @@ _APP.game.gamestates["gs_title2"] = {
         this.endDelay.maxFrames  = _APP.game.shared.msToFrames(1000, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
+        let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
+        await _GFX.fade.blocking.fadeIn(speedMs, true);
+        
         this.inited = true; 
     },
 
@@ -43,24 +46,24 @@ _APP.game.gamestates["gs_title2"] = {
     main: async function(){
         if(!this.inited){ this.init(); return; }
 
-        // Delay before progressing to the next game state?
         this.endDelay.started = true;
+        // Delay before progressing to the next game state?
         if(this.endDelay.started){
             // console.log("endDelay is running.");
-            if(this.endDelay.frameCount >= this.endDelay.maxFrames){
+            if(this.endDelay.frameCount >= this.endDelay.maxFrames && !this.endDelay.finished){
                 // Set the endDelay finished flag (Not needed. Here for completeness.)
                 // console.log("endDelay finished.");
                 this.endDelay.finished = true;
 
-                // Fade out the display.
-                // _CG.FADER.FUNCS.FadeOut(1, true, false);
-
+                let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
+                await _GFX.fade.blocking.fadeOut(speedMs, true);
+            }
+            else if(this.endDelay.finished){
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
                 _APP.game.gameLoop.changeGamestate1("gs_title0");
                 // _APP.game.gameLoop.changeGamestate1("gs_title1");
-
-                console.log("gs_title2 DONE");
+                // _APP.game.gameLoop.changeGamestate1("gs_title2");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");
