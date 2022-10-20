@@ -3,7 +3,7 @@
         "debug": false,
         "autoSwitchToLobbyDebugTab": true,
         "defaultLobbyTab": "lobby",
-        "hideLobby": false, 
+        "hideLobby": true, 
         "defaultGameCanvasHeightPercent": 90,
         "dimensions":{
             "pointersSize" : 8,
@@ -22,6 +22,7 @@
             "app_game"            : "tetris_app_game",
             "option_size_div"     : "tetris_option_size_div",
             "option_size_range"   : "tetris_option_size_range",
+            
             "option_size_value"   : "tetris_option_size_value"
         },
         "debugDOM": {
@@ -36,7 +37,8 @@
                         "gs_setup2"    : "tetris_app_debug_nav_tab_debug_gs_setup2",
                         "gs_play"      : "tetris_app_debug_nav_tab_debug_gs_play",
                         "gs_highscores": "tetris_app_debug_nav_tab_debug_gs_highscores",
-                        "debug1"       : "tetris_app_debug_nav_tab_debug1"
+                        "debug1"       : "tetris_app_debug_nav_tab_debug1",
+                        "tests"        : "tetris_app_debug_nav_tab_tests"
                     },
                     "views": {
                         "gs_title0"    : "tetris_app_debug_nav_view_debug_gs_title0",
@@ -46,7 +48,8 @@
                         "gs_setup2"    : "tetris_app_debug_nav_view_debug_gs_setup2",
                         "gs_play"      : "tetris_app_debug_nav_view_debug_gs_play",
                         "gs_highscores": "tetris_app_debug_nav_view_debug_gs_highscores",
-                        "debug1"       : "tetris_app_debug_nav_view_debug1"
+                        "debug1"       : "tetris_app_debug_nav_view_debug1",
+                        "tests"        : "tetris_app_debug_nav_view_tests"
                     }
                 }
             },
@@ -64,6 +67,12 @@
             },
             "main":{
                 "DOM": {
+                }
+            },
+            "tests":{
+                "DOM": {
+                    "fadeLevels": "tetris_app_debug_fadeLevels",
+                    "fadeTiles" : "tetris_app_debug_fadeTiles"
                 }
             },
             "gs_title0":{
@@ -92,21 +101,25 @@
             "tilesTX2"
         ],
         "layers":[
-            { "name": "BG1" , "canvasOptions": { "alpha": true }, "bg_color":"#202020" },
+            { "name": "BG1" , "canvasOptions": { "alpha": true }, "bg_color":"#000000" },
             { "name": "SP1" , "canvasOptions": { "alpha": true }, "bg_color":"" },
             { "name": "TEXT", "canvasOptions": { "alpha": true }, "bg_color":"" }
         ],
         
+        "jsgame_shared_plugins":[
+            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js", "t": "js", "n":"videoModeA_core" },
+            { "f":"shared/plugins/INPUT_A/inputModeA_core.js", "t": "js", "n":"inputModeA_core" }
+        ],
         "jsgame_shared_plugins_config":{
             "videoModeA": {
-                "useFade":true
+                "fadeCreateAtStart": false,
+                "debugMode":false
+            },
+            "inputModeA": {
+                "useKeyboard":true,
+                "useGamepads":true
             }
-        },
-        "jsgame_shared_plugins":[
-            { "f":"shared/plugins/VIDEO_A/videoModeA_core.js"     , "t": "js", "n":"videoModeA_core"  },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_debug.js"    , "t": "js", "n":"videoModeA_debug" },
-            { "f":"shared/plugins/VIDEO_A/videoModeA_user.js"     , "t": "js", "n":"videoModeA_user"  }
-        ]
+        }
     },
 
     "files":[

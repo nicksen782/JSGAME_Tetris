@@ -5,8 +5,12 @@ _APP.game = {
 
     // GAMESTATES
     prev_gamestate1: "gs_title0",
+    // prev_gamestate1: "gs_title1",
+    // prev_gamestate1: "gs_title2",
     prev_gamestate2: "",
     gamestate1: "gs_title0",
+    // gamestate1: "gs_title1",
+    // gamestate1: "gs_title2",
     gamestate2: "",
     changeGamestate1: function changeGamestate1(new_gamestate){
         // Is this a valid gamestate key?
@@ -40,18 +44,15 @@ _APP.game = {
     
     // KEYS THAT ARE POPULATED WITHIN THIS FILE. 
     gameLoop: {}, 
-    input   : {}, 
     tests   : {},  
 };
-
-// Handle user inputs.
-_APP.game.input = {};
 
 // The game loop for the game. 
 _APP.game.gameLoop = {
     parent: null,
 
-    frameCounter : 0,
+    frameCounter     : 0,
+    frameDrawCounter : 0,
     raf_id       : null,
     running      : false,
     fps          : 60,
@@ -62,6 +63,7 @@ _APP.game.gameLoop = {
     loopType     : "raf", // Can be "raf" or "to".
     lastDebug    : 0,
     debugDelay   : undefined,
+    fadeIsBlocking: false,
     
     // Calculates the average frames per second.
     fpsCalc : {
@@ -215,15 +217,27 @@ _APP.game.gameLoop = {
                 this.frameCounter += 1;
 
                 // FADE
+                
+                // Function processFading will determine when the fade level needs to change.
+                // If processFading returns true then the LOGIC and INPUT should be skipped.
                 _JSG.shared.timeIt.stamp("do_fade", "s", "gameLoop");
-                if(await _GFX.fade.blocking.doFade() ){
-                    _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop");
+                this.fadeIsBlocking = await _GFX.fade.processFading();
+                if( this.fadeIsBlocking ){
+                    _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
+                    
+                    // Count this as a draw frame if fade frame will be drawn.
+                    if(_GFX.fade.framesSinceLastFadeChange == _GFX.fade.framesBetweenFadeChanges){ this.frameDrawCounter += 1; }
 
+                    // Draw (the fade level.)
+                    await _GFX.VRAM.draw(); 
+                    _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
+                    
+                    _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop");
                     _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
 
                     // Run the end of loop tasks and schedule the next loop. 
                     this.endOfLoopTasks();
-                    return; 
+                    return;
                 }
                 else{
                     _JSG.shared.timeIt.stamp("do_fade", "e", "gameLoop");
@@ -231,6 +245,7 @@ _APP.game.gameLoop = {
 
                 // INPUT
                 _JSG.shared.timeIt.stamp("get_input", "s", "gameLoop"); 
+                await _INPUT.util.getStatesForPlayers();
                 _JSG.shared.timeIt.stamp("get_input", "e", "gameLoop"); 
                 //
                 
@@ -241,14 +256,17 @@ _APP.game.gameLoop = {
 
                 // DRAW
                 _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
-                await _GFX.VRAM.draw(); // await _GFX.util.VRAM.draw();
-                _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
+                
+                // Count this as a draw frame if there are changes. 
+                if(_GFX.VRAM.changesStats.new){ this.frameDrawCounter += 1; }
 
+                // Draw.
+                await _GFX.VRAM.draw(); 
+                _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
                 _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
 
                 // Run the end of loop tasks and schedule the next loop. 
                 this.endOfLoopTasks();
-                return;
             }
 
             // No.
@@ -290,9 +308,6 @@ _APP.game.gameLoop = {
             // this.debugDelay = this.msFrame*1 ;
             // this.debugDelay = 1000 ;
             this.debugDelay = 0 ;
-
-            // TEMP DEBUG
-            _APP.game.tests.init();
 
             resolve();
         });

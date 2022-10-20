@@ -40,7 +40,7 @@ _APP.game.gamestates["gs_title0"] = {
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
-                maxRepeats              : 1,
+                maxRepeats              : 4,
                 maxWaitFrames           : _APP.game.shared.msToFrames(105, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
@@ -60,8 +60,7 @@ _APP.game.gamestates["gs_title0"] = {
         this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
-        let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
-        await _GFX.fade.blocking.fadeIn(speedMs, true);
+        await _GFX.fade.fadeIn(5, true);
 
         this.inited = true; 
     },
@@ -70,10 +69,23 @@ _APP.game.gamestates["gs_title0"] = {
     main: async function(){
         if(!this.inited){ this.init(); return; }
 
-        this.animations.draw("anim_jsgameLogo"); 
-        if(this.animations.anim_jsgameLogo.finished && !this.endDelay.started){
-            this.endDelay.started = true; 
-            return;
+        // if(_INPUT.util.checkButton("p1", "press", "BTN_Y" )){
+        // if(_INPUT.util.checkButton("p1", "press", ["BTN_Y", "BTN_B"] )){
+        if(_INPUT.util.checkButton("p1", "press", [] )){
+            console.log("gs_title0 button was pressed");
+            _APP.game.changeGamestate1("gs_title1");
+            return; 
+        }
+        // if(_APP.game.checkButton("p1", "press", [] )){
+        //     _APP.game.changeGamestate1("gs_title1");
+        //     return; 
+        // }
+        else{
+            this.animations.draw("anim_jsgameLogo"); 
+            if(this.animations.anim_jsgameLogo.finished && !this.endDelay.started){
+                this.endDelay.started = true; 
+                return;
+            }
         }
 
         // Delay before progressing to the next game state?
@@ -84,8 +96,7 @@ _APP.game.gamestates["gs_title0"] = {
                 // console.log("endDelay finished.");
                 this.endDelay.finished = true;
 
-                let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
-                await _GFX.fade.blocking.fadeOut(speedMs, true);
+                await _GFX.fade.fadeOut(5, true);
             }
             else if(this.endDelay.finished){
                 // Set the next game state.

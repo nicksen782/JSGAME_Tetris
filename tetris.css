@@ -45,7 +45,21 @@
   margin-left: 5px;
   position:relative;
 }
-
+.pixelatedCanvas canvas, 
+.pixelatedCanvas {
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+}
 #tetris_app canvas{
   /* Older versions of FF          */
   image-rendering: optimizeSpeed;
@@ -156,7 +170,8 @@
   min-height: 0.5em;
   padding: 0.25em;
   border-bottom: 1px solid black;
-  width: 650px;
+  /* width: 650px; */
+  width: 100%;
   /* background-color: blue; */
 }
 
@@ -297,11 +312,8 @@
   border: 1px solid black;
   color: black;
   overflow: hidden;
-  /* transition-duration: 0.5s; */
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* transition: width 0.25s; */
-  transition: width 16ms;
-  /* max-width: 170px; */
+  transition-timing-function: linear !important;
+  transition: width 100ms;
   font-size: 1.5em;
   font-size: 0px;
   /* min-width: 1em; */
@@ -309,62 +321,72 @@
 }
 
 .divPercentRange.divPercentRange_00 {
-  background-color: #00ff00;
-  width: 1%;
+  background-color: #00c900;
+  width: 0%;
   /* border-color: transparent; */
   font-size: 0px;
 }
+/* .divPercentRange.divPercentRange_00::before{ content: '0'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; } */
 
 .divPercentRange.divPercentRange_10 {
   background-color: #6fed00;
   width: 10% ;
 }
+.divPercentRange.divPercentRange_10::before{ content: '1'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_20 {
   background-color: #98db00;
   width: 20% ;
 }
+.divPercentRange.divPercentRange_20::before{ content: '2'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_30 {
   background-color: #b6c700;
   width: 30% ;
 }
+.divPercentRange.divPercentRange_30::before{ content: '3'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_40 {
   background-color: #cdb200;
   width: 40% ;
 }
+.divPercentRange.divPercentRange_40::before{ content: '4'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_50 {
   background-color: #df9b00;
   width: 50% ;
 }
+.divPercentRange.divPercentRange_50::before{ content: '5'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_60 {
   background-color: #ee8200;
   width: 60% ;
 }
+.divPercentRange.divPercentRange_60::before{ content: '6'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_70 {
   background-color: #f86600;
   width: 70% ;
 }
+.divPercentRange.divPercentRange_70::before{ content: '7'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_80 {
   background-color: #fe4400;
   width: 80% ;
 }
+.divPercentRange.divPercentRange_80::before{ content: '8'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_90 {
   background-color: #fe4400;
   width: 90% ;
 }
+.divPercentRange.divPercentRange_90::before{ content: '9'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 .divPercentRange.divPercentRange_99 {
   background-color: #ff0000;
   width: 100%;
 }
-
+.divPercentRange.divPercentRange_99::before{ content: '10'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
 
 /* OPTIONS */
 /* OPTIONS */
@@ -415,4 +437,8 @@
   height: 25px; /* Slider handle height */
   background: #04AA6D; /* Green background */
   cursor: pointer; /* Cursor on hover */
+}
+
+div#tetris_app_debug_nav_view_tests .tetris_app_debug_div1{
+  background-color:unset;
 }

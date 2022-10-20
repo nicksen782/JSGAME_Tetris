@@ -29,6 +29,11 @@ _APP.game.gamestates["gs_title1"] = {
     init: async function(){
         // console.log("gs_title1 init");
 
+        if(_GFX.fade.isActive){ 
+            console.log("A fade is currently in progress.");
+            return; 
+        }
+
         // Clear the screen.
         _GFX.VRAM.clearVram();
 
@@ -91,8 +96,7 @@ _APP.game.gamestates["gs_title1"] = {
         this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
-        let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
-        await _GFX.fade.blocking.fadeIn(speedMs, true);
+        await _GFX.fade.fadeIn(5, true);
 
         this.inited = true; 
     },
@@ -100,6 +104,11 @@ _APP.game.gamestates["gs_title1"] = {
     // Main function of this game state. Calls other functions/handles logic, etc.
     main: async function(){
         if(!this.inited){ this.init(); return; }
+
+        if(_INPUT.util.checkButton("p1", "press", [] )){
+            _APP.game.changeGamestate1("gs_title2");
+            return; 
+        }
 
         // Run the lense animation.
         this.animations.draw("anim_lense");
@@ -111,6 +120,7 @@ _APP.game.gamestates["gs_title1"] = {
         if(this.animations.anim_lense.finished && this.animations.anim_stars.finished && !this.endDelay.started){
             // Yes, start the endDelay.
             // console.log("endDelay started.");
+            // await _GFX.fade.fadeOut(10, true);
             this.endDelay.started = true; 
             return;
         }
@@ -123,8 +133,7 @@ _APP.game.gamestates["gs_title1"] = {
                 // console.log("endDelay finished.");
                 this.endDelay.finished = true;
 
-                let speedMs = _APP.game.shared.msToFramesToMs(_APP.game.gameLoop.msFrame * 3, _APP.game.gameLoop.msFrame);
-                await _GFX.fade.blocking.fadeOut(speedMs, true);
+                await _GFX.fade.fadeOut(5, true);
             }
             else if(this.endDelay.finished){
                 // Set the next game state.

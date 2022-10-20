@@ -26,6 +26,7 @@ _APP.debug = {
         // Tileset draw test.
         drawTiles: function(tilesetName, dest1){
             let div1a = document.createElement("div"); 
+            div1a.classList.add("pixelatedCanvas");
             let div1b = document.createElement("div"); div1b.innerText = `${tilesetName}: TILES`; div1b.style = "background-color:white;"
             let div1c = document.createElement("div");
             div1a.append(div1b, div1c);
@@ -46,6 +47,7 @@ _APP.debug = {
         // Tilemap draw test.
         drawTilemaps: function(tilesetName, dest2){
             let div2a = document.createElement("div"); 
+            div2a.classList.add("pixelatedCanvas");
             let div2b = document.createElement("div"); div2b.innerText = `${tilesetName}: MAPS`; div2b.style = "background-color:white;"
             let div2c = document.createElement("div");
             div2a.append(div2b, div2c);
@@ -80,6 +82,70 @@ _APP.debug = {
                     this.drawTilemaps(key, this.parent.nav.DOM.views["debug1"]);
                 }
     
+                resolve();
+            });
+        },
+    },
+
+    // TODO
+    tests:{
+        parent:null,
+        DOM:{}, 
+        setFadeLevel: function(fadeIndex){
+            _GFX.fade.fadeIndex = fadeIndex;
+        },
+
+        displayFadedTileset: function(){
+            if(!_GFX.config.debugMode){ return; }
+            let data = _GFX._debug.fadedTileset; 
+            if(!data){ 
+                console.log("The fadedTileset is unavailable.");
+                return; 
+            }
+            console.log("_GFX._debug.fadedTileset:", _GFX._debug.fadedTileset);
+
+            let divCont = document.createElement("div");
+            for(let tilesetName in data){
+                let div = document.createElement("div");
+                div.innerText = tilesetName;
+                div.append( document.createElement("br") ); 
+                divCont.append(div);
+
+                let tiles = data[tilesetName];
+                for(let ti=0, tl=tiles.length; ti<tl; ti+=1){
+                    for(let i=0, l=tiles[ti].length; i<l; i+=1){
+                        // console.log(tilesetName, ", tileId", ti, ", fadeIndex:", i, "***", tiles[ti][i]);
+                        let canvas = document.createElement("canvas");
+                        canvas.title = `tilesetName: ${tilesetName}, tileId: ${ti}, fadeIndex: ${i}`;
+                        canvas.width = tiles[ti][i].width; 
+                        canvas.height = tiles[ti][i].height;
+                        canvas.style["border"] = "1px solid black";
+                        canvas.style["padding"] = "2px";
+                        canvas.style["margin"] = "2px";
+                        canvas.style["width"]  = canvas.width  * 3 + "px";
+                        canvas.style["height"] = canvas.height * 3 + "px";
+                        canvas.classList.add("pixelatedCanvas");
+                        let ctx = canvas.getContext("2d");
+                        _GFX.gfxConversion.setPixelated(ctx);
+                        ctx.putImageData(tiles[ti][i], 0, 0);
+                        div.append(canvas);
+                    }
+                    div.append( document.createElement("br") ); 
+                }
+            }
+            window.requestAnimationFrame(()=>{
+                document.getElementById("tetris_app_debug_fadeTiles").append(divCont);
+            });
+        },
+        init: async function(parent){
+            return new Promise(async (resolve,reject)=>{
+                // Set parent(s)
+                this.parent = parent;
+    
+                this.DOM = _JSG.loadedConfig.meta.debugDOM.tests.DOM;
+                await _JSG.shared.parseObjectStringDOM(this.DOM, false);
+
+                // console.log(this.DOM);
                 resolve();
             });
         },
@@ -155,20 +221,20 @@ _APP.debug = {
             if(!gamestate1){ console.log("no gamestate1"); return; }
 
             // Change the gamestate select and the view if the gamestate has changed.
-            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.prev_gamestate1){
-                // Change gamestate select.
-                // console.log("switching debug gamestateselect select to: ", gamestate1);
-                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
+            // if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.prev_gamestate1){
+            //     // Change gamestate select.
+            //     // console.log("switching debug gamestateselect select to: ", gamestate1);
+            //     _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
 
-                // Change to the gamestate's debug nav tab/view.
-                if(_APP.debug.nav.doesViewExist(_APP.game.gamestate1)){
-                    // console.log("switching debug nav view to: ", gamestate1);
-                    _APP.debug.nav.showOneView(_APP.game.gamestate1);
-                }
-                else{
-                    console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
-                }
-            }
+            //     // Change to the gamestate's debug nav tab/view.
+            //     if(_APP.debug.nav.doesViewExist(_APP.game.gamestate1)){
+            //         // console.log("switching debug nav view to: ", gamestate1);
+            //         _APP.debug.nav.showOneView(_APP.game.gamestate1);
+            //     }
+            //     else{
+            //         console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
+            //     }
+            // }
 
             // Do not continue if the current gamestate1 has it's inited flag unset.
             if(!_APP.game.gamestates[gamestate1].inited){ return; }
@@ -368,6 +434,7 @@ _APP.debug = {
             await this.nav.init(this);
             await this.gameLoop.init(this);
             await this.debug1.init(this);
+            await this.tests.init(this);
             await this.gs_title0.init(this);
             await this.gs_title1.init(this);
             await this.gs_title2.init(this);

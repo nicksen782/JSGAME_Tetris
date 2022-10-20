@@ -6,6 +6,10 @@
  <maps pointers-size="8">
   <map var-name="transparent_tile" left="0" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="blacktile" left="3" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="RAINBOWTEST1" left="0" top="3" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="RAINBOWTEST2" left="1" top="3" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="RAINBOWTEST3" left="2" top="3" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="RAINBOWTEST4" left="3" top="3" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="bg1_tile" left="2" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="bg2_tile" left="2" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="empty_square" left="1" top="1" width="1" height="1" mapOutputTo="PROGMEM" /> 

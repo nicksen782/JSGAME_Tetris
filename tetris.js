@@ -32,7 +32,7 @@ _APP = {
         this.DOM["option_size_range"].dispatchEvent(new Event("input"));
     },
 
-    input: {
+    OLDinput: {
         // https://developer.ibm.com/tutorials/wa-games/
         parent: null,
         DOM: {
@@ -81,6 +81,7 @@ _APP = {
         },
     },
 
+    // JSGAME: app pre-init.
     init: async function(){
         return new Promise(async (resolve, reject)=>{
             // appConfig overrides.
@@ -111,7 +112,9 @@ _APP = {
                 this.DOM["app_game"].append(_GFX.canvasLayers[i].canvas);
             }
 
-            await this.input.init(this);
+            // Input init.
+            _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Input.`, "loading");
+            await _INPUT.init( [_APP.DOM["app_game"], _APP.DOM["gameContDiv"] ] );
 
             // DEBUG? Unhide the div, init and switch to the debug tab if debug is active.
             if(_JSG.loadedConfig.meta.debug == true){
@@ -123,26 +126,50 @@ _APP = {
 
                 // Increase the width of the lobby div. 
                 this.DOM["lobbyDiv"].style.width = "800px";
+                
+                // Show the lobby even if specified to be hidden (it displays the debug data.)
+                if(_JSG.loadedConfig.meta.hideLobby){
+                    _JSG.loadedConfig.meta.hideLobby = false;
+                }
 
                 await _APP.debug.init(this);
                 if(_JSG.loadedConfig.meta.autoSwitchToLobbyDebugTab){ _JSG.lobby.nav.showOneView("debug"); }
-                resolve();
+                // resolve();
             }
             
             // Otherwise, switch to some other default lobby tab if so specified.
             else if(_JSG.loadedConfig.meta.defaultLobbyTab){
                 _JSG.lobby.nav.showOneView(_JSG.loadedConfig.meta.defaultLobbyTab);
-                resolve();
+                // resolve();
             }
-            else{ resolve(); }
+            // else{ resolve(); }
 
-            // Start the gameLoop after a short delay.
-            await new Promise((res,rej)=>{ setTimeout(()=>{res();}, 500); });
-            
-            // Request the next frame.
-            console.log("GAMELOOP START");
-            console.log("");
-            _APP.game.gameLoop.loop_start();
+            resolve();
         });
+    },
+
+    // JSGAME: app post-init.
+    start: async function(){
+        // Request that fade tiles be created.
+        await _WEBW.videoModeA.video.initFadeSend(true);
+
+        // Display the fade tiles in the TESTS tab.
+        if(_JSG.loadedConfig.meta.debug == true){
+            // _APP.debug.tests.displayFadedTileset();
+        }
+
+        // Start the gameLoop after a short delay.
+        await new Promise((res,rej)=>{ setTimeout(()=>{res();}, 500); });
+            
+        // Request the next frame.
+        _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: GAMELOOP START.`, "loading");
+        console.log("GAMELOOP START");
+        console.log("");
+
+        // Get initial input states.
+        await _INPUT.util.getStatesForPlayers();
+
+        // Start the game loop.
+        _APP.game.gameLoop.loop_start();
     },
 };

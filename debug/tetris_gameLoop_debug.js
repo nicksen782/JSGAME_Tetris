@@ -30,14 +30,19 @@ _APP.debug.gameLoop = {
         if(lastLoopTimeMsTooLong){
             console.log(`lastLoopTimeMsTooLong: ${lastLoopTimeMs.toFixed(1)} vs ${_APP.game.gameLoop["msFrame"].toFixed(1)}`);
         }
+        let CalcFPS_text = `(${_APP.game.gameLoop.loopType})`;
+        // let frameCounter     = "0x"+_APP.game.gameLoop["frameCounter"]    .toString(16).toUpperCase().padStart(6, "0");
+        // let frameDrawCounter = "0x"+_APP.game.gameLoop["frameDrawCounter"].toString(16).toUpperCase().padStart(6, "0");
+        let frameCounter     = _APP.game.gameLoop["frameCounter"]    ;
+        let frameDrawCounter = _APP.game.gameLoop["frameDrawCounter"];
         return {
             obj : {
                 // "NAME": "gameLoop vars 2",
                 // "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop["msFrame"].toFixed(1)}ms/f)` ,
-                "Calc FPS"      : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
+                "Calc FPS"      : `${CalcFPS_text} ${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
                 "debugTiming"   : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}ms, (${(_APP.game.gameLoop["debugDelay"] / _APP.game.gameLoop["msFrame"]).toFixed(1)}f)` ,
                 "LastLoop time" : lastLoopTimeMsTooLong ? `!!!!!` : `GOOD`,
-                "frameCounter"  : _APP.game.gameLoop["frameCounter"] ,
+                "frameCounter"  : `A:${frameCounter} D:${frameDrawCounter}` ,
             },
             div  : div,
             table: table,
@@ -47,36 +52,19 @@ _APP.debug.gameLoop = {
     getVarsObj_gameLoop_div4: function(){
         let div   = this.DOM.gameLoopVars_div4;
         let table = this.DOM.gameLoopVars_div4.querySelector("table");
-        let fade = "";
-        // console.log("fadeStepDir", (_GFX.fade["fadeStepDir"]));
-        if(!_GFX.fade.isComplete){
-            let type = `${(_GFX.fade["fadeStepDir"] == 1 ? "fadeUp" : "fadeDown").padEnd(8, " ")}`;
-            let step = `step: ${_GFX.fade["fadeStep"].toFixed(0).padStart(2, " ")}`;
-            fade = `${type}, ${step}`;
-        }
-        else{
-            // console.log("NOT active");
-            fade = `...<not_active>...`;
-        }
-        fade = fade.padEnd(18, "-");
-
+        let prev = _GFX.fade["previousFadeIndex"]        .toString().padStart(2, " ");
+        let curr = _GFX.fade["currentFadeIndex"]         .toString().padStart(2, " ");
+        let fCur = _GFX.fade["framesSinceLastFadeChange"].toString().padStart(2, " ");
+        let fMax = _GFX.fade["framesBetweenFadeChanges"] .toString().padStart(2, " ");
+        // console.log(fCur, fMax); debugger;
+        let mode = _GFX.fade["mode"].padStart(8, " ");
         return {
             obj : {
-                "NAME": "gameLoop: FADE",
-                "isBlocking"     : `${_GFX.fade["isBlocking"]}` ,
-                "isActive"       : `${_GFX.fade["isActive"] ? fade : _GFX.fade["isActive"]}` ,
-                "isComplete"     : `${_GFX.fade["isComplete"]}` ,
-                // "fade"           : `${fade}` ,
-                // "mode"     : `${_GFX.fade["mode"]}` ,
-                // "isRequested"    : `${_GFX.fade["isRequested"]}` ,
-                // "msBetweenDraws" : `${_GFX.fade["msBetweenDraws"]}` ,
-                // "lastDraw"       : `${_GFX.fade["lastDraw"]}` ,
-                // "fadeStep"       : `${_GFX.fade["fadeStep"]}` ,
-                // "fadeStepDir"    : `${_GFX.fade["fadeStepDir"]}` ,
-                // "maxFadeSteps"   : `${_GFX.fade["maxFadeSteps"]}` ,
-                // "fadeImages"     : `${_GFX.fade["fadeImages"].length}` ,
+                "NAME": `FADE: P:${prev} C:${curr}`,
+                "isEnabled"     : `${_GFX.fade["isEnabled"]}` ,
+                "isBlocking"    : `${_GFX.fade["isBlocking"]}` ,
+                "MISC"          : `D:${fCur}/${fMax} M:${mode}` ,
             },
-
             div  : div,
             table: table,
             padEnd: { len: 18, char: " " }
@@ -85,12 +73,12 @@ _APP.debug.gameLoop = {
 
     avgs: {
         keys: {
-            full_gameLoop : { index: 0, max: 6, times: [] },
-            do_fade       : { index: 0, max: 6, times: [] },
-            get_input     : { index: 0, max: 6, times: [] },
-            do_logic      : { index: 0, max: 6, times: [] },
-            do_draw       : { index: 0, max: 6, times: [] },
-            do_debug      : { index: 0, max: 6, times: [] },
+            full_gameLoop : { index: 0, max: 10, times: [] },
+            do_fade       : { index: 0, max: 10, times: [] },
+            get_input     : { index: 0, max: 10, times: [] },
+            do_logic      : { index: 0, max: 10, times: [] },
+            do_draw       : { index: 0, max: 10, times: [] },
+            do_debug      : { index: 0, max: 10, times: [] },
         },
         getAvg: function(key){
             // Get the record.
@@ -149,6 +137,19 @@ _APP.debug.gameLoop = {
             "divPercentRange_90", // 9
             "divPercentRange_99", // 10
         ];
+        // classes = [
+        //     "divPercentRange_00", // 0
+        //     "divPercentRange_10", // 1
+        //     "divPercentRange_20", // 2
+        //     "divPercentRange_40", // 3
+        //     "divPercentRange_40", // 4
+        //     "divPercentRange_60", // 5
+        //     "divPercentRange_60", // 6
+        //     "divPercentRange_80", // 7
+        //     "divPercentRange_80", // 8
+        //     "divPercentRange_90", // 9
+        //     "divPercentRange_99", // 10
+        // ];
 
         let obj = {};
         let func1 = function(rec){ 
