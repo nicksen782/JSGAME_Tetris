@@ -4,13 +4,16 @@ _APP.game = {
     netGame      : false,
 
     // GAMESTATES
-    prev_gamestate1: "gs_title0",
+    // prev_gamestate1: "gs_title0",
     // prev_gamestate1: "gs_title1",
-    // prev_gamestate1: "gs_title2",
-    prev_gamestate2: "",
-    gamestate1: "gs_title0",
+    
+    // gamestate1: "gs_title0",
     // gamestate1: "gs_title1",
     // gamestate1: "gs_title2",
+    
+    prev_gamestate1: "",
+    prev_gamestate2: "",
+    gamestate1: "gs_play",
     gamestate2: "",
     changeGamestate1: function changeGamestate1(new_gamestate){
         // Is this a valid gamestate key?

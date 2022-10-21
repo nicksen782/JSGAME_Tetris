@@ -25,13 +25,166 @@ _APP = {
                 _GFX.canvasLayers[i].canvas.style.height = `${this.DOM["option_size_range"].value}%`; ;
                 _GFX.canvasLayers[i].canvas.style.height = `${this.DOM["option_size_range"].value}%`; ;
             }
+            document.getElementById("DEBUG_canvasLayer").style.height = `${this.DOM["option_size_range"].value}%`;
+
             this.DOM["option_size_value"].innerText  = `${this.DOM["option_size_range"].value}%`;
         }, false);
         this.DOM["option_size_range"].value     = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}`;
         this.DOM["option_size_value"].innerText = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}%`;
         this.DOM["option_size_range"].dispatchEvent(new Event("input"));
     },
+    setupDebugGridAndNums_id: null,
+    setupDebugGridAndNums: function(){
+        // Match the debug dimensions to the normal play canvases.
+        let elem1 = document.getElementById("DEBUG_canvasLayer");
+        let elem2 = document.querySelector(".videoModeA_canvasLayer");
+        elem1.width = elem2.width;
+        elem1.height = elem2.height;
 
+        let drawNumbers = function( canvas ){
+            let ctx = canvas.getContext("2d");
+            let tw = _GFX.cache.tilesTX2.json.config.tileWidth;
+            let th = _GFX.cache.tilesTX2.json.config.tileHeight;
+            let rows = _JSG.loadedConfig.meta.dimensions.rows;
+            let cols = _JSG.loadedConfig.meta.dimensions.cols;
+
+            console.log("tw  :", tw);
+            console.log("th  :", th);
+            console.log("rows:", rows);
+            console.log("cols:", cols);
+            // num_00            
+            let numberTiles = [
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_00[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_01[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_02[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_03[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_04[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_05[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_06[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_07[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_08[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_09[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_10[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_11[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_12[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_13[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_14[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_15[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_16[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_17[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_18[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_19[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_20[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_21[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_22[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_23[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_24[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_25[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_26[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_27[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_28[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_29[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_30[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_31[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_32[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_33[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_34[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_35[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_36[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_37[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_38[0].orgTilemap[2] ].canvas,
+                _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_39[0].orgTilemap[2] ].canvas,
+            ];
+            // let bgTile = _GFX.cache.tilesTX1.tileset[" ".charCodeAt(0) - 32].canvas; // Transparent.
+            let bgTile = _GFX.cache.tilesBG1.tileset[1].canvas; // Black.
+            let gridTile = _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.grid2[0].orgTilemap[2] ].canvas; // Grid.
+
+            let currentNumber = 1;
+            for(let x=1; x<cols-1; x+=1){
+                // TOP and BOTTOM ROW - background
+                ctx.globalAlpha = 0.50;
+                ctx.drawImage( bgTile, x*tw, 0*th) ; 
+                ctx.drawImage( bgTile, x*tw, (rows-1)*th) ; 
+                ctx.globalAlpha = 0.50;
+
+                // TOP ROW - foreground
+                ctx.drawImage( numberTiles[currentNumber], x*tw, 0*th) ; 
+                
+                // BOTTOM ROW - foreground
+                ctx.drawImage( numberTiles[currentNumber], x*tw, (rows-1)*th) ; 
+
+                currentNumber += 1; if(currentNumber > 39){ currentNumber = 0; }
+            }
+            
+            ctx.globalAlpha = 1.0;
+            currentNumber = 1;
+            for(let y=1; y<rows-1; y+=1){
+                // LEFT and RIGHT COL - background
+                ctx.globalAlpha = 0.50;
+                ctx.drawImage( bgTile, 0*tw, y*th) ; 
+                // ctx.drawImage( bgTile, (rows-1)*tw, y*th) ; 
+                ctx.globalAlpha = 0.50;
+                
+                // LEFT COL - foreground
+                ctx.drawImage( numberTiles[currentNumber], 0*tw, y*th) ; 
+
+                // RIGHT COL - foreground
+                ctx.drawImage( numberTiles[currentNumber], (cols-1)*tw, y*th) ; 
+
+                currentNumber += 1; if(currentNumber > 39){ currentNumber = 0; }
+            }
+
+            ctx.globalAlpha = 0.70;
+            // Grid.
+            for (let x=0; x<=(canvas.width/tw)-1; x+=1) {
+                for (let y=0; y<=(canvas.height/th)-1; y+=1) {
+                    ctx.drawImage( gridTile, x*tw, y*th) ; 
+                }
+            }
+            ctx.globalAlpha = 1.0;
+
+        };
+        drawNumbers( document.getElementById("DEBUG_canvasLayer") );
+
+        // Add the click event listener.
+        document.getElementById("tetris_app_toggleNumbers").addEventListener("click", ()=>{
+            let elem1 = document.getElementById("DEBUG_canvasLayer");
+            elem1.classList.toggle("active");
+            let elems = document.querySelectorAll(".videoModeA_canvasLayer");
+            elems.forEach((d,i,a)=>{ 
+                d.classList.toggle("debug"); 
+                if(i+1 == a.length){
+                    // elem1.style["width"]  = d.style["width"];
+                    elem1.style["height"] = d.style["height"];
+                    elem1.style["z-index"]  = (d.style["z-index"] << 0) + 5;
+                }
+            });
+            // if(elem1.classList.contains("active")){
+            //     // console.log("starting");
+            //     clearInterval(this.setupDebugGridAndNums_id);
+            //     document.getElementById("DEBUG_canvasLayer").style.opacity = 0;
+            //     let opacity = 0.75;
+            //     let opacityStep = 0.25;
+            //     this.setupDebugGridAndNums_id = setInterval(()=>{
+            //         document.getElementById("DEBUG_canvasLayer").style.opacity = opacity.toFixed(2);
+            //         // opacity = (Math.min(Math.max(opacity, 0.0), 1.0));
+            //         opacity += opacityStep;
+            //         if((Math.sign(opacityStep) == 1 && opacity > 0.75) || (Math.sign(opacityStep) == -1 && opacity < 0.50) ){ 
+            //             opacityStep *= -1; 
+            //             if(opacity >= 0.75){ opacity += opacityStep; }
+            //             if(opacity < 0.50 ){ opacity += opacityStep; }
+            //         }
+            //     }, 200);
+            // }
+            // else{
+            //     // console.log("stopping");
+            //     clearInterval(this.setupDebugGridAndNums_id);
+            //     document.getElementById("DEBUG_canvasLayer").style.opacity = 0;
+            // }
+
+        }, false);
+
+    },
     OLDinput: {
         // https://developer.ibm.com/tutorials/wa-games/
         parent: null,
@@ -144,6 +297,13 @@ _APP = {
             }
             // else{ resolve(); }
 
+            if(_JSG.loadedConfig.meta.debug == true){
+                this.setupDebugGridAndNums();
+                document.getElementById("tetris_app_toggleNumbers").click();
+            }
+            else{
+                document.getElementById("tetris_app_toggleNumbers").style.display = "none";
+            }
             resolve();
         });
     },

@@ -10,12 +10,22 @@ _APP.debug.gameLoop = {
     getVarsObj_gameLoop_div1: function(){
         let div   = this.DOM.gameLoopVars_div1;
         let table = this.DOM.gameLoopVars_div1.querySelector("table");
+        // {
+        // {gs_highscores 
+        // gs_play/gs_play************
+
+        // highscores/highscores
+        // let g1Text = `${(_APP.game["gamestate1"] + "/" + _APP.game["prev_gamestate1"]).padEnd(27, "*")}`;
+        // let g1Text = `${("gs_highscores" + "/" + "gs_highscores").padEnd(21, "*")}`;
+        let g1Text = `${(_APP.game["gamestate1"] + "/" + _APP.game["prev_gamestate1"]).padEnd(21, " ")}`.replace(/gs_/g, "");
+        let g2Text = `${(_APP.game["gamestate2"] + "/" + _APP.game["prev_gamestate2"]).padEnd(21, " ")}`.replace(/gs_/g, "");
         return {
             obj : {
                 // "NAME": "gameLoop vars 1",
-                "gameLoop running" : `${_APP.game.gameLoop["running"]}, Type: ${_APP.game.gameLoop["loopType"]}` ,
-                "gamestate1"       : `'${_APP.game["gamestate1"]}'` ,
-                "gamestate2"       : `'${_APP.game["gamestate2"]}'` ,
+                // "gameLoop running" : `${_APP.game.gameLoop["running"]}, Type: ${_APP.game.gameLoop["loopType"]}` ,
+                "gameLoop running" : `${_APP.game.gameLoop["running"]}` ,
+                "gamestate1 c/p"   : `${g1Text}` ,
+                "gamestate2 c/p"   : `${g2Text}` ,
                 "netGame"          : `${_APP.game["netGame"]}` ,
             },
             div  : div,
@@ -39,7 +49,8 @@ _APP.debug.gameLoop = {
             obj : {
                 // "NAME": "gameLoop vars 2",
                 // "Calc FPS"    : `${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop["msFrame"].toFixed(1)}ms/f)` ,
-                "Calc FPS"      : `${CalcFPS_text} ${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
+                // "Calc FPS"      : `${CalcFPS_text} ${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f (${_APP.game.gameLoop.fpsCalc.avgMsPerFrame.toFixed(1)}ms/f)` ,
+                "Calc FPS"      : `${CalcFPS_text} ${_APP.game.gameLoop.fpsCalc["average"].toFixed(1)}f/s` ,
                 "debugTiming"   : `${_APP.game.gameLoop["debugDelay"].toFixed(1)}ms, (${(_APP.game.gameLoop["debugDelay"] / _APP.game.gameLoop["msFrame"]).toFixed(1)}f)` ,
                 "LastLoop time" : lastLoopTimeMsTooLong ? `!!!!!` : `GOOD`,
                 "frameCounter"  : `A:${frameCounter} D:${frameDrawCounter}` ,
@@ -56,14 +67,19 @@ _APP.debug.gameLoop = {
         let curr = _GFX.fade["currentFadeIndex"]         .toString().padStart(2, " ");
         let fCur = _GFX.fade["framesSinceLastFadeChange"].toString().padStart(2, " ");
         let fMax = _GFX.fade["framesBetweenFadeChanges"] .toString().padStart(2, " ");
-        // console.log(fCur, fMax); debugger;
-        let mode = _GFX.fade["mode"].padStart(8, " ");
+        let mode = "";
+        switch(_GFX.fade["mode"]){
+            case "no-chain": mode = "NONE"; break;
+            case "fadeOut" : mode = "FOUT"; break;
+            case "fadeIn"  : mode = "FIN "; break;
+        };
+        // let mode = _GFX.fade["mode"].padStart(8, " ");
         return {
             obj : {
-                "NAME": `FADE: P:${prev} C:${curr}`,
-                "isEnabled"     : `${_GFX.fade["isEnabled"]}` ,
-                "isBlocking"    : `${_GFX.fade["isBlocking"]}` ,
-                "MISC"          : `D:${fCur}/${fMax} M:${mode}` ,
+                "NAME"      : `FADE: P:${prev} C:${curr}`,
+                "isEnabled" : `${_GFX.fade["isEnabled"]}` ,
+                "isBlocking": `${_GFX.fade["isBlocking"]}` ,
+                "MISC"      : `D:${fCur}/${fMax} M:${mode}` ,
             },
             div  : div,
             table: table,

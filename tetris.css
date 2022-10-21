@@ -442,3 +442,9 @@
 div#tetris_app_debug_nav_view_tests .tetris_app_debug_div1{
   background-color:unset;
 }
+
+#DEBUG_canvasLayer{ display:none; }
+#DEBUG_canvasLayer.active{ display:block; }
+
+.videoModeA_canvasLayer{}
+.videoModeA_canvasLayer.debug{}

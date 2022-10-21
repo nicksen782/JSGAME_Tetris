@@ -9,8 +9,8 @@
             "pointersSize" : 8,
             "tileWidth" : 8,
             "tileHeight": 8,
-            "rows":28, 
-            "cols":28
+            "rows":30, 
+            "cols":32
         }, 
         "DOM": {
             "gameDiv"             : "jsgame_app",
@@ -98,7 +98,8 @@
             "tilesBG1",
             "tilesSP1",
             "tilesTX1",
-            "tilesTX2"
+            "tilesTX2",
+            "tilesMISC"
         ],
         "layers":[
             { "name": "BG1" , "canvasOptions": { "alpha": true }, "bg_color":"#000000" },
@@ -133,6 +134,7 @@
         { "f":"gamestates/tetris_gs_title0.js" , "t":"js"   , "n":"tetris_gs_title0" },
         { "f":"gamestates/tetris_gs_title1.js" , "t":"js"   , "n":"tetris_gs_title1" },
         { "f":"gamestates/tetris_gs_title2.js" , "t":"js"   , "n":"tetris_gs_title2" },
+        { "f":"gamestates/tetris_gs_play.js"   , "t":"js"   , "n":"tetris_gs_play"   },
 
         { "f":"debug/tetris_debug.js"           , "t":"js"   , "n":"tetris_debug" },
         { "f":"debug/tetris_gameLoop_debug.js"  , "t":"js"   , "n":"tetris_gameLoop_debug" },
@@ -143,7 +145,8 @@
         { "f":"UAM/JSON/tilesBG1.json"         , "t":"json" , "n":"tilesBG1"         },
         { "f":"UAM/JSON/tilesSP1.json"         , "t":"json" , "n":"tilesSP1"         },
         { "f":"UAM/JSON/tilesTX1.json"         , "t":"json" , "n":"tilesTX1"         },
-        { "f":"UAM/JSON/tilesTX2.json"         , "t":"json" , "n":"tilesTX2"         }
+        { "f":"UAM/JSON/tilesTX2.json"         , "t":"json" , "n":"tilesTX2"         },
+        { "f":"UAM/JSON/tilesMISC.json"        , "t":"json" , "n":"tilesMISC"        }
     ]
 }
 

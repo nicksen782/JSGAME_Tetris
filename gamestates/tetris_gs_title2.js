@@ -38,13 +38,14 @@ _APP.game.gamestates["gs_title2"] = {
 
         await _GFX.fade.fadeIn(5, true);
 
-        _GFX.util.tiles.fillTile({ tid:2, x:0, y:0, w:14, h:14, tsi:0, li:0 });
-        _GFX.util.tiles.fillTile({ tid:3, x:14, y:0, w:14, h:14, tsi:0, li:0 });
-        _GFX.util.tiles.fillTile({ tid:4, x:0, y:14, w:14, h:14, tsi:0, li:0 });
-        _GFX.util.tiles.fillTile({ tid:5, x:14, y:14, w:14, h:14, tsi:0, li:0 });
-        _GFX.util.tiles.drawTilemap({ tmn:"title_tetris", x:1, y:8, tsi:0, li:1, ri:0 } );
-        _GFX.util.tiles.fillTile({ tid:1, x:8, y:21, w:12, h:1, tsi:0, li:1 });
-        _GFX.util.tiles.print({ str:"PRESS  START", x:8, y:21, tsi:2, li:2 });
+        _GFX.util.tiles.fillTile({ tid:1, x:0 , y:0 , w:14, h:14, tsn:"tilesMISC", li:0 });
+        _GFX.util.tiles.fillTile({ tid:2, x:14, y:0 , w:14, h:14, tsn:"tilesMISC", li:0 });
+        _GFX.util.tiles.fillTile({ tid:3, x:0 , y:14, w:14, h:14, tsn:"tilesMISC", li:0 });
+        _GFX.util.tiles.fillTile({ tid:4, x:14, y:14, w:14, h:14, tsn:"tilesMISC", li:0 });
+        _GFX.util.tiles.drawTilemap({ tmn:"title_tetris", x:1, y:8, tsn:"tilesBG1", li:1, ri:0 } );
+        
+        _GFX.util.tiles.fillTile({ tid:64, x:7, y:21, w:14, h:3, tsn:"tilesBG1", li:1 });
+        _GFX.util.tiles.print({ str:"PRESS  START", x:8, y:22, tsn:"tilesTX1", li:2 });
 
         this.inited = true; 
     },

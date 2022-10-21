@@ -36,8 +36,10 @@ _APP.debug = {
                 div.style["vertical-align"] = "top";
                 div.style["border"]  = "1px solid white";
                 div.style["margin"]  = "2px";
-                div.style["padding"] = "5px";
+                div.style["padding"] = "2px";
                 div.title = `tileId: ${i}`;
+                d.canvas.style["width"]  = d.canvas.width  * 3 + "px";
+                d.canvas.style["height"] = d.canvas.height * 3 + "px";
                 div.append(d.canvas);
                 div1c.append(div);
             });
@@ -59,7 +61,9 @@ _APP.debug = {
                     div.style["vertical-align"]  = "top";
                     div.style["border"]  = "1px solid white";
                     div.style["margin"]  = "2px";
-                    div.style["padding"]  = "5px";
+                    div.style["padding"]  = "2px";
+                    rec.canvas.style["width"]  = rec.canvas.width  * 1.25 + "px";
+                    rec.canvas.style["height"] = rec.canvas.height * 1.25 + "px";
                     div.title = `Tilemap: ${key}`;
                     div.append(rec.canvas);
                     div2c.append(div);
@@ -221,10 +225,10 @@ _APP.debug = {
             if(!gamestate1){ console.log("no gamestate1"); return; }
 
             // Change the gamestate select and the view if the gamestate has changed.
-            // if(_APP.debug.gameLoop.DOM["gamestateSelect"].value == _APP.game.prev_gamestate1){
-            //     // Change gamestate select.
-            //     // console.log("switching debug gamestateselect select to: ", gamestate1);
-            //     _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
+            if(_APP.debug.gameLoop.DOM["gamestateSelect"].value != _APP.game.gamestate1){
+                // Change gamestate select.
+                // console.log("switching debug gamestateselect select to: ", gamestate1);
+                _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
 
             //     // Change to the gamestate's debug nav tab/view.
             //     if(_APP.debug.nav.doesViewExist(_APP.game.gamestate1)){
@@ -234,7 +238,7 @@ _APP.debug = {
             //     else{
             //         console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
             //     }
-            // }
+            }
 
             // Do not continue if the current gamestate1 has it's inited flag unset.
             if(!_APP.game.gamestates[gamestate1].inited){ return; }
