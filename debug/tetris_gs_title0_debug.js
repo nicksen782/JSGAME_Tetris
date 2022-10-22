@@ -27,7 +27,7 @@ _APP.debug.gs_title0 = {
         obj.currentFrame    = anim.currentFrameIndex;
         
         if(anim.currentFrameIndex >= 0 && anim.currentFrameIndex < anim.frames.length ){
-            obj._f_tilemap = anim.frames[anim.currentFrameIndex].tilemap;
+            obj._f_tilemap = anim.frames[anim.currentFrameIndex].tmn;
             obj._f_x       = anim.frames[anim.currentFrameIndex].x;
             obj._f_y       = anim.frames[anim.currentFrameIndex].y;
         }
@@ -36,6 +36,7 @@ _APP.debug.gs_title0 = {
             obj._f_x       = "**CYCLE_END**";
             obj._f_y       = "**CYCLE_END**";
         }
+
         return {
             obj  : obj,
             div  : div,

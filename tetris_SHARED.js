@@ -140,9 +140,7 @@ _APP.game.shared = {
                         // Draw the first frame. 
                         if(this.firstFrameTilemap){
                             let thisFrame = this.firstFrameTilemap;
-                            let x = thisFrame.x;
-                            let y = thisFrame.y;
-                            _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
+                            _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tmn, x:thisFrame.x, y:thisFrame.y, tsn:thisFrame.tsn, li:thisFrame.li, ri:0 } );
                         }
                 },
             };
@@ -170,9 +168,7 @@ _APP.game.shared = {
 
                     // Draw this frame. 
                     let thisFrame = this.frames[this.currentFrameIndex];
-                    let x = thisFrame.x;
-                    let y = thisFrame.y;
-                    _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
+                    _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tmn, x:thisFrame.x, y:thisFrame.y, tsn:thisFrame.tsn, li:thisFrame.li, ri:0 } );
 
                     // Increment currentFrameIndex by frameDirection.
                     this.currentFrameIndex += this.frameDirection;
@@ -217,9 +213,7 @@ _APP.game.shared = {
                         // Draw the last frame. 
                         if(this.lastFrameTilemap){
                             let thisFrame = this.lastFrameTilemap;
-                            let x = thisFrame.x;
-                            let y = thisFrame.y;
-                            _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tilemap, x:x, y:y, tsi:0, li:0, ri:0 } );
+                            _GFX.util.tiles.drawTilemap({ tmn:thisFrame.tmn, x:thisFrame.x, y:thisFrame.y, tsn:thisFrame.tsn, li:thisFrame.li, ri:0 } );
                         }
                         return; 
                     }
@@ -239,7 +233,7 @@ _APP.game.shared = {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     },
 
-    createBorderBox_tilemaps: function(x, y, w, h, li1=0, li2=2, bgStyle=1, textLines=[], textTileset="tilesTX1"){
+    createBorderBox_tilemaps: function(x, y, w, h, li1=0, li2=2, bgTile="grid1", textLines=[], textTileset="tilesTX1"){
         // NOTE: print assumes that the text tileset's first tilemap is the fontset and that those tiles are generated in ASCII order.
 
         if(!Array.isArray(textLines)){ textLines = []; }
@@ -254,14 +248,19 @@ _APP.game.shared = {
             left : _GFX.cache.tilesBG1.tilemap.boardborder_left [0].orgTilemap[2],
             right: _GFX.cache.tilesBG1.tilemap.boardborder_right[0].orgTilemap[2],
         };
-        let bgTiles = [
-            _GFX.cache.tilesBG1.tilemap.bg1_tile    [0].orgTilemap[2], // 0
-            _GFX.cache.tilesBG1.tilemap.bg2_tile    [0].orgTilemap[2], // 1
-            _GFX.cache.tilesBG1.tilemap.empty_square[0].orgTilemap[2], // 2
-            _GFX.cache.tilesBG1.tilemap.blacktile   [0].orgTilemap[2], // 3
-        ];
-        bgStyle = Math.min(Math.max(bgStyle, 0), bgTiles.length);
-        let bgTile = bgTiles[bgStyle];
+        // tilesBG1: bg1_tile    
+        // tilesBG1: bg2_tile    
+        // tilesBG1: empty_square
+        // tilesBG1: blacktile   
+        // tilesBG1: grid1       
+        try{
+            bgTile = _GFX.cache.tilesBG1.tilemap[bgTile][0].orgTilemap[2];
+        }
+        catch(e){
+            console.log(e, JSON.parse(JSON.stringify(bgTile)));
+            bgTile = _GFX.cache.tilesBG1.tilemap.empty_square       [0].orgTilemap[2];
+            console.log(e);
+        }
 
         let menuTilemap = [w, h];
         let textTilemap = [];

@@ -45,11 +45,11 @@ _APP.game.gamestates["gs_title0"] = {
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo2", x:2, y:4, },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4, },
+                    { li: 0, tsn: "tilesLOAD", tmn: "jsgame_logo2", x:4, y:5, },
+                    { li: 0, tsn: "tilesLOAD", tmn: "jsgame_logo1", x:4, y:5, },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo1", x:2, y:4 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "jsgame_logo2", x:2, y:4 },
+                firstFrameTilemap : { li: 0, tsn: "tilesLOAD", tmn: "jsgame_logo1", x:4, y:5 },
+                lastFrameTilemap  : { li: 0, tsn: "tilesLOAD", tmn: "jsgame_logo2", x:4, y:5 },
             }
         );
         this.animations["anim_jsgameLogo"].init(); 
@@ -101,8 +101,8 @@ _APP.game.gamestates["gs_title0"] = {
             else if(this.endDelay.finished){
                 // Set the next game state.
                 // game("TITLE1", true);
-                // _APP.game.changeGamestate1("gs_title0");
-                _APP.game.changeGamestate1("gs_title1");
+                _APP.game.changeGamestate1("gs_title0");
+                // _APP.game.changeGamestate1("gs_title1");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");

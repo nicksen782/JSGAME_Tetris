@@ -32,6 +32,48 @@ _APP = {
         this.DOM["option_size_range"].value     = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}`;
         this.DOM["option_size_value"].innerText = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}%`;
         this.DOM["option_size_range"].dispatchEvent(new Event("input"));
+
+        window.onerror = function(msg, url, line, col, error) {
+            // Note that col & error are new to the HTML 5 spec and may not be 
+            // supported in every browser.  It worked for me in Chrome.
+            var extra = !col ? '' : '\ncolumn: ' + col;
+            extra += !error ? '' : '\nerror: ' + error;
+         
+            // You can view the information in an alert to see things working like this:
+            let outputObj = {
+                msg   : msg,
+                reason: undefined,
+                url   : url,
+                line  : line,
+                col   : col,
+                error : error,
+                extra : extra,
+            };
+            try{ outputObj.reason = msg.reason; } catch(e){ outputObj.reason = ""; }
+
+            console.log(
+                `msg   :`, outputObj.msg    ,  "\n" + 
+                `reason:`, outputObj.reason ,  "\n" + 
+                `url   :`, outputObj.url    ,  "\n" + 
+                `line  :`, outputObj.line   ,  "\n" + 
+                `col   :`, outputObj.col    ,  "\n" + 
+                `error :`, outputObj.error  ,  "\n" + 
+                `extra :`, outputObj.extra  ,  "\n" + 
+                ``
+            );
+
+            debugger;
+
+            // If you return true, then error alerts (like in older versions of 
+            // Internet Explorer) will be suppressed.
+            var suppressErrorAlert = true;
+            return suppressErrorAlert;
+         };
+
+         window.onunhandledrejection = function(){
+            window.onerror.apply(this, arguments); // call
+        }
+
     },
     setupDebugGridAndNums_id: null,
     setupDebugGridAndNums: function(){
@@ -299,7 +341,7 @@ _APP = {
 
             if(_JSG.loadedConfig.meta.debug == true){
                 this.setupDebugGridAndNums();
-                document.getElementById("tetris_app_toggleNumbers").click();
+                // document.getElementById("tetris_app_toggleNumbers").click();
             }
             else{
                 document.getElementById("tetris_app_toggleNumbers").style.display = "none";

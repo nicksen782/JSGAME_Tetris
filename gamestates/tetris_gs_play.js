@@ -38,64 +38,12 @@ _APP.game.gamestates["gs_play"] = {
 
         // await _GFX.fade.fadeIn(5, true);
 
-        // _GFX.util.tiles.fillTile({ tid:2, x:0, y:0, w:14, h:14, tsi:0, li:0 });
-
-        // _GFX.util.tiles.drawTilemap({ tmn:"main_game", x:0, y:0, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print({ str:"N", x:18, y:5, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"E", x:18, y:6, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"X", x:18, y:7, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"T", x:18, y:8, tsn:"tilesTX1", li:2 });
-        
-        // _GFX.util.tiles.print({ str:"-STATS-", x:17, y:11, tsn:"tilesTX1", li:2 });
-
-        // _GFX.util.tiles.print({ str:"000"    , x:17, y:10+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:23, y:10+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:17, y:11+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:23, y:11+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:17, y:12+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:23, y:12+3, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"000"    , x:17, y:13+3, tsn:"tilesTX1", li:2 });
-        
-        // _GFX.util.tiles.print({ str:"LINES"             , x:15, y:18, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"0".padStart(5, " "), x:15, y:19, tsn:"tilesTX1", li:2 });
-        
-        // _GFX.util.tiles.print({ str:"LEVEL"             , x:21, y:18, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"0".padStart(5, " "), x:21, y:19, tsn:"tilesTX1", li:2 });
-        
-        // _GFX.util.tiles.print({ str:"TYPE"              , x:15, y:21, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"0".padStart(5, " "), x:15, y:22, tsn:"tilesTX1", li:2 });
-        
-        // _GFX.util.tiles.print({ str:"SCORE"             , x:21, y:21, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.print({ str:"0".padStart(5, " "), x:21, y:22, tsn:"tilesTX1", li:2 });
+        _GFX.util.tiles.fillTile({ tid:2, x:0, y:0, w:14, h:14, tsi:0, li:0 });
 
         // Background - layer 0.
         let dimensions = _JSG.loadedConfig.meta.dimensions;
         _GFX.util.tiles.fillWithOneTile_tilemap({ tmn:"bg1_tile", x:0, y:0, w:dimensions.cols, h:dimensions.rows, tsn:"tilesBG1", li:0 });
 
-        // Border box - Layer 0 and layer 2. (TEST)
-        // let menuObj = _APP.game.shared.createBorderBox_tilemaps( 1, 1, 18, 4, 0, 2, 0, ["Line 1", "Line 2 (3456789)"] );
-        // _APP.game.shared.drawBorderBox_tilemaps(menuObj);
-        
-        // Border box - Layer 0 and layer 2. (PLAYFIELD - P1)
-        //  menuObj = _APP.game.shared.createBorderBox_tilemaps( 1, 7, 10, 18, 0, 2, 2, [] ); // Gameboy
-        //  _APP.game.shared.drawBorderBox_tilemaps(menuObj);
-        //  menuObj = _APP.game.shared.createBorderBox_tilemaps( 1, 1, 10, 20, 0, 2, 2, [] ); // NES
-        // _APP.game.shared.drawBorderBox_tilemaps(menuObj);
-
-        // _GFX.util.tiles.drawTilemap({ tmn:"T_map_small", x:1   , y:22, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:1+2 , y:22, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"L_map_small", x:6   , y:22, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:6+2 , y:22, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"Z_map_small", x:1   , y:23, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:1+2 , y:23, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"O_map_small", x:6   , y:23, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:6+2 , y:23, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"S_map_small", x:1   , y:24, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:1+2 , y:24, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"J_map_small", x:6   , y:24, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:6+2 , y:24, tsn:"tilesTX1", li:2 });
-        // _GFX.util.tiles.drawTilemap({ tmn:"I_map_small", x:1   , y:25, tsn:"tilesBG1", li:0, ri:0 } );
-        // _GFX.util.tiles.print(      { str:"000"        , x:1+2 , y:25, tsn:"tilesTX1", li:2 });
         this.createPlayfield(2);
         this.inited = true; 
     },
@@ -115,56 +63,56 @@ _APP.game.gamestates["gs_play"] = {
                 "piece_stats":{
                     "T":{ 
                         dims: { 
-                            img: { tmn:"T_map_small", x:1, y:25, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"T_map_small", x:1, y:25, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:3, y:25, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "L":{ 
                         dims: { 
-                            img: { tmn:"L_map_small", x:6, y:25, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"L_map_small", x:6, y:25, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:8, y:25, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "Z":{ 
                         dims: { 
-                            img: { tmn:"Z_map_small", x:1, y:26, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"Z_map_small", x:1, y:26, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:3, y:26, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "O":{ 
                         dims: { 
-                            img: { tmn:"O_map_small", x:6, y:26, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"O_map_small", x:6, y:26, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:8, y:26, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "S":{ 
                         dims: { 
-                            img: { tmn:"S_map_small", x:1, y:27, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"S_map_small", x:1, y:27, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:3, y:27, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "J":{ 
                         dims: { 
-                            img: { tmn:"J_map_small", x:6, y:27, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"J_map_small", x:6, y:27, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:8, y:27, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "I":{ 
                         dims: { 
-                            img: { tmn:"I_map_small", x:1, y:28, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"I_map_small", x:1, y:28, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000", x:3, y:28, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                 },
                 "game_stats":{
-                    box: _APP.game.shared.createBorderBox_tilemaps( 12, 4, 8, 10, 0, 2, 2, [
+                    box: _APP.game.shared.createBorderBox_tilemaps( 12, 4, 8, 10, 0, 2, "bg2_tile", [
                         "<=P1  ",
                         "------",
                         "LINES",
@@ -177,7 +125,7 @@ _APP.game.gamestates["gs_play"] = {
                 },
                 _drawPlayfield : function(){
                     _APP.game.shared.drawBorderBox_tilemaps(
-                        _APP.game.shared.createBorderBox_tilemaps( this.playfield.x, this.playfield.y, this.playfield.w, this.playfield.h, 0, 2, 2, [] )
+                        _APP.game.shared.createBorderBox_tilemaps( this.playfield.x, this.playfield.y, this.playfield.w, this.playfield.h, 0, 2, "grid1", [] )
                     );
                 },
                 _drawPieceStats: function(){
@@ -210,56 +158,56 @@ _APP.game.gamestates["gs_play"] = {
                 "piece_stats":{
                     "T":{ 
                         dims: { 
-                            img: { tmn:"T_map_small", x:1+18+2, y:22+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"T_map_small", x:1+18+2, y:22+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:3+18+2, y:22+3, tsn:"tilesTX1", li:2 }, 
                         }, 
                         value: 0 
                     },
                     "L":{ 
                         dims: { 
-                            img: { tmn:"L_map_small", x:6+18+2, y:22+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"L_map_small", x:6+18+2, y:22+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:8+18+2, y:22+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                     "Z":{ 
                         dims: { 
-                            img: { tmn:"Z_map_small", x:1+18+2, y:23+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"Z_map_small", x:1+18+2, y:23+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:3+18+2, y:23+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                     "O":{ 
                         dims: { 
-                            img: { tmn:"O_map_small", x:6+18+2, y:23+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"O_map_small", x:6+18+2, y:23+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:8+18+2, y:23+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                     "S":{ 
                         dims: { 
-                            img: { tmn:"S_map_small", x:1+18+2, y:24+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"S_map_small", x:1+18+2, y:24+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:3+18+2, y:24+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                     "J":{ 
                         dims: { 
-                            img: { tmn:"J_map_small", x:6+18+2, y:24+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"J_map_small", x:6+18+2, y:24+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:8+18+2, y:24+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                     "I":{ 
                         dims: { 
-                            img: { tmn:"I_map_small", x:1+18+2, y:25+3, tsn:"tilesBG1", li:0, ri:0 },
+                            img: { tmn:"I_map_small", x:1+18+2, y:25+3, tsn:"tilesG1", li:0, ri:0 },
                             text:{ str:"000"        , x:3+18+2, y:25+3, tsn:"tilesTX1", li:2 }
                         }, 
                         value: 0 
                     },
                 },
                 "game_stats":{
-                    box: _APP.game.shared.createBorderBox_tilemaps( 12, 14, 8, 10, 0, 2, 2, [
+                    box: _APP.game.shared.createBorderBox_tilemaps( 12, 14, 8, 10, 0, 2, "bg2_tile", [
                         "  P2->",
                         "------",
                         "LINES",
@@ -272,7 +220,7 @@ _APP.game.gamestates["gs_play"] = {
                 },
                 _drawPlayfield : function(){
                     _APP.game.shared.drawBorderBox_tilemaps(
-                        _APP.game.shared.createBorderBox_tilemaps( this.playfield.x, this.playfield.y, this.playfield.w, this.playfield.h, 0, 2, 2, [] )
+                        _APP.game.shared.createBorderBox_tilemaps( this.playfield.x, this.playfield.y, this.playfield.w, this.playfield.h, 0, 2, "grid1", [] )
                     );
                 },
                 _drawPieceStats: function(){

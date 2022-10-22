@@ -46,20 +46,20 @@ _APP.game.gamestates["gs_title1"] = {
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
-                maxRepeats              : 2,
-                maxWaitFrames           : _APP.game.shared.msToFrames(25, _APP.game.gameLoop.msFrame),
+                maxRepeats              : 1,
+                maxWaitFrames           : _APP.game.shared.msToFrames(_APP.game.gameLoop.msFrame*3, _APP.game.gameLoop.msFrame),
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f2", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f3", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f4", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f5", x:10, y:10 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f1", x:12, y:9 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f2", x:12, y:9 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f3", x:12, y:9 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f4", x:12, y:9 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f5", x:12, y:9 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f1", x:12, y:9 },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_flare_f1", x:10, y:10 },
+                firstFrameTilemap : { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f1", x:12, y:9 },
+                lastFrameTilemap  : { li: 0, tsn: "tilesLOAD", tmn: "n782_flare_f1", x:12, y:9 },
             }
         );
         this.animations["anim_lense"].init(); 
@@ -74,18 +74,20 @@ _APP.game.gamestates["gs_title1"] = {
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
-                    // { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f3", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f4", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f5", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f6", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f7", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f8", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f9", x:10, y:16 },
-                    { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
+                    // { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f2", x:10, y:16 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f3" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f4" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f5" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f6" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f7" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f8" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f9" , x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f10", x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f11", x:12, y:17 },
+                    { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f2" , x:12, y:17 },
                 ],
-                firstFrameTilemap : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f2", x:10, y:16 },
-                lastFrameTilemap  : { layerIndex: 0, tilesetIndex: 0, tilemap: "n782_text_f1", x:10, y:16 },
+                firstFrameTilemap : { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f1", x:12, y:17 },
+                lastFrameTilemap  : { li: 0, tsn: "tilesLOAD", tmn: "n782_text_f1", x:12, y:17 },
             }
         );
         this.animations["anim_stars"].init(); 
@@ -109,13 +111,16 @@ _APP.game.gamestates["gs_title1"] = {
             _APP.game.changeGamestate1("gs_title2");
             return; 
         }
-
-        // Run the lense animation.
-        this.animations.draw("anim_lense");
         
         // Run the stars animation.
         this.animations.draw("anim_stars");
         
+        // Run the lense animation AFTER the stars animation is complete.
+        if(this.animations.anim_stars.finished){
+            // Run the lense animation.
+            this.animations.draw("anim_lense");
+        }
+
         // Are both animations complete?
         if(this.animations.anim_lense.finished && this.animations.anim_stars.finished && !this.endDelay.started){
             // Yes, start the endDelay.
@@ -139,8 +144,8 @@ _APP.game.gamestates["gs_title1"] = {
                 // Set the next game state.
                 // game.setGamestate1("TITLE1", true);
                 // _APP.game.changeGamestate1("gs_title0");
-                // _APP.game.changeGamestate1("gs_title1");
-                _APP.game.changeGamestate1("gs_title2");
+                _APP.game.changeGamestate1("gs_title1");
+                // _APP.game.changeGamestate1("gs_title2");
             }
             else{
                 // console.log("endDelay: Adding to frameCount.");

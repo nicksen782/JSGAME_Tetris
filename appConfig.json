@@ -99,7 +99,9 @@
             "tilesSP1",
             "tilesTX1",
             "tilesTX2",
-            "tilesMISC"
+            "tilesMISC",
+            "tilesG1",
+            "tilesLOAD"
         ],
         "layers":[
             { "name": "BG1" , "canvasOptions": { "alpha": true }, "bg_color":"#000000" },
@@ -141,12 +143,14 @@
         { "f":"debug/tetris_gs_title0_debug.js" , "t":"js"   , "n":"tetris_gs_title0_debug" },
         { "f":"debug/tetris_gs_title1_debug.js" , "t":"js"   , "n":"tetris_gs_title1_debug" },
         { "f":"debug/tetris_gs_title2_debug.js" , "t":"js"   , "n":"tetris_gs_title2_debug" },
-
-        { "f":"UAM/JSON/tilesBG1.json"         , "t":"json" , "n":"tilesBG1"         },
-        { "f":"UAM/JSON/tilesSP1.json"         , "t":"json" , "n":"tilesSP1"         },
-        { "f":"UAM/JSON/tilesTX1.json"         , "t":"json" , "n":"tilesTX1"         },
-        { "f":"UAM/JSON/tilesTX2.json"         , "t":"json" , "n":"tilesTX2"         },
-        { "f":"UAM/JSON/tilesMISC.json"        , "t":"json" , "n":"tilesMISC"        }
+        
+        { "f":"UAM/JSON/tilesBG1.json"  , "t":"json" , "n":"tilesBG1"  },
+        { "f":"UAM/JSON/tilesG1.json"   , "t":"json" , "n":"tilesG1"  },
+        { "f":"UAM/JSON/tilesLOAD.json" , "t":"json" , "n":"tilesLOAD" },
+        { "f":"UAM/JSON/tilesMISC.json" , "t":"json" , "n":"tilesMISC" },
+        { "f":"UAM/JSON/tilesSP1.json"  , "t":"json" , "n":"tilesSP1"  },
+        { "f":"UAM/JSON/tilesTX1.json"  , "t":"json" , "n":"tilesTX1"  },
+        { "f":"UAM/JSON/tilesTX2.json"  , "t":"json" , "n":"tilesTX2"  }
     ]
 }
 
