@@ -50,13 +50,12 @@ _APP.debug.gs_title1 = {
     getVarsObj_vars: function(){
         let div   = this.DOM.tetris_app_debug_vars;
         let table = this.DOM.tetris_app_debug_vars.querySelector("table");
-        let obj = {
-            "NAME": "gs_title1 vars",
-            "endDelay.start" : this.gs.endDelay.started,
-            "endDelay.finish": this.gs.endDelay.finished,
-            "endDelay:w f"   : `${this.gs.endDelay.frameCount}/${this.gs.endDelay.maxFrames} (ms:${this.gs.endDelay.maxFrames * _APP.game.gameLoop["msFrame"].toFixed(1)})`,
-            "inited": this.gs.inited,
-        };
+        let obj = {};
+        for(let key in this.gs.progressFlags){
+            obj[key] = this.gs.progressFlags[key];
+            if(obj[key] == undefined){ obj[key] = false; }
+        }
+        
         return {
             obj   : obj,
             div   : div,

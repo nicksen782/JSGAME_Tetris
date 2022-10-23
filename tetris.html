@@ -99,6 +99,53 @@
         <!-- TILES AND TILEMAPS -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug1"></div>
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_tests">
+            setFade:
+            <br>
+            <span id="tetris_app_debug_fade_slider_text">0</span>
+            <input type="range" min="0" max="11" step="1" value="0" id="tetris_app_debug_fade_slider">
+            <br>
+            <br>
+
+            setFade:
+            <br>
+            <button onclick='_GFX.util.fade.setFade({ level: 0 });'>L: 0</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 1 });'>L: 1</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 2 });'>L: 2</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 3 });'>L: 3</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 4 });'>L: 4</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 5 });'>L: 5</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 6 });'>L: 6</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 7 });'>L: 7</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 8 });'>L: 8</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 9 });'>L: 9</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 10 });'>L:10</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 11 });'>L:11</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 11 });'>L:11</button>
+            <br>
+            <br>
+
+            Chain-fade
+            <br>
+            <table>
+                <tr>
+                    <td>FADE</td>
+                    <td>Non-blocking</td>
+                    <td>Blocking</td>
+                </tr>
+                <tr>
+                    <td>fadeOut</td>
+                    <td> <button onclick='_GFX.util.fade.fadeOut({ delay: 5, block:false });'>fadeOut ({ delay: 5, block:false })</button> </td>
+                    <td> <button onclick='_GFX.util.fade.fadeOut({ delay: 5, block:true });'>fadeOut ({ delay: 5, block:true })</button> </td>
+                </tr>
+                <tr>
+                    <td>fadeIn</td>
+                    <td> <button onclick='_GFX.util.fade.fadeIn({ delay: 5, block:false });'>fadeIn ({ delay: 5, block:false })</button> </td>
+                    <td> <button onclick='_GFX.util.fade.fadeIn({ delay: 5, block:true });'>fadeIn ({ delay: 5, block:true })</button> </td>
+                </tr>
+            </table>
+            <br>
+            <br>
+
             <div class="tetris_app_debug_div1" id="tetris_app_debug_fadeLevels"></div>
             <div class="tetris_app_debug_div1" id="tetris_app_debug_fadeTiles"></div>
         </div>
@@ -114,6 +161,7 @@
             <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_lense"></div>
             <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_stars"></div>
             <div class="tetris_app_debug_div1" id="tetris_app_debug_vars"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_vars2"></div>
         </div>
         
         <!-- gs_title2 -->

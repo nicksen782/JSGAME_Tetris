@@ -79,24 +79,31 @@ _APP.debug = {
                 this.parent = parent;
     
                 for(let key in _GFX.cache){
-                    this.drawTiles(key, this.parent.nav.DOM.views["debug1"]);
+                    this.drawTilemaps(key, this.parent.nav.DOM.views["debug1"]);
                 }
 
+                let dividerDiv = document.createElement("div");
+                dividerDiv.style="background-color:orange;height:8em;";
+                this.parent.nav.DOM.views["debug1"].append(dividerDiv);
+                this.parent.nav.DOM.views["debug1"].append(document.createElement("br"));
+
                 for(let key in _GFX.cache){
-                    this.drawTilemaps(key, this.parent.nav.DOM.views["debug1"]);
+                    this.drawTiles(key, this.parent.nav.DOM.views["debug1"]);
                 }
     
                 resolve();
             });
         },
     },
+    //
 
     // TODO
     tests:{
         parent:null,
         DOM:{}, 
         setFadeLevel: function(fadeIndex){
-            _GFX.fade.fadeIndex = fadeIndex;
+            _GFX.fade.previousFadeIndex = _GFX.fade.currentFadeIndex;
+            _GFX.fade.currentFadeIndex = fadeIndex;
         },
 
         displayFadedTileset: function(){
@@ -141,6 +148,7 @@ _APP.debug = {
                 document.getElementById("tetris_app_debug_fadeTiles").append(divCont);
             });
         },
+
         init: async function(parent){
             return new Promise(async (resolve,reject)=>{
                 // Set parent(s)
@@ -149,7 +157,11 @@ _APP.debug = {
                 this.DOM = _JSG.loadedConfig.meta.debugDOM.tests.DOM;
                 await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
-                // console.log(this.DOM);
+                this.DOM["fade_slider"].addEventListener("input", ()=>{
+                    this.setFadeLevel(this.DOM["fade_slider"].value);
+                    this.DOM["fade_slider_text"].innerText = this.DOM["fade_slider"].value;
+                }, false);
+
                 resolve();
             });
         },
@@ -259,17 +271,17 @@ _APP.debug = {
                 this.generateDebugTable1(data);
 
                 // debug
-                data =_APP.debug.gs_title0.getVarsObj_vars();
-                this.generateDebugTable1(data);
+                // data =_APP.debug.gs_title0.getVarsObj_vars();
+                // this.generateDebugTable1(data);
             }
             else if(gamestate1 == "gs_title1"){
                 // Anim_lense debug.
-                data =_APP.debug.gs_title1.getVarsObj_anim("anim_lense");
-                this.generateDebugTable1(data);
+                // data =_APP.debug.gs_title1.getVarsObj_anim("anim_lense");
+                // this.generateDebugTable1(data);
                 
                 // Anim_stars debug.
-                data =_APP.debug.gs_title1.getVarsObj_anim("anim_stars");
-                this.generateDebugTable1(data);
+                // data =_APP.debug.gs_title1.getVarsObj_anim("anim_stars");
+                // this.generateDebugTable1(data);
 
                 // debug.
                 data =_APP.debug.gs_title1.getVarsObj_vars();
@@ -277,8 +289,8 @@ _APP.debug = {
             }
             else if(gamestate1 == "gs_title2"){
                 // debug
-                data =_APP.debug.gs_title2.getVarsObj_vars();
-                this.generateDebugTable1(data);
+                // data =_APP.debug.gs_title2.getVarsObj_vars();
+                // this.generateDebugTable1(data);
             }
         },
 

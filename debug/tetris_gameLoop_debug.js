@@ -71,14 +71,14 @@ _APP.debug.gameLoop = {
         switch(_GFX.fade["mode"]){
             case "no-chain": mode = "NONE"; break;
             case "fadeOut" : mode = "FOUT"; break;
-            case "fadeIn"  : mode = "FIN "; break;
+            case "fadeIn"  : mode = "F_IN"; break;
         };
         // let mode = _GFX.fade["mode"].padStart(8, " ");
         return {
             obj : {
                 "NAME"      : `FADE: P:${prev} C:${curr}`,
-                "isEnabled" : `${_GFX.fade["isEnabled"]}` ,
-                "isBlocking": `${_GFX.fade["isBlocking"]}` ,
+                "isEnabled" : `${_GFX.fade["isEnabled"]  ? true : false}` ,
+                "isBlocking": `${_GFX.fade["isBlocking"] ? true : false}` ,
                 "MISC"      : `D:${fCur}/${fMax} M:${mode}` ,
             },
             div  : div,
@@ -235,6 +235,7 @@ _APP.debug.gameLoop = {
 
     populateGamestatesSelect: function(){
         let gamestates = _APP.game.gamestates_list;
+        console.log(gamestates);
         let frag = document.createDocumentFragment();
         for(let i=0, l=gamestates.length; i<l; i+=1){
             let option = document.createElement("option");

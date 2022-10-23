@@ -40,8 +40,9 @@ _APP.game.gamestates["gs_title0"] = {
             {
                 reverseDirectionOnRepeat: false,
                 resetFrameIndexOnRepeat : true,
-                maxRepeats              : 4,
-                maxWaitFrames           : _APP.game.shared.msToFrames(105, _APP.game.gameLoop.msFrame),
+                maxRepeats              : 1,
+                // maxWaitFrames           : _APP.game.shared.msToFrames(167, _APP.game.gameLoop.msFrame),
+                maxWaitFrames           : 8,
                 eraseBeforeDraw         : false,
                 frameDirection          : 1,
                 frames: [
@@ -55,12 +56,9 @@ _APP.game.gamestates["gs_title0"] = {
         this.animations["anim_jsgameLogo"].init(); 
 
         // Init the endDelay values. 
-        this.endDelay.finished   = false
-        this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
-        this.endDelay.frameCount = 0;
+        _APP.game.shared.createGeneralTimer("endDelay", _APP.game.shared.msToFrames(750, _APP.game.gameLoop.msFrame));
 
-        await _GFX.fade.fadeIn(5, true);
+        _GFX.util.fade.fadeIn({ delay: 2, block: true });
 
         this.inited = true; 
     },
@@ -69,44 +67,26 @@ _APP.game.gamestates["gs_title0"] = {
     main: async function(){
         if(!this.inited){ this.init(); return; }
 
-        // if(_INPUT.util.checkButton("p1", "press", "BTN_Y" )){
-        // if(_INPUT.util.checkButton("p1", "press", ["BTN_Y", "BTN_B"] )){
+        // Check for canceling button press.
         if(_INPUT.util.checkButton("p1", "press", [] )){
             console.log("gs_title0 button was pressed");
             _APP.game.changeGamestate1("gs_title1");
             return; 
         }
-        // if(_APP.game.checkButton("p1", "press", [] )){
-        //     _APP.game.changeGamestate1("gs_title1");
-        //     return; 
-        // }
-        else{
+
+        // Run the JSGAME animation.
+        else if(!this.animations.anim_jsgameLogo.finished){
             this.animations.draw("anim_jsgameLogo"); 
-            if(this.animations.anim_jsgameLogo.finished && !this.endDelay.started){
-                this.endDelay.started = true; 
-                return;
-            }
         }
 
-        // Delay before progressing to the next game state?
-        if(this.endDelay.started){
-            // console.log("endDelay is running.");
-            if(this.endDelay.frameCount >= this.endDelay.maxFrames && !this.endDelay.finished){
-                // Set the endDelay finished flag (Not needed. Here for completeness.)
-                // console.log("endDelay finished.");
-                this.endDelay.finished = true;
+        // Use the general timer to delay the change to the next gamestate.
+        else{
+            if(_APP.game.shared.checkGeneralTimer("endDelay")){
+                _GFX.util.fade.fadeOut({ delay: 2, block: true });
 
-                await _GFX.fade.fadeOut(5, true);
-            }
-            else if(this.endDelay.finished){
                 // Set the next game state.
-                // game("TITLE1", true);
-                _APP.game.changeGamestate1("gs_title0");
-                // _APP.game.changeGamestate1("gs_title1");
-            }
-            else{
-                // console.log("endDelay: Adding to frameCount.");
-                this.endDelay.frameCount += 1;
+                // _APP.game.changeGamestate1("gs_title0");
+                _APP.game.changeGamestate1("gs_title1");
             }
         }
     },

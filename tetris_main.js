@@ -4,21 +4,36 @@ _APP.game = {
     netGame      : false,
 
     // GAMESTATES
-    // prev_gamestate1: "gs_title0",
-    // prev_gamestate1: "gs_title1",
-    
     // gamestate1: "gs_title0",
     // gamestate1: "gs_title1",
     // gamestate1: "gs_title2",
+    // gamestate1: "gs_play",
     
+    new_gamestate1: "",
+    new_gamestate2: "",
     prev_gamestate1: "",
     prev_gamestate2: "",
-    gamestate1: "gs_play",
+    gamestate1: "gs_title0",
     gamestate2: "",
+    gamestate1ChangeTriggered: false,
+    gamestate2ChangeTriggered: false,
     changeGamestate1: function changeGamestate1(new_gamestate){
         // Is this a valid gamestate key?
         if( _APP.game.gamestates_list.indexOf(new_gamestate) == -1){ console.log("Unknown new_gamestate:", new_gamestate); throw ""; }
         
+        // Set the new_gamestate1 and the change triggered flag.
+        this.new_gamestate1 = new_gamestate;
+        this.gamestate1ChangeTriggered = true; 
+    },
+    changeGamestate2: function changeGamestate2(new_gamestate){
+        // Is this a valid gamestate key?
+        // if(!1){ console.log("Unknown new_gamestate:", new_gamestate); throw ""; }
+        
+        // Set the new_gamestate2 and the change triggered flag.
+        this.new_gamestate2 = new_gamestate;
+        this.gamestate2ChangeTriggered = true; 
+    },
+    _changeGamestate1: function changeGamestate1(){
         // Remove the inited flag of the current gamestate.
         _APP.game.gamestates[this.gamestate1].inited = false;
 
@@ -26,17 +41,22 @@ _APP.game = {
         this.prev_gamestate1 = this.gamestate1;
 
         // Change the current gamestate to the new gamestate.
-        this.gamestate1 = new_gamestate;
-    },
-    changeGamestate2: function changeGamestate2(new_gamestate){
-        // Is this a valid gamestate key?
-        // if(!1){ console.log("Unknown new_gamestate:", new_gamestate); throw ""; }
+        this.gamestate1 = this.new_gamestate1;
 
+        // Clear the gamestate change triggered flag and new value.
+        this.gamestate1ChangeTriggered = false; 
+        this.new_gamestate1 = ""; 
+    },
+    _changeGamestate2: function changeGamestate2(){
         // Set the previous gamestate. 
         this.prev_gamestate2 = this.gamestate2;
-
+        
         // Change the current gamestate to the new gamestate.
-        this.gamestate2 = new_gamestate;
+        this.gamestate2 = this.new_gamestate2;
+        
+        // Clear the gamestate change triggered flag and new value.
+        this.gamestate2ChangeTriggered = false; 
+        this.new_gamestate2 = ""; 
     },
     gamestates     : {}, // This is populated by the individual gs_ files. 
     gamestates_list: [], // This is populated with data from the individual gs_ files. 
@@ -193,7 +213,8 @@ _APP.game.gameLoop = {
         if(_JSG.loadedConfig.meta.debug){
             // console.log("RUNNING DEBUG");
             _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop");
-            _APP.debug.doDebug(false);
+            if(_APP.debug.doDebug){ _APP.debug.doDebug(false); }
+            // _APP.debug.doDebug(false); 
             _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
         }
 
@@ -218,6 +239,10 @@ _APP.game.gameLoop = {
                 // Track performance.
                 this.fpsCalc.tick(this.thisLoopStart - (this.delta % this.msFrame));
                 this.frameCounter += 1;
+
+                // HANDLE GAMESTATE CHANGES.
+                if(_APP.game.gamestate1ChangeTriggered){ _APP.game._changeGamestate1(); }
+                if(_APP.game.gamestate2ChangeTriggered){ _APP.game._changeGamestate2(); }
 
                 // FADE
                 

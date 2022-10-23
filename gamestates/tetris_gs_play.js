@@ -30,13 +30,15 @@ _APP.game.gamestates["gs_play"] = {
         // Clear the screen.
         _GFX.VRAM.clearVram();
 
+        _GFX.util.fade.setFade({ level: 0 });
+
         // Init the endDelay values. 
         this.endDelay.finished   = false
         this.endDelay.started    = false
         this.endDelay.maxFrames  = _APP.game.shared.msToFrames(1000, _APP.game.gameLoop.msFrame);
         this.endDelay.frameCount = 0;
 
-        // await _GFX.fade.fadeIn(5, true);
+        // _GFX.util.fade.fadeIn({ delay: 5, block: true });
 
         _GFX.util.tiles.fillTile({ tid:2, x:0, y:0, w:14, h:14, tsi:0, li:0 });
 
@@ -283,7 +285,7 @@ _APP.game.gamestates["gs_play"] = {
                 // console.log("endDelay finished.");
                 this.endDelay.finished = true;
 
-                // await _GFX.fade.fadeOut(5, true);
+                // _GFX.util.fade.fadeOut({ delay: 5, block: true });
             }
             else if(this.endDelay.finished){
                 // Set the next game state.

@@ -14,6 +14,7 @@ _APP.game.shared = {
             }
         },
     },
+
     msToFrames : function(ms, msPerFrame){
         // Convert seconds to ms then divide by msPerFrame.
         if(!msPerFrame){ msPerFrame = _APP.game.gameLoop.msFrame; }
@@ -233,6 +234,7 @@ _APP.game.shared = {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     },
 
+    // Create a custom tilemap for a border box and optional text.
     createBorderBox_tilemaps: function(x, y, w, h, li1=0, li2=2, bgTile="grid1", textLines=[], textTileset="tilesTX1"){
         // NOTE: print assumes that the text tileset's first tilemap is the fontset and that those tiles are generated in ASCII order.
 
@@ -344,6 +346,7 @@ _APP.game.shared = {
             }
         };
     },
+    // Draw a previously created border box and optional text.
     drawBorderBox_tilemaps: function(o){
         if(o.menu.tm.length > 2){
             _GFX.util.tiles.drawTilemap_custom( { x: o.menu.x, y: o.menu.y, tsn: o.menu.tsn, li: o.menu.li, tm: o.menu.tm } );
@@ -352,4 +355,104 @@ _APP.game.shared = {
             _GFX.util.tiles.drawTilemap_custom( { x: o.text.x, y: o.text.y, tsn: o.text.tsn, li: o.text.li, tm: o.text.tm } );
         }
     },
+
+    // SPRITES.
+    sprites: {},
+    // Adds a single-tile sprite to a sprite name.
+    mapSprite   : function(name, obj){
+        // EXAMPLE USAGE: _APP.game.shared.mapSprite("tetromino1",  { x: 0, y:0, tsn: "tilesG1", li: 1, tm: "T_bgtile" });
+        // Add new key to sprites for sprite name if is doesn't exist.
+        if(this.sprites[name] == undefined){
+            this.sprites[name] = {
+                curr: {},
+                prev: {},
+                firstDraw: true
+            };
+        }
+
+        // Add new sprite to the matching sprite name.
+        this.sprites[name] = {
+            curr: {...obj},
+            prev: {...obj},
+            firstDraw: true
+        };
+        
+    },
+
+    // Updates a single-tile sprite in a sprite name.
+    updateSprite: function(name, obj, spriteIndex){
+        // Update the property values of a previously mapped sprite. 
+        if(obj.x  ){ this.sprites[name][spriteIndex].x   = obj.x  ; }
+        if(obj.y  ){ this.sprites[name][spriteIndex].y   = obj.y  ; }
+        if(obj.tsn){ this.sprites[name][spriteIndex].tsn = obj.tsn; }
+        if(obj.li ){ this.sprites[name][spriteIndex].li  = obj.li ; }
+        if(obj.tm ){ this.sprites[name][spriteIndex].tm  = obj.tm ; }
+    },
+
+    // Updates VRAM with the sprite tiles (run before the normal VRAM draw.)
+    drawSprites  : function(){
+        // Updates VRAM with each sprite in the sprites object.
+        // firstDraw = false
+    },
+
+    // General timers.
+    generalTimers: {},
+    createGeneralTimer: function(name, maxFrames, gamestate){
+        // Creates a timer. 
+        // Is updated/checked with checkGeneralTimer.
+        // A timer must be cleared or recreated after it finishes before it can be reused. (resetGeneralTimer/createGeneralTimer)
+
+        if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
+        if(this.generalTimers[gamestate] == undefined){ this.generalTimers[gamestate] = {}; }
+
+        this.generalTimers[gamestate][name] = {
+            finished  : false,
+            maxFrames : maxFrames,
+            frameCount: 0,
+        };
+    },
+    resetGeneralTimer: function(name, gamestate){
+        if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
+
+        if(!this.generalTimers[gamestate][name]){ 
+            console.error("ERROR: resetGeneralTimer: This timer does not exist:", name);
+            return; 
+        }
+
+        // Reset the timer. 
+        this.generalTimers[gamestate][name] = {
+            finished  : false,
+            maxFrames : this.generalTimers[gamestate][name].maxFrames,
+            frameCount: 0,
+        };
+    },
+    checkGeneralTimer: function(name, gamestate){
+        // Returns true if the timer is complete.
+        // Otherwise this function will update the timer and return if it is finished.
+        
+        if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
+
+        if(!this.generalTimers[gamestate][name]){ 
+            console.error("ERROR: checkGeneralTimer: This timer does not exist:", name, gamestate);
+            return; 
+        }
+
+        // Return true if finished.
+        if(this.generalTimers[gamestate][name].finished){ return true; };
+
+        // Check and update the timer. 
+        if(
+            this.generalTimers[gamestate][name].frameCount >= this.generalTimers[gamestate][name].maxFrames && 
+            !this.generalTimers[gamestate][name].finished
+        ){
+            this.generalTimers[gamestate][name].finished = true;
+        }
+        else{
+            this.generalTimers[gamestate][name].frameCount += 1;
+        }
+
+        return this.generalTimers[gamestate][name].finished;
+
+    },
+
 };

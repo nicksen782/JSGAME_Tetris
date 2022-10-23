@@ -6,6 +6,23 @@
   /* opacity:0.5; */
   outline: none;
 }
+.tetris_fullscreen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: stretch;
+  flex-direction: row;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.tetris_fullscreen #tetris_app_game{
+  /* width: 1700px; */
+  align-items: center;
+} 
+.tetris_fullscreen #tetris_app_game canvas{
+  height:100%;
+} 
 
 #tetris_app.focused {
   background-color: initial;
@@ -448,3 +465,12 @@ div#tetris_app_debug_nav_view_tests .tetris_app_debug_div1{
 
 .videoModeA_canvasLayer{}
 .videoModeA_canvasLayer.debug{}
+
+#tetris_app_debug_fade_slider{
+    width: 650px;
+}
+#tetris_app_debug_fade_slider_text{
+    width: 2em;
+    display: inline-block;
+    /* background-color: blue; */
+}

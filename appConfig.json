@@ -20,6 +20,7 @@
             "gameContDiv"         : "tetris_app",
             "app_dpad_canvas"     : "tetris_app_dpad",
             "app_game"            : "tetris_app_game",
+            "app_options"         : "tetris_app_options",
             "option_size_div"     : "tetris_option_size_div",
             "option_size_range"   : "tetris_option_size_range",
             
@@ -71,6 +72,8 @@
             },
             "tests":{
                 "DOM": {
+                    "fade_slider_text": "tetris_app_debug_fade_slider_text",
+                    "fade_slider": "tetris_app_debug_fade_slider",
                     "fadeLevels": "tetris_app_debug_fadeLevels",
                     "fadeTiles" : "tetris_app_debug_fadeTiles"
                 }
@@ -85,12 +88,17 @@
                 "DOM": {
                     "tetris_app_debug_anim_lense": "tetris_app_debug_anim_lense",
                     "tetris_app_debug_anim_stars": "tetris_app_debug_anim_stars",
-                    "tetris_app_debug_vars": "tetris_app_debug_vars"
+                    "tetris_app_debug_vars": "tetris_app_debug_vars",
+                    "tetris_app_debug_vars2": "tetris_app_debug_vars2"
                 }
             },
             "gs_title2":{
                 "DOM": {
                     "debug_varsDiv": "tetris_app_gs2_debug_varsDiv"
+                }
+            },
+            "gs_play":{
+                "DOM": {
                 }
             }
         },
@@ -131,26 +139,20 @@
         { "f":"tetris.html"                    , "t":"html" , "n":"tetris_html"      },
         
         { "f":"tetris_main.js"                 , "t":"js"   , "n":"tetris_main"      },
-
-        { "f":"tetris_SHARED.js"               , "t":"js"   , "n":"tetris_SHARED" },
+        { "f":"tetris_SHARED.js"               , "t":"js"   , "n":"tetris_SHARED"    },
+        
         { "f":"gamestates/tetris_gs_title0.js" , "t":"js"   , "n":"tetris_gs_title0" },
         { "f":"gamestates/tetris_gs_title1.js" , "t":"js"   , "n":"tetris_gs_title1" },
         { "f":"gamestates/tetris_gs_title2.js" , "t":"js"   , "n":"tetris_gs_title2" },
         { "f":"gamestates/tetris_gs_play.js"   , "t":"js"   , "n":"tetris_gs_play"   },
 
-        { "f":"debug/tetris_debug.js"           , "t":"js"   , "n":"tetris_debug" },
-        { "f":"debug/tetris_gameLoop_debug.js"  , "t":"js"   , "n":"tetris_gameLoop_debug" },
-        { "f":"debug/tetris_gs_title0_debug.js" , "t":"js"   , "n":"tetris_gs_title0_debug" },
-        { "f":"debug/tetris_gs_title1_debug.js" , "t":"js"   , "n":"tetris_gs_title1_debug" },
-        { "f":"debug/tetris_gs_title2_debug.js" , "t":"js"   , "n":"tetris_gs_title2_debug" },
-        
-        { "f":"UAM/JSON/tilesBG1.json"  , "t":"json" , "n":"tilesBG1"  },
-        { "f":"UAM/JSON/tilesG1.json"   , "t":"json" , "n":"tilesG1"  },
-        { "f":"UAM/JSON/tilesLOAD.json" , "t":"json" , "n":"tilesLOAD" },
-        { "f":"UAM/JSON/tilesMISC.json" , "t":"json" , "n":"tilesMISC" },
-        { "f":"UAM/JSON/tilesSP1.json"  , "t":"json" , "n":"tilesSP1"  },
-        { "f":"UAM/JSON/tilesTX1.json"  , "t":"json" , "n":"tilesTX1"  },
-        { "f":"UAM/JSON/tilesTX2.json"  , "t":"json" , "n":"tilesTX2"  }
+        { "f":"UAM/JSON/tilesBG1.json"         , "t":"json" , "n":"tilesBG1"         },
+        { "f":"UAM/JSON/tilesG1.json"          , "t":"json" , "n":"tilesG1"          },
+        { "f":"UAM/JSON/tilesLOAD.json"        , "t":"json" , "n":"tilesLOAD"        },
+        { "f":"UAM/JSON/tilesMISC.json"        , "t":"json" , "n":"tilesMISC"        },
+        { "f":"UAM/JSON/tilesSP1.json"         , "t":"json" , "n":"tilesSP1"         },
+        { "f":"UAM/JSON/tilesTX1.json"         , "t":"json" , "n":"tilesTX1"         },
+        { "f":"UAM/JSON/tilesTX2.json"         , "t":"json" , "n":"tilesTX2"         }
     ]
 }
 

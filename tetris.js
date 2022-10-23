@@ -5,6 +5,52 @@ _APP = {
     // sprite_ctx   : undefined,
     // fade_canvas  : undefined,
     // fade_ctx     : undefined,
+    
+    toggleFullscreen: function(){
+        let container = _APP.DOM["gameContDiv"]; // tetris_app (Whole loaded app.)
+        let options   = _APP.DOM["app_options"]; // tetris_app_options (app options.)
+        let game      = _APP.DOM["app_game"];    // tetris_app_game (canvas containter)
+
+        window.requestAnimationFrame(()=>{
+            // Go to fullscreen.
+            if(!(
+                document.fullscreenElement       || // Chrome
+                document.webkitFullscreenElement || // Chrome
+                document.fullscreen              || // Chrome
+                document.msFullscreenElement     || // Edge/IE
+                document.mozFullScreenElement    || // Firefox
+                window  .fullScreen                 // Firefox
+            )){
+                if      (container.requestFullscreen      ) { container.requestFullscreen()      ; } // Standard
+                else if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); } // Chrome
+                else if (container.mozRequestFullScreen   ) { container.mozRequestFullScreen()   ; } // Firefox
+                else if (container.msRequestFullscreen    ) { container.msRequestFullscreen()    ; } // IE11
+                
+                // Subtract the the app_options width from the screen width to get the new width for app_game.
+                let newGameWidth = screen.width - options.offsetWidth;
+                
+                // Apply the new width to app_game.
+                game.style.width = newGameWidth + "px";
+
+                // Add the fullscreen class to the container. 
+                container.classList.add("tetris_fullscreen");
+            }
+            
+            // Exit fullscreen.
+            else{
+                if     (document.exitFullscreen     )  { document.exitFullscreen()      ; } // Standard
+                else if(document.webkitExitFullscreen) { document.webkitExitFullscreen(); } // Chrome
+                else if(document.mozCancelFullScreen)  { document.mozCancelFullScreen() ; } // Firefox
+                else if(document.msExitFullscreen)     { document.msExitFullscreen()    ; } // IE11
+                
+                // Remove the new width to app_game.
+                game.style.width = "unset";
+
+                // Remove the fullscreen class from the container. 
+                container.classList.remove("tetris_fullscreen");
+            }
+        });
+    },
 
     // Create Canvas And Event Listeners.
     init_createCanvasAndEventListeners: function(){
@@ -73,7 +119,6 @@ _APP = {
          window.onunhandledrejection = function(){
             window.onerror.apply(this, arguments); // call
         }
-
     },
     setupDebugGridAndNums_id: null,
     setupDebugGridAndNums: function(){
@@ -90,10 +135,6 @@ _APP = {
             let rows = _JSG.loadedConfig.meta.dimensions.rows;
             let cols = _JSG.loadedConfig.meta.dimensions.cols;
 
-            console.log("tw  :", tw);
-            console.log("th  :", th);
-            console.log("rows:", rows);
-            console.log("cols:", cols);
             // num_00            
             let numberTiles = [
                 _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_00[0].orgTilemap[2] ].canvas,
@@ -276,6 +317,24 @@ _APP = {
         },
     },
 
+    // Add debug files.
+    addDebugFiles: async function(){
+        return new Promise(async (resolve, reject)=>{
+            // Get the support files.
+            let appPath = _JSG.apps[_JSG.loadedAppKey].appPath;
+            await _JSG.addFile( { "f": appPath + "/debug/tetris_debug.js"           , "t":"js", "n":"tetris_debug"           } , ".");
+            let proms = [
+                new Promise( async (res,rej) => { await _JSG.addFile( { "f": appPath + "/debug/tetris_gameLoop_debug.js"  , "t":"js", "n":"tetris_gameLoop_debug"  } , "."); res(); } ),
+                new Promise( async (res,rej) => { await _JSG.addFile( { "f": appPath + "/debug/tetris_gs_title0_debug.js" , "t":"js", "n":"tetris_gs_title0_debug" } , "."); res(); } ),
+                new Promise( async (res,rej) => { await _JSG.addFile( { "f": appPath + "/debug/tetris_gs_title1_debug.js" , "t":"js", "n":"tetris_gs_title1_debug" } , "."); res(); } ),
+                new Promise( async (res,rej) => { await _JSG.addFile( { "f": appPath + "/debug/tetris_gs_title2_debug.js" , "t":"js", "n":"tetris_gs_title2_debug" } , "."); res(); } ),
+                new Promise( async (res,rej) => { await _JSG.addFile( { "f": appPath + "/debug/tetris_gs_play_debug.js"   , "t":"js", "n":"tetris_gs_play_debug"   } , "."); res(); } ),
+            ];
+            await Promise.all(proms);
+            resolve();
+        });
+    },
+
     // JSGAME: app pre-init.
     init: async function(){
         return new Promise(async (resolve, reject)=>{
@@ -302,14 +361,16 @@ _APP = {
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Graphics.`, "loading");
             await _GFX.init();
 
-            // Add the _GFX-generated canvas layers.
-            for(let i=0, l= _GFX.canvasLayers.length; i<l; i+=1){
-                this.DOM["app_game"].append(_GFX.canvasLayers[i].canvas);
-            }
-
             // Input init.
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Input.`, "loading");
             await _INPUT.init( [_APP.DOM["app_game"], _APP.DOM["gameContDiv"] ] );
+
+            // Add the _GFX-generated canvas layers.
+            for(let i=0, l= _GFX.canvasLayers.length; i<l; i+=1){ this.DOM["app_game"].append(_GFX.canvasLayers[i].canvas); }
+
+            for(let i=0, l= _GFX.canvasLayers.length; i<l; i+=1){ 
+                _GFX.canvasLayers[i].canvas.addEventListener("dblclick" , ()=>_APP.toggleFullscreen(), false );
+            }
 
             // DEBUG? Unhide the div, init and switch to the debug tab if debug is active.
             if(_JSG.loadedConfig.meta.debug == true){
@@ -327,25 +388,26 @@ _APP = {
                     _JSG.loadedConfig.meta.hideLobby = false;
                 }
 
-                await _APP.debug.init(this);
-                if(_JSG.loadedConfig.meta.autoSwitchToLobbyDebugTab){ _JSG.lobby.nav.showOneView("debug"); }
-                // resolve();
-            }
-            
-            // Otherwise, switch to some other default lobby tab if so specified.
-            else if(_JSG.loadedConfig.meta.defaultLobbyTab){
-                _JSG.lobby.nav.showOneView(_JSG.loadedConfig.meta.defaultLobbyTab);
-                // resolve();
-            }
-            // else{ resolve(); }
+                // Add the debug files. 
+                await this.addDebugFiles();
 
-            if(_JSG.loadedConfig.meta.debug == true){
+                // Run the debug init.
+                await _APP.debug.init(this);
+
                 this.setupDebugGridAndNums();
                 // document.getElementById("tetris_app_toggleNumbers").click();
+
+                if(_JSG.loadedConfig.meta.autoSwitchToLobbyDebugTab){ _JSG.lobby.nav.showOneView("debug"); }
             }
             else{
                 document.getElementById("tetris_app_toggleNumbers").style.display = "none";
+
+                // Otherwise, switch to some other default lobby tab if so specified.
+                if(_JSG.loadedConfig.meta.defaultLobbyTab){
+                    _JSG.lobby.nav.showOneView(_JSG.loadedConfig.meta.defaultLobbyTab);
+                }
             }
+
             resolve();
         });
     },
@@ -355,8 +417,9 @@ _APP = {
         // Request that fade tiles be created.
         await _WEBW.videoModeA.video.initFadeSend(true);
 
-        // Display the fade tiles in the TESTS tab.
+        // Display the fade tiles in the TESTS tab. 
         if(_JSG.loadedConfig.meta.debug == true){
+            // BUG: This appears to permanently mess up the framerate once drawn.
             // _APP.debug.tests.displayFadedTileset();
         }
 

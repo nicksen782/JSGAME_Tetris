@@ -12,23 +12,38 @@ _APP.game.gamestates["gs_title1"] = {
         _draw      : {},
     },
 
-    // Ending delay timer. 
-    endDelay: {
-        started: undefined,
-        finished: undefined,
-        maxFrames: undefined,
-        frameCount: undefined,
+    progressFlags: {
+        anim_stars             : undefined,
+        anim_lense             : undefined,
+        anims_done             : undefined,
+        timer1_done            : undefined,
+        copyrightText_displayed: undefined,
+        endDelayStarted        : undefined,
+        timer2_done            : undefined,
     },
 
     inited: false,
 
     // Constants within this game state.
-    //
+
+    copyrightText: [
+        '       TM AND (C) 1987        ', '', 
+        '   V/O ELECTRONORGTECHNICA    ', '', 
+        '          ("ELORG")           ', '', 
+        '   ORIGINAL CONCEPT, DESIGN   ', '', 
+        '         AND  PROGRAM         ', '', 
+        '     BY: ALEXEY PAZHITNOV     ', '', 
+        '  --------------------------  ', 
+        '  --------------------------  ', '', 
+        '       JS GAME v2 PORT:       ', '', 
+        '  NICK ANDERSEN (NICKSEN782)  ', 
+    ],
 
     // Run once upon changing to this game state.
     init: async function(){
         // console.log("gs_title1 init");
 
+        // Fade-guard. (Should use blocking fades instead of having this here).
         if(_GFX.fade.isActive){ 
             console.log("A fade is currently in progress.");
             return; 
@@ -92,14 +107,16 @@ _APP.game.gamestates["gs_title1"] = {
         );
         this.animations["anim_stars"].init(); 
 
-        // Init the endDelay values. 
-        this.endDelay.finished   = false
-        this.endDelay.started    = false
-        this.endDelay.maxFrames  = _APP.game.shared.msToFrames(500, _APP.game.gameLoop.msFrame);
-        this.endDelay.frameCount = 0;
+        _GFX.util.fade.fadeIn({ delay: 4, block: true });
 
-        await _GFX.fade.fadeIn(5, true);
+        this.copyrightText_display = false;
 
+        _APP.game.shared.createGeneralTimer("timer1", _APP.game.shared.msToFrames(750, _APP.game.gameLoop.msFrame));
+        _APP.game.shared.createGeneralTimer("timer2", _APP.game.shared.msToFrames(2500, _APP.game.gameLoop.msFrame));
+
+        // Clear the progress flags. 
+        for(let key in this.progressFlags){ this.progressFlags[key] = false; }
+        
         this.inited = true; 
     },
 
@@ -111,47 +128,64 @@ _APP.game.gamestates["gs_title1"] = {
             _APP.game.changeGamestate1("gs_title2");
             return; 
         }
+
+        // Is the animation chain unfinished?
+        if(!this.progressFlags["anims_done"]){
+            // Run the stars animation.
+            if(!this.progressFlags["anim_stars"]){
+                this.animations.draw("anim_stars");
+                if(this.animations.anim_stars.finished){ this.progressFlags["anim_stars"] = true; }
+            }
+            
+            // Run the lense animation AFTER the stars animation is complete.
+            if(this.progressFlags["anim_stars"]){
+                // Run the lense animation.
+                this.animations.draw("anim_lense");
+                if(this.animations.anim_lense.finished){ this.progressFlags["anim_lense"] = true; }
+
+                if(this.progressFlags["anim_lense"] && this.progressFlags["anim_lense"]){
+                    this.progressFlags["anims_done"] = true;
+                }
+            }
+        }
         
-        // Run the stars animation.
-        this.animations.draw("anim_stars");
-        
-        // Run the lense animation AFTER the stars animation is complete.
-        if(this.animations.anim_stars.finished){
-            // Run the lense animation.
-            this.animations.draw("anim_lense");
+        // Are the animations done but not the timer1?
+        else if(this.progressFlags["anims_done"] && !this.progressFlags["timer1_done"]){
+            if(_APP.game.shared.checkGeneralTimer("timer1")){
+                this.progressFlags["timer1_done"] = true;
+                _GFX.util.fade.fadeOut({ delay: 4, block: true });
+            }
         }
 
-        // Are both animations complete?
-        if(this.animations.anim_lense.finished && this.animations.anim_stars.finished && !this.endDelay.started){
-            // Yes, start the endDelay.
-            // console.log("endDelay started.");
-            // await _GFX.fade.fadeOut(10, true);
-            this.endDelay.started = true; 
-            return;
-        }
-        
-        // Delay before progressing to the next game state?
-        if(this.endDelay.started){
-            // console.log("endDelay is running.");
-            if(this.endDelay.frameCount >= this.endDelay.maxFrames && !this.endDelay.finished){
-                // Set the endDelay finished flag (Not needed. Here for completeness.)
-                // console.log("endDelay finished.");
-                this.endDelay.finished = true;
+        // Is timer1 done but the copyright text not displayed? 
+        else if(this.progressFlags["timer1_done"] && !this.progressFlags["copyrightText_displayed"]){
+            // Clear the screen. 
+            _GFX.VRAM.clearVram();
 
-                await _GFX.fade.fadeOut(5, true);
+            // Draw the copyright lines. 
+            let x=1;
+            let y=6;
+            for(let i = 0, l = this.copyrightText.length; i<l; i+=1){
+                _GFX.util.tiles.print({ str:this.copyrightText[i], x:x, y:y, tsn:"tilesTX1", li:2 });
+                y+=1;
             }
-            else if(this.endDelay.finished){
-                // Set the next game state.
-                // game.setGamestate1("TITLE1", true);
-                // _APP.game.changeGamestate1("gs_title0");
-                _APP.game.changeGamestate1("gs_title1");
-                // _APP.game.changeGamestate1("gs_title2");
-            }
-            else{
-                // console.log("endDelay: Adding to frameCount.");
-                this.endDelay.frameCount += 1;
-            }
+
+            this.progressFlags["copyrightText_displayed"] = true;
+            this.progressFlags["endDelayStarted"] = true;
+
+            _GFX.util.fade.fadeIn({ delay: 4, block: true });
+        }
+
+        // Is the endDelay started but the timer2 isn't done?
+        else if(this.progressFlags["endDelayStarted"] && !this.progressFlags["timer2_done"] && _APP.game.shared.checkGeneralTimer("timer2")){
+            this.progressFlags["timer2_done"] = true;
+            _GFX.util.fade.fadeOut({ delay: 4, block: true });
+            
+            // Set the next game state.
+            // game.setGamestate1("TITLE1", true);
+            // _APP.game.changeGamestate1("gs_title0");
+            // _APP.game.changeGamestate1("gs_title1");
+            _APP.game.changeGamestate1("gs_title2");
         }
     },
-
 };
