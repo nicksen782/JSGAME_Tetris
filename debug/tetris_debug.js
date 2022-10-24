@@ -107,46 +107,104 @@ _APP.debug = {
         },
 
         displayFadedTileset: function(){
-            if(!_GFX.config.debugMode){ return; }
-            let data = _GFX._debug.fadedTileset; 
-            if(!data){ 
-                console.log("The fadedTileset is unavailable.");
-                return; 
-            }
-            console.log("_GFX._debug.fadedTileset:", _GFX._debug.fadedTileset);
-
-            let divCont = document.createElement("div");
-            for(let tilesetName in data){
-                let div = document.createElement("div");
-                div.innerText = tilesetName;
-                div.append( document.createElement("br") ); 
-                divCont.append(div);
-
-                let tiles = data[tilesetName];
-                for(let ti=0, tl=tiles.length; ti<tl; ti+=1){
-                    for(let i=0, l=tiles[ti].length; i<l; i+=1){
-                        // console.log(tilesetName, ", tileId", ti, ", fadeIndex:", i, "***", tiles[ti][i]);
-                        let canvas = document.createElement("canvas");
-                        canvas.title = `tilesetName: ${tilesetName}, tileId: ${ti}, fadeIndex: ${i}`;
-                        canvas.width = tiles[ti][i].width; 
-                        canvas.height = tiles[ti][i].height;
-                        canvas.style["border"] = "1px solid black";
-                        canvas.style["padding"] = "2px";
-                        canvas.style["margin"] = "2px";
-                        canvas.style["width"]  = canvas.width  * 3 + "px";
-                        canvas.style["height"] = canvas.height * 3 + "px";
-                        canvas.classList.add("pixelatedCanvas");
-                        let ctx = canvas.getContext("2d");
-                        _GFX.gfxConversion.setPixelated(ctx);
-                        ctx.putImageData(tiles[ti][i], 0, 0);
-                        div.append(canvas);
-                    }
-                    div.append( document.createElement("br") ); 
+            return new Promise(async (resolve, reject) => {
+                if(!_GFX.config.debug.generateAndReturnFadedTiles){ resolve(); return; }
+                let data = _GFX._debug.fadedTileset; 
+                if(!data){ 
+                    console.log("The fadedTileset is unavailable.");
+                    resolve();
+                    return; 
                 }
-            }
-            window.requestAnimationFrame(()=>{
-                document.getElementById("tetris_app_debug_fadeTiles").append(divCont);
+                console.log("displayFadedTileset: DRAWING");
+                // console.log("displayFadedTileset:", _GFX._debug.fadedTileset);
+
+                /*
+                    One canvas per faded tileset.
+                    let dimensions  = _JSG.loadedConfig.meta.dimensions;
+                    let tilesetNames = Object.keys(_GFX.cache);
+                */
+                let divCont = document.createElement("div");
+                for(let tilesetName in data){
+                    let div = document.createElement("div");
+                    div.innerText = tilesetName;
+                    div.append( document.createElement("br") ); 
+                    divCont.append(div);
+
+                    let tiles = data[tilesetName];
+                    for(let ti=0, tl=tiles.length; ti<tl; ti+=1){
+                        for(let i=0, l=tiles[ti].length; i<l; i+=1){
+                            // console.log(tilesetName, ", tileId", ti, ", fadeIndex:", i, "***", tiles[ti][i]);
+                            let canvas = document.createElement("canvas");
+                            canvas.title = `tilesetName: ${tilesetName}, tileId: ${ti}, fadeIndex: ${i}`;
+                            canvas.width = tiles[ti][i].width; 
+                            canvas.height = tiles[ti][i].height;
+                            canvas.style["border"] = "1px solid black";
+                            canvas.style["padding"] = "2px";
+                            canvas.style["margin"] = "2px";
+                            canvas.style["width"]  = canvas.width  * 3 + "px";
+                            canvas.style["height"] = canvas.height * 3 + "px";
+                            canvas.classList.add("pixelatedCanvas");
+                            let ctx = canvas.getContext("2d");
+                            _GFX.gfxConversion.setPixelated(ctx);
+                            ctx.putImageData(tiles[ti][i], 0, 0);
+                            div.append(canvas);
+                        }
+                        div.append( document.createElement("br") ); 
+                    }
+                }
+                window.requestAnimationFrame(()=>{
+                    console.log("displayFadedTileset: DONE");
+                    document.getElementById("tetris_app_debug_fadeTiles").append(divCont);
+                    resolve();
+                });
             });
+        },
+
+        vramCanvases: [],
+
+        updateVramLayerDisplay: function(){
+            let changeCount = Object.keys(_GFX.VRAM.prevDrawn_changes).length;
+            let changes = _GFX.VRAM.prevDrawn_changes;
+            let dimensions  = _JSG.loadedConfig.meta.dimensions;
+            let tilesetNames = Object.keys(_GFX.cache);
+
+            if(_GFX.VRAM.prevDrawn_clearVram_flag){
+                // Clear each canvas layer.
+                for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
+                    this.vramCanvases[i].ctx.clearRect( 0, 0, this.vramCanvases[i].canvas.width, this.vramCanvases[i].canvas.height);
+                }
+                // _GFX.VRAM.prevDrawn_clearVram_flag = false;
+            }
+
+            if( !changeCount){ return; }
+            for(let key in changes){
+                let change = changes[key];
+
+                // Get the tileset.
+                tileset = _GFX.cache[ tilesetNames[ change.tilesetIndex ] ].tileset;
+                                
+                // Get the tile (main).
+                let tile = tileset[change.tileId] ;
+
+                // Clear the destination if the new tile has transparency. (This is prevent the previous tile from showing through.)
+                if(tile.hasTransparency){
+                    this.vramCanvases[change.layerIndex].ctx.clearRect(
+                        change.x* dimensions.tileWidth, change.y*dimensions.tileHeight,
+                        dimensions.tileWidth, dimensions.tileHeight
+                    );
+                }
+
+                // Draw the correct tile to the canvas. 
+                tile = tile.canvas;
+
+                // Draw to the destination. 
+                this.vramCanvases[change.layerIndex].ctx.drawImage(tile, (change.x * dimensions.tileWidth), (change.y * dimensions.tileHeight));
+
+            };
+            
+            // this.DOM["VRAM0_div"]
+            // this.DOM["VRAM1_div"]
+            // this.DOM["VRAM2_div"]
         },
 
         init: async function(parent){
@@ -156,6 +214,36 @@ _APP.debug = {
     
                 this.DOM = _JSG.loadedConfig.meta.debugDOM.tests.DOM;
                 await _JSG.shared.parseObjectStringDOM(this.DOM, false);
+
+                this.vramCanvases = [
+                    { canvas:this.DOM["VRAM0_canvas"], ctx:this.DOM["VRAM0_canvas"].getContext("2d"), div: this.DOM["VRAM0_div"] },
+                    { canvas:this.DOM["VRAM1_canvas"], ctx:this.DOM["VRAM1_canvas"].getContext("2d"), div: this.DOM["VRAM1_div"] },
+                    { canvas:this.DOM["VRAM2_canvas"], ctx:this.DOM["VRAM2_canvas"].getContext("2d"), div: this.DOM["VRAM2_div"] },
+                ];
+
+                // Init the canvases?
+                for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
+                    // if( ! this.vramCanvases[i].canvas.classList.contains("debug_VRAM_view") ){
+                        if(_JSG.loadedConfig.meta.layers[i].bg_color){
+                            // Set background-color.
+                            this.vramCanvases[i].canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[i].bg_color;
+                            
+                            // Draw background-color.
+                            this.vramCanvases[i].ctx.fillStyle = _JSG.loadedConfig.meta.layers[i].bg_color;
+                            this.vramCanvases[i].ctx.fillRect(0,0, this.vramCanvases[i].canvas.width, this.vramCanvases[i].canvas.height);
+                        }
+                        // Set HTML canvas width and height.
+                        this.vramCanvases[i].canvas.width  = _GFX.canvasLayers[0].canvas.width;
+                        this.vramCanvases[i].canvas.height = _GFX.canvasLayers[0].canvas.height;
+                        
+                        // Set CSS canvas width and height.
+                        this.vramCanvases[i].canvas.style.width  = ((this.vramCanvases[i].canvas.width  * 0.90)<< 0).toString() + "px";
+                        this.vramCanvases[i].canvas.style.height = ((this.vramCanvases[i].canvas.height * 0.90)<< 0).toString() + "px";
+
+                        // Add the debug_VRAM_view class.
+                        this.vramCanvases[i].canvas.classList.add("debug_VRAM_view");
+                    }
+                // }
 
                 this.DOM["fade_slider"].addEventListener("input", ()=>{
                     this.setFadeLevel(this.DOM["fade_slider"].value);
@@ -219,7 +307,8 @@ _APP.debug = {
                 }
         
                 // Show the default view.
-                this.showOneView(this.defaultTabKey);
+                // this.showOneView(this.defaultTabKey);
+                this.showOneView("tests");
 
                 resolve();
             });
@@ -251,6 +340,9 @@ _APP.debug = {
             //         console.log("runDebugDisplay: No nav tab/view available for:", _APP.game.gameLoop.gamestate1);
             //     }
             }
+
+            // Update the separated VRAM displays.
+            _APP.debug.tests.updateVramLayerDisplay();
 
             // Do not continue if the current gamestate1 has it's inited flag unset.
             if(!_APP.game.gamestates[gamestate1].inited){ return; }

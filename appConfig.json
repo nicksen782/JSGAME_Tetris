@@ -75,7 +75,14 @@
                     "fade_slider_text": "tetris_app_debug_fade_slider_text",
                     "fade_slider": "tetris_app_debug_fade_slider",
                     "fadeLevels": "tetris_app_debug_fadeLevels",
-                    "fadeTiles" : "tetris_app_debug_fadeTiles"
+                    "fadeTiles" : "tetris_app_debug_fadeTiles",
+                    
+                    "VRAM0_div"    : "tetris_app_debug_VRAM0_div",
+                    "VRAM1_div"    : "tetris_app_debug_VRAM1_div",
+                    "VRAM2_div"    : "tetris_app_debug_VRAM2_div",
+                    "VRAM0_canvas" : "tetris_app_debug_VRAM0_canvas",
+                    "VRAM1_canvas" : "tetris_app_debug_VRAM1_canvas",
+                    "VRAM2_canvas" : "tetris_app_debug_VRAM2_canvas"
                 }
             },
             "gs_title0":{
@@ -124,7 +131,10 @@
         "jsgame_shared_plugins_config":{
             "videoModeA": {
                 "fadeCreateAtStart": false,
-                "debugMode":false
+                "debug":{
+                    "generateAndReturnFadedTiles": false,
+                    "recordPrevChanges"          : true
+                }
             },
             "inputModeA": {
                 "useKeyboard":true,

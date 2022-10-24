@@ -474,3 +474,4 @@ div#tetris_app_debug_nav_view_tests .tetris_app_debug_div1{
     display: inline-block;
     /* background-color: blue; */
 }
+.debug_VRAM_view{ border:1px solid black; }

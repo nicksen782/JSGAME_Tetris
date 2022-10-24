@@ -97,7 +97,7 @@ _APP = {
             };
             try{ outputObj.reason = msg.reason; } catch(e){ outputObj.reason = ""; }
 
-            console.log(
+            console.error(
                 `msg   :`, outputObj.msg    ,  "\n" + 
                 `reason:`, outputObj.reason ,  "\n" + 
                 `url   :`, outputObj.url    ,  "\n" + 
@@ -340,8 +340,8 @@ _APP = {
         return new Promise(async (resolve, reject)=>{
             // appConfig overrides.
             if(_JSG.params.debug){
-                if(_JSG.params.debug=="0"){ _JSG.loadedConfig.meta.debug = false; }
-                else if(_JSG.params.debug=="1"){ _JSG.loadedConfig.meta.debug = true; }
+                if     (_JSG.params.debug=="0"){ _JSG.loadedConfig.meta.debug = false; }
+                else if(_JSG.params.debug=="1"){ _JSG.loadedConfig.meta.debug = true;  }
             }
 
             // Load in the DOM from meta.
@@ -408,6 +408,18 @@ _APP = {
                 }
             }
 
+            //
+            _APP.game.shared.borderTiles1 = {
+                top  : _GFX.cache["tilesBG1"].tilemap.boardborder_top  [0].orgTilemap[2],
+                topL : _GFX.cache["tilesBG1"].tilemap.boardborder_topL [0].orgTilemap[2],
+                topR : _GFX.cache["tilesBG1"].tilemap.boardborder_topR [0].orgTilemap[2],
+                bot  : _GFX.cache["tilesBG1"].tilemap.boardborder_bot  [0].orgTilemap[2],
+                botL : _GFX.cache["tilesBG1"].tilemap.boardborder_botL [0].orgTilemap[2],
+                botR : _GFX.cache["tilesBG1"].tilemap.boardborder_botR [0].orgTilemap[2],
+                left : _GFX.cache["tilesBG1"].tilemap.boardborder_left [0].orgTilemap[2],
+                right: _GFX.cache["tilesBG1"].tilemap.boardborder_right[0].orgTilemap[2],
+            };
+            
             resolve();
         });
     },
@@ -418,23 +430,26 @@ _APP = {
         await _WEBW.videoModeA.video.initFadeSend(true);
 
         // Display the fade tiles in the TESTS tab. 
-        if(_JSG.loadedConfig.meta.debug == true){
+        if(_GFX.config.debug.generateAndReturnFadedTiles == true){
             // BUG: This appears to permanently mess up the framerate once drawn.
-            // _APP.debug.tests.displayFadedTileset();
+            await new Promise( 
+                async (res,rej)=>{ 
+                    await _APP.debug.tests.displayFadedTileset(); 
+                    res(); 
+                } 
+            );
         }
-
-        // Start the gameLoop after a short delay.
-        await new Promise((res,rej)=>{ setTimeout(()=>{res();}, 500); });
-            
-        // Request the next frame.
-        _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: GAMELOOP START.`, "loading");
-        console.log("GAMELOOP START");
-        console.log("");
 
         // Get initial input states.
         await _INPUT.util.getStatesForPlayers();
-
-        // Start the game loop.
-        _APP.game.gameLoop.loop_start();
+        
+        // Start the gameLoop after a short delay.
+        _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: GAMELOOP START.`, "loading");
+        await new Promise((res,rej)=>{ setTimeout(()=>{res();}, 250); });
+        window.requestAnimationFrame(()=>{
+            console.log("GAMELOOP START");
+            console.log("");
+            _APP.game.gameLoop.loop_start();
+        });
     },
 };

@@ -37,12 +37,11 @@ _APP.debug.gameLoop = {
         let table = this.DOM.gameLoopVars_div2.querySelector("table");
         let lastLoopTimeMs = _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop");
         let lastLoopTimeMsTooLong = lastLoopTimeMs > (_APP.game.gameLoop["msFrame"]) ? true : false;
-        if(lastLoopTimeMsTooLong){
-            console.log(`lastLoopTimeMsTooLong: ${lastLoopTimeMs.toFixed(1)} vs ${_APP.game.gameLoop["msFrame"].toFixed(1)}`);
+        if(lastLoopTimeMsTooLong && lastLoopTimeMs > (_APP.game.gameLoop["msFrame"] * 3) ){
+            // console.log(`lastLoopTimeMsTooLong: ${lastLoopTimeMs.toFixed(1)} vs ${_APP.game.gameLoop["msFrame"].toFixed(1)}`);
+            console.log(`lastLoopTimeMsTooLong by : ${(lastLoopTimeMs / _APP.game.gameLoop["msFrame"]).toFixed(1)} frames `);
         }
         let CalcFPS_text = `(${_APP.game.gameLoop.loopType})`;
-        // let frameCounter     = "0x"+_APP.game.gameLoop["frameCounter"]    .toString(16).toUpperCase().padStart(6, "0");
-        // let frameDrawCounter = "0x"+_APP.game.gameLoop["frameDrawCounter"].toString(16).toUpperCase().padStart(6, "0");
         let frameCounter     = _APP.game.gameLoop["frameCounter"]    ;
         let frameDrawCounter = _APP.game.gameLoop["frameDrawCounter"];
         return {
@@ -89,12 +88,12 @@ _APP.debug.gameLoop = {
 
     avgs: {
         keys: {
-            full_gameLoop : { index: 0, max: 10, times: [] },
-            do_fade       : { index: 0, max: 10, times: [] },
-            get_input     : { index: 0, max: 10, times: [] },
-            do_logic      : { index: 0, max: 10, times: [] },
-            do_draw       : { index: 0, max: 10, times: [] },
-            do_debug      : { index: 0, max: 10, times: [] },
+            full_gameLoop : { index: 0, max: 60, times: [] },
+            do_logic      : { index: 0, max: 60, times: [] },
+            do_draw       : { index: 0, max: 60, times: [] },
+            do_debug      : { index: 0, max: 60, times: [] },
+            // do_fade       : { index: 0, max: 10, times: [] },
+            // get_input     : { index: 0, max: 10, times: [] },
         },
         getAvg: function(key){
             // Get the record.
@@ -104,7 +103,7 @@ _APP.debug.gameLoop = {
             let avg = 0;
             let i = rec.max; 
             while (i--) { avg += rec.times[i]; } 
-            avg = ( avg / rec.max);
+            avg = ( avg / rec.max) << 0;
 
             // Return the average.
             return avg;
@@ -195,16 +194,16 @@ _APP.debug.gameLoop = {
         };
 
         this.avgs.addTime("full_gameLoop", _JSG.shared.timeIt.stamp("full_gameLoop" , "pt", "gameLoop"));
-        this.avgs.addTime("do_fade"      , _JSG.shared.timeIt.stamp("do_fade"       , "pt", "gameLoop"));
-        this.avgs.addTime("get_input"    , _JSG.shared.timeIt.stamp("get_input"     , "pt", "gameLoop"));
+        // this.avgs.addTime("do_fade"      , _JSG.shared.timeIt.stamp("do_fade"       , "pt", "gameLoop"));
+        // this.avgs.addTime("get_input"    , _JSG.shared.timeIt.stamp("get_input"     , "pt", "gameLoop"));
         this.avgs.addTime("do_logic"     , _JSG.shared.timeIt.stamp("do_logic"      , "pt", "gameLoop"));
         this.avgs.addTime("do_draw"      , _JSG.shared.timeIt.stamp("do_draw"       , "pt", "gameLoop"));
         this.avgs.addTime("do_debug"     , _JSG.shared.timeIt.stamp("do_debug"      , "pt", "gameLoop"));
 
         let entries = [
             { "key": "full_gameLoop", "pt": this.avgs.getAvg("full_gameLoop"), "%":0, "G":"", "C":[] },
-            { "key": "do_fade"      , "pt": this.avgs.getAvg("do_fade")      , "%":0, "G":"", "C":[] },
-            { "key": "get_input"    , "pt": this.avgs.getAvg("get_input")    , "%":0, "G":"", "C":[] },
+            // { "key": "do_fade"      , "pt": this.avgs.getAvg("do_fade")      , "%":0, "G":"", "C":[] },
+            // { "key": "get_input"    , "pt": this.avgs.getAvg("get_input")    , "%":0, "G":"", "C":[] },
             { "key": "do_logic"     , "pt": this.avgs.getAvg("do_logic")     , "%":0, "G":"", "C":[] },
             { "key": "do_draw"      , "pt": this.avgs.getAvg("do_draw")      , "%":0, "G":"", "C":[] },
             { "key": "do_debug"     , "pt": this.avgs.getAvg("do_debug")     , "%":0, "G":"", "C":[] },

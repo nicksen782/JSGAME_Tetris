@@ -231,80 +231,187 @@ _APP.game.shared = {
 
     // https://www.arduino.cc/reference/en/language/functions/math/map/
     mapNumberToRange: function(x, in_min, in_max, out_min, out_max){
+        // EXAMPLE USAGE: _APP.game.shared.mapNumberToRange(5, 0, 10, 10, 20);
+        // https://www.arduino.cc/reference/en/language/functions/math/map/
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        // function value_limit(val, min, max) {
+            //     return val < min ? min : (val > max ? max : val);
+            // }
+    },
+    limitNumberToRange: function(val, min, max){
+        // EXAMPLE USAGE: _APP.game.shared.limitNumberToRange(11, 0, 10);
+        // https://www.w3resource.com/javascript-exercises/javascript-math-exercise-37.php
+        return val < min ? min : (val > max ? max : val);
     },
 
+    // Created via JSGAME_Tetris.js
+    borderTiles1: {},
+
     // Create a custom tilemap for a border box and optional text.
-    createBorderBox_tilemaps: function(x, y, w, h, li1=0, li2=2, bgTile="grid1", textLines=[], textTileset="tilesTX1"){
+    createBorderBox_tilemaps: function(x, y, w, h, textLines=[], obj={}){
         // NOTE: print assumes that the text tileset's first tilemap is the fontset and that those tiles are generated in ASCII order.
+        // EXAMPLE USAGE: 
+        // _APP.game.shared.createBorderBox_tilemaps( 
+        //     12, 14, 8, 10, 
+        //     [ 
+        //         "LINE", 
+        //         "", 
+        //         "LINE" 
+        //     ], 
+        //     {
+        //         border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
+        //         border_fg  : { li:1 },
+        //         inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+        //         inner_text : { li:1, tsn:"tilesTX1" }
+        //     }
+        // );
 
-        if(!Array.isArray(textLines)){ textLines = []; }
+        // If a key is missing then skip the related operations.
+        if(obj.border_bg  == undefined){ obj.border_bg  = { skip: true }; }
+        if(obj.border_fg  == undefined){ obj.border_fg  = { skip: true }; }
+        if(obj.inner_bg   == undefined){ obj.inner_bg   = { skip: true }; }
+        if(obj.inner_text == undefined){ obj.inner_text = { skip: true }; }
 
-        let tileIds = {
-            top  : _GFX.cache.tilesBG1.tilemap.boardborder_top  [0].orgTilemap[2],
-            topL : _GFX.cache.tilesBG1.tilemap.boardborder_topL [0].orgTilemap[2],
-            topR : _GFX.cache.tilesBG1.tilemap.boardborder_topR [0].orgTilemap[2],
-            bot  : _GFX.cache.tilesBG1.tilemap.boardborder_bot  [0].orgTilemap[2],
-            botL : _GFX.cache.tilesBG1.tilemap.boardborder_botL [0].orgTilemap[2],
-            botR : _GFX.cache.tilesBG1.tilemap.boardborder_botR [0].orgTilemap[2],
-            left : _GFX.cache.tilesBG1.tilemap.boardborder_left [0].orgTilemap[2],
-            right: _GFX.cache.tilesBG1.tilemap.boardborder_right[0].orgTilemap[2],
-        };
-        // tilesBG1: bg1_tile    
-        // tilesBG1: bg2_tile    
-        // tilesBG1: empty_square
-        // tilesBG1: blacktile   
-        // tilesBG1: grid1       
-        try{
-            bgTile = _GFX.cache.tilesBG1.tilemap[bgTile][0].orgTilemap[2];
+        // VARIABLES.
+        let menuTilemap_fg_top;
+        let menuTilemap_fg_left;
+        let menuTilemap_fg_right;
+        let menuTilemap_fg_bottom;
+        let menuTilemap_bg_top;
+        let menuTilemap_bg_left;
+        let menuTilemap_bg_right;
+        let menuTilemap_bg_bottom;
+        let border_bg_tile;
+        let inner_bg_tile;
+        let inner_bg_tilemap;
+        let inner_text_tilemap;
+        let longestString;
+        let newWidth;
+        let newHeight;
+        let char;
+        let returnObj;
+        let borderTiles = this.borderTiles1;
+
+        // Border foreground tilemaps.
+        if(!obj.border_fg.skip){
+            menuTilemap_fg_top    = [ w, 1   ];
+            menuTilemap_fg_left   = [ 1, h-2 ];
+            menuTilemap_fg_right  = [ 1, h-2 ];
+            menuTilemap_fg_bottom = [ w, 1   ];
         }
-        catch(e){
-            console.log(e, JSON.parse(JSON.stringify(bgTile)));
-            bgTile = _GFX.cache.tilesBG1.tilemap.empty_square       [0].orgTilemap[2];
-            console.log(e);
+        
+        // Border background tilemap.
+        if(!obj.border_bg.skip){
+            menuTilemap_bg_top    = [ 0, 0 ];
+            menuTilemap_bg_left   = [ 0, 0 ];
+            menuTilemap_bg_right  = [ 0, 0 ];
+            menuTilemap_bg_bottom = [ 0, 0 ];
+            border_bg_tile;
+            try{ 
+                obj.border_bg.tsn;
+                obj.border_bg.tmn;
+                border_bg_tile = _GFX.cache[obj.border_bg.tsn].tilemap[obj.border_bg.tmn][0].orgTilemap[2]; 
+            } 
+            catch(e){ obj.border_bg = { skip: true }; }
+            if(border_bg_tile != undefined){ 
+                menuTilemap_bg_top    = [ w, 1   ];
+                menuTilemap_bg_left   = [ 1, h-2 ];
+                menuTilemap_bg_right  = [ 1, h-2 ];
+                menuTilemap_bg_bottom = [ w, 1   ];
+            }
+        }
+        
+        // Inner background tilemap.
+        if(!obj.inner_bg.skip){
+            // Check the tile exists.
+            try{ 
+                obj.inner_bg.tsn;
+                obj.inner_bg.tmn;
+                inner_bg_tile = _GFX.cache[obj.inner_bg.tsn].tilemap[obj.inner_bg.tmn][0].orgTilemap[2];
+            }
+            catch(e){ obj.inner_bg = { skip: true }; }
+
+            if(inner_bg_tile != undefined){ 
+                inner_bg_tilemap = [ 0, 0 ];
+                inner_bg_tilemap = [w-2, h-2]; 
+            }
         }
 
-        let menuTilemap = [w, h];
-        let textTilemap = [];
-        if(textLines.length){ textTilemap = [w-2, h-2]; }
-        else{ let textTilemap = [0,0]; }
+        // Inner text tilemap.
+        if(!obj.inner_text.skip){
+            // Convert to empty array if textLines isn't an array.
+            if(!Array.isArray(textLines)){ textLines = []; }
+            if(textLines.length){ 
+                // Determine what the proper dimensions of the text tilemap should be.
+                longestString      = Math.max(...(textLines.map(el => el.length))) ;
+                newWidth           = _APP.game.shared.limitNumberToRange(longestString, 0, w-2);
+                newHeight          = _APP.game.shared.limitNumberToRange(textLines.length, 0, h-2);
+                inner_text_tilemap = [newWidth, newHeight]; 
+            }
+            else{ 
+                obj.inner_text.skip = true;
+            }
+        }
 
+        // Create the tilemaps. 
         for(let yi=0; yi<h; yi+=1){
             for(let xi=0; xi<w; xi+=1){
                 // TOP
                 if(yi == 0){
                     // Draw top-left corner?
-                    if     (xi==0){ menuTilemap.push(tileIds["topL"]); }
+                    if     (xi==0){ 
+                        if(border_bg_tile != undefined){ menuTilemap_bg_top.push(border_bg_tile); }
+                        if(menuTilemap_fg_top) { menuTilemap_fg_top.push(borderTiles["topL"]); }
+                    }
                     
                     // Draw top-right corner?
-                    else if(xi==w-1){ menuTilemap.push(tileIds["topR"]); }
+                    else if(xi==w-1){ 
+                        if(border_bg_tile != undefined){ menuTilemap_bg_top.push(border_bg_tile); }
+                        if(menuTilemap_fg_top) { menuTilemap_fg_top.push(borderTiles["topR"]); }
+                    }
                     
                     // Draw top?
-                    else { menuTilemap.push(tileIds["top"]); }
+                    else { 
+                        if(border_bg_tile != undefined){ menuTilemap_bg_top.push(border_bg_tile); }
+                        if(menuTilemap_fg_top) { menuTilemap_fg_top.push(borderTiles["top"]); }
+                    }
                 }
                 
                 // MIDDLE
                 else if(yi != 0 && yi != h-1){
                     // Draw left?
-                    if     (yi !=h && xi==0){ menuTilemap.push(tileIds["left"]); }
+                    if     (yi !=h && xi==0){ 
+                        if(border_bg_tile != undefined){ menuTilemap_bg_left.push(border_bg_tile); }
+                        if(menuTilemap_fg_left) { menuTilemap_fg_left.push(borderTiles["left"]); }
+                    }
                 
                     // Draw right?
-                    else if(xi==w-1){ menuTilemap.push(tileIds["right"]); }
+                    else if(xi==w-1){ 
+                        if(border_bg_tile != undefined){ menuTilemap_bg_right.push(border_bg_tile); }
+                        if(menuTilemap_fg_right) { menuTilemap_fg_right.push(borderTiles["right"]); }
+                    }
                     
                     // Draw bgTile/text?
                     else { 
-                        // Draw text chars?
-                        if(textLines[yi-1] != undefined){
-                            menuTilemap.push(bgTile);
+                        // Add the inner_bg_tile?
+                        if(inner_bg_tile != undefined){ inner_bg_tilemap.push(inner_bg_tile); }
 
-                            if(textLines.length){
-                                if(textLines[yi-1][xi-1]){ textTilemap.push( textLines[yi-1][xi-1].charCodeAt(0) - 32 ); }
-                                else{ textTilemap.push(" ".charCodeAt(0) -32); }
+                        // Draw text chars?
+                        if(inner_text_tilemap && textLines.length){
+                            // Is there text on this line? (Even if blank).
+                            if(textLines[yi-1] != undefined){
+                                // Skip if this would make x be wider than the longest line's length?
+                                if(xi-1 >= inner_text_tilemap[0]){ continue; }
+                                
+                                // Skip if this would make y be taller than the total number of lines?
+                                if(yi-1 >= inner_text_tilemap[1]){ continue; }
+
+                                // Add the character. If undefined then add a space.
+                                char = textLines[yi-1][xi-1] != undefined ? textLines[yi-1][xi-1] : " ";
+                                inner_text_tilemap.push( char.charCodeAt(0) - 32 );
+
+                                // console.log("H:", yi-1, "VS", inner_text_tilemap[1], ", W:", xi-1, "VS", inner_text_tilemap[0], ", TEXT on line:", (textLines[yi-1] != undefined ? 1 : 0), textLines[yi-1], ", CHAR:", char);
                             }
-                        }
-                        // bgTile only.
-                        else{
-                            menuTilemap.push(bgTile);
                         }
                     }
                 }
@@ -313,46 +420,93 @@ _APP.game.shared = {
                 else if(yi == h-1){
                     // Draw bottom-left corner?
                     if     (xi==0){ 
-                        menuTilemap.push(tileIds["botL"]);
+                        if(border_bg_tile != undefined){ menuTilemap_bg_bottom.push(border_bg_tile); }
+                        if(menuTilemap_fg_bottom) { menuTilemap_fg_bottom.push(borderTiles["botL"]); }
                     }
                     
                     // Draw bottom-right corner?
                     else if(xi==w-1){ 
-                        menuTilemap.push(tileIds["botR"]);
+                        if(border_bg_tile != undefined){ menuTilemap_bg_bottom.push(border_bg_tile); }
+                        if(menuTilemap_fg_bottom) { menuTilemap_fg_bottom.push(borderTiles["botR"]); }
                     }
                     
                     // Draw bottom?
                     else { 
-                        menuTilemap.push(tileIds["bot"]);
+                        if(border_bg_tile != undefined){ menuTilemap_bg_bottom.push(border_bg_tile); }
+                        if(menuTilemap_fg_bottom) { menuTilemap_fg_bottom.push(borderTiles["bot"]); }
                     }
                 }
             }
         }
 
-        return {
-            menu: {
-                x  : x, 
-                y  : y, 
-                tsn: "tilesBG1",
-                li : li1,
-                tm : menuTilemap,
-            },
-            text: {
-                x  : x+1, 
-                y  : y+1, 
-                tsn: "tilesTX1",
-                li : li2,
-                tm : textTilemap,
+        // Create the base returnObj.
+        returnObj = {
+            border_bg:  { skip: true },
+            border_fg:  { skip: true },
+            inner_bg:   { skip: true },
+            inner_text: { skip: true },
+        };
+
+        // Add border_fg?
+        if(!obj.border_fg.skip){
+            returnObj.border_fg = {
+                t:{ x: x    , y: y    , tsn:"tilesBG1", li: obj.border_fg.li, tm: menuTilemap_fg_top    },
+                l:{ x: x    , y: y+1  , tsn:"tilesBG1", li: obj.border_fg.li, tm: menuTilemap_fg_left   },
+                r:{ x: x+w-1, y: y+1  , tsn:"tilesBG1", li: obj.border_fg.li, tm: menuTilemap_fg_right  },
+                b:{ x: x    , y: y+h-1, tsn:"tilesBG1", li: obj.border_fg.li, tm: menuTilemap_fg_bottom },
             }
         };
+
+        // Add border_bg?
+        if(!obj.border_bg.skip){
+            returnObj.border_bg = {
+                t:{ x: x    , y: y    , tsn:obj.border_bg.tsn, li: obj.border_bg.li, tm :menuTilemap_bg_top    },
+                l:{ x: x    , y: y+1  , tsn:obj.border_bg.tsn, li: obj.border_bg.li, tm :menuTilemap_bg_left   },
+                r:{ x: x+w-1, y: y+1  , tsn:obj.border_bg.tsn, li: obj.border_bg.li, tm :menuTilemap_bg_right  },
+                b:{ x: x    , y: y+h-1, tsn:obj.border_bg.tsn, li: obj.border_bg.li, tm :menuTilemap_bg_bottom },
+            };
+        }
+        
+        // Add inner_bg?
+        if(!obj.inner_bg.skip){
+            returnObj.inner_bg = { x: x+1, y: y+1, tsn: obj.inner_bg.tsn, li: obj.inner_bg.li, tm: inner_bg_tilemap };
+        }
+
+        // Add inner_text?
+        if(!obj.inner_text.skip){
+            returnObj.inner_text = { x: x+1, y: y+1, tsn: obj.inner_text.tsn, li: obj.inner_text.li, tm: inner_text_tilemap };
+        }
+
+        // Return the completed object and tilemaps.
+        return returnObj;
     },
+
     // Draw a previously created border box and optional text.
     drawBorderBox_tilemaps: function(o){
-        if(o.menu.tm.length > 2){
-            _GFX.util.tiles.drawTilemap_custom( { x: o.menu.x, y: o.menu.y, tsn: o.menu.tsn, li: o.menu.li, tm: o.menu.tm } );
+        // Border background.
+        if(!o.border_bg.skip){
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_bg.t.x, y: o.border_bg.t.y, tsn: o.border_bg.t.tsn, li: o.border_bg.t.li, tm: o.border_bg.t.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_bg.l.x, y: o.border_bg.l.y, tsn: o.border_bg.l.tsn, li: o.border_bg.l.li, tm: o.border_bg.l.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_bg.r.x, y: o.border_bg.r.y, tsn: o.border_bg.r.tsn, li: o.border_bg.r.li, tm: o.border_bg.r.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_bg.b.x, y: o.border_bg.b.y, tsn: o.border_bg.b.tsn, li: o.border_bg.b.li, tm: o.border_bg.b.tm } );
         }
-        if(o.text.tm.length > 2){
-            _GFX.util.tiles.drawTilemap_custom( { x: o.text.x, y: o.text.y, tsn: o.text.tsn, li: o.text.li, tm: o.text.tm } );
+        
+        // Border foreground.
+        if(!o.border_fg.skip){
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_fg.t.x, y: o.border_fg.t.y, tsn: o.border_fg.t.tsn, li: o.border_fg.t.li, tm: o.border_fg.t.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_fg.l.x, y: o.border_fg.l.y, tsn: o.border_fg.l.tsn, li: o.border_fg.l.li, tm: o.border_fg.l.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_fg.r.x, y: o.border_fg.r.y, tsn: o.border_fg.r.tsn, li: o.border_fg.r.li, tm: o.border_fg.r.tm } );
+            _GFX.util.tiles.drawTilemap_custom( { x: o.border_fg.b.x, y: o.border_fg.b.y, tsn: o.border_fg.b.tsn, li: o.border_fg.b.li, tm: o.border_fg.b.tm } );
+        }
+
+        // Inner background.
+        if(!o.inner_bg.skip){
+            _GFX.util.tiles.drawTilemap_custom( { x: o.inner_bg.x, y: o.inner_bg.y, tsn: o.inner_bg.tsn, li: o.inner_bg.li, tm: o.inner_bg.tm } );
+        }
+        
+        // Inner text.
+        if(!o.inner_text.skip){
+            _GFX.util.tiles.drawTilemap_custom( { x: o.inner_text.x, y: o.inner_text.y, tsn: o.inner_text.tsn, li: o.inner_text.li, tm: o.inner_text.tm } );
         }
     },
 
