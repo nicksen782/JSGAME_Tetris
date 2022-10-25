@@ -9,7 +9,7 @@
             "pointersSize" : 8,
             "tileWidth" : 8,
             "tileHeight": 8,
-            "rows":30, 
+            "rows":32, 
             "cols":32
         }, 
         "DOM": {
@@ -77,6 +77,7 @@
                     "fadeLevels": "tetris_app_debug_fadeLevels",
                     "fadeTiles" : "tetris_app_debug_fadeTiles",
                     
+                    "VRAM_copy"    : "tetris_app_debug_VRAM_copy",
                     "VRAM0_div"    : "tetris_app_debug_VRAM0_div",
                     "VRAM1_div"    : "tetris_app_debug_VRAM1_div",
                     "VRAM2_div"    : "tetris_app_debug_VRAM2_div",

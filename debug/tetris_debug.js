@@ -207,6 +207,30 @@ _APP.debug = {
             // this.DOM["VRAM2_div"]
         },
 
+        copyCombinedCanvasToClipboard: function(){
+            let canvas = document.createElement("canvas");
+            canvas.width  = this.vramCanvases[0].canvas.width;
+            canvas.height = this.vramCanvases[0].canvas.height;
+            let ctx = canvas.getContext("2d");
+
+            if(_JSG.loadedConfig.meta.layers[0].bg_color){
+                // Set background-color.
+                canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[0].bg_color;
+                
+                // Draw background-color.
+                ctx.fillStyle = _JSG.loadedConfig.meta.layers[0].bg_color;
+                ctx.fillRect(0,0, canvas.width, canvas.height);
+            }
+
+            for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
+                ctx.drawImage(this.vramCanvases[i].canvas, 0, 0);
+            }
+
+            canvas.toBlob(function(blob) { 
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]); 
+            });
+        },
         init: async function(parent){
             return new Promise(async (resolve,reject)=>{
                 // Set parent(s)
@@ -245,6 +269,7 @@ _APP.debug = {
                     }
                 // }
 
+                this.DOM["VRAM_copy"].addEventListener("click", ()=>{ this.copyCombinedCanvasToClipboard(); }, false);
                 this.DOM["fade_slider"].addEventListener("input", ()=>{
                     this.setFadeLevel(this.DOM["fade_slider"].value);
                     this.DOM["fade_slider_text"].innerText = this.DOM["fade_slider"].value;
