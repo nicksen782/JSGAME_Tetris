@@ -551,7 +551,9 @@ _APP.game.shared = {
 
     // General timers.
     generalTimers: {},
-    createGeneralTimer: function(name, maxFrames, gamestate){
+
+    // Create a new timer.
+    createGeneralTimer: function(name, maxFrames, step, gamestate){
         // Creates a timer. 
         // Is updated/checked with checkGeneralTimer.
         // A timer must be cleared or recreated after it finishes before it can be reused. (resetGeneralTimer/createGeneralTimer)
@@ -559,12 +561,17 @@ _APP.game.shared = {
         if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
         if(this.generalTimers[gamestate] == undefined){ this.generalTimers[gamestate] = {}; }
 
+        // Make sure that a step value is set.
+        if(step == undefined){ step = 1; }
+
         this.generalTimers[gamestate][name] = {
             finished  : false,
             maxFrames : maxFrames,
             frameCount: 0,
+            step      : step,
         };
     },
+    // Reset a timer to it's initial values.
     resetGeneralTimer: function(name, gamestate){
         if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
 
@@ -578,8 +585,27 @@ _APP.game.shared = {
             finished  : false,
             maxFrames : this.generalTimers[gamestate][name].maxFrames,
             frameCount: 0,
+            step      : this.generalTimers[gamestate][name].step,
         };
     },
+    // Sets a timer to values to match the state of being finished.
+    finishGeneralTimer: function(name, gamestate){
+        if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
+
+        if(!this.generalTimers[gamestate][name]){ 
+            console.error("ERROR: finishGeneralTimer: This timer does not exist:", name);
+            return; 
+        }
+
+        // Finish the timer. 
+        this.generalTimers[gamestate][name] = {
+            finished  : true,
+            maxFrames : this.generalTimers[gamestate][name].maxFrames,
+            frameCount: this.generalTimers[gamestate][name].maxFrames,
+            step      : this.generalTimers[gamestate][name].step,
+        };
+    },
+    // Checks a timer and updates it's frameCount.
     checkGeneralTimer: function(name, gamestate){
         // Returns true if the timer is complete.
         // Otherwise this function will update the timer and return if it is finished.
@@ -602,7 +628,11 @@ _APP.game.shared = {
             this.generalTimers[gamestate][name].finished = true;
         }
         else{
-            this.generalTimers[gamestate][name].frameCount += 1;
+            // Increment by 1.
+            // this.generalTimers[gamestate][name].frameCount += 1;
+            
+            // Increment by step.
+            this.generalTimers[gamestate][name].frameCount += this.generalTimers[gamestate][name].step;
         }
 
         return this.generalTimers[gamestate][name].finished;

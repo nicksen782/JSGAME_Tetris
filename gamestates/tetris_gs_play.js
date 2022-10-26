@@ -10,8 +10,24 @@ _APP.game.gamestates["gs_play"] = {
         _draw      : {},
     },
 
+    // consts.dropSpeeds  = [
+    //     game.secondsToFrames(1.00) , // 0
+    //     game.secondsToFrames(0.90) , // 1
+    //     game.secondsToFrames(0.80) , // 2
+    //     game.secondsToFrames(0.70) , // 3
+    //     game.secondsToFrames(0.60) , // 4
+    //     game.secondsToFrames(0.50) , // 5
+    //     game.secondsToFrames(0.40) , // 6
+    //     game.secondsToFrames(0.30) , // 7
+    //     game.secondsToFrames(0.20) , // 8
+    //     game.secondsToFrames(0.15) , // 9
+    //     // game.secondsToFrames(0.05) , // 10 // This was too fast and blocked user input.
+    // ];
+
     // mode: "multi",
     playField: {
+        // 
+        
         // Copy from here.
         _core: {
             // Start positions for the relative drawings.
@@ -59,39 +75,153 @@ _APP.game.gamestates["gs_play"] = {
                 "I": { tsn:"tilesG1" , x:4+(4*6), y:28, li:1, tmn:"I_map_small" },
             },
 
-            // FUNCTIONS - STATS
-            gameStats_update: function(key, value){
-                this.gameStats[key].value = value;
-            },
-            gameStats_draw: function(){
-                for(let key in this.gameStats){
-                    _GFX.util.tiles.print( 
-                        { 
-                            tsn: "tilesTX1", 
-                            x  : this.gameStats[key].x+6, 
-                            y  : this.gameStats[key].y, 
-                            li : 1, 
-                            str: this.gameStats[key].value.toString().padStart(6, "0") 
-                        } 
-                    );
-                }
-            },
-            pieceStats_update: function(key, value){
-                this.pieceStats[key].value = value;
-            },
-            pieceStats_draw: function(){
-                for(let key in this.pieceStats){
-                    _GFX.util.tiles.print(
-                        { 
-                            tsn: "tilesTX1", 
-                            x  : this.pieceStats[key].x, 
-                            y  : this.pieceStats[key].y, 
-                            li : 1, 
-                            str: this.pieceStats[key].value.toString().padStart(3, "0") 
+            // FUNCTIONS
+            funcs: {
+                // FUNCTIONS - STATS
+                gameStats_update: function(key, value){
+                    this.gameStats[key].value = value;
+                },
+                gameStats_draw: function(){
+                    for(let key in this.gameStats){
+                        _GFX.util.tiles.print( 
+                            { 
+                                tsn: "tilesTX1", 
+                                x  : this.gameStats[key].x+6, 
+                                y  : this.gameStats[key].y, 
+                                li : 1, 
+                                str: this.gameStats[key].value.toString().padStart(6, "0") 
+                            } 
+                        );
+                    }
+                },
+                pieceStats_update: function(key, value){
+                    this.pieceStats[key].value = value;
+                },
+                pieceStats_draw: function(){
+                    for(let key in this.pieceStats){
+                        _GFX.util.tiles.print(
+                            { 
+                                tsn: "tilesTX1", 
+                                x  : this.pieceStats[key].x, 
+                                y  : this.pieceStats[key].y, 
+                                li : 1, 
+                                str: this.pieceStats[key].value.toString().padStart(3, "0") 
+                            }
+                        );
+                    }
+                },
+    
+                // FUNCTIONS - PIECES LANDED
+                addPieceToLanded_debug: function(){
+                    for(let y=14, yl=this.piecesField.length; y<yl; y+=1){
+                        this.piecesField[y] = [" ", "L", "Z", "O", "S", "J", "Z", "I", "T", " " ];
+                    }
+                    this.piecesField[this.piecesField.length-3] = ["O", "J", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
+                    this.piecesField[this.piecesField.length-2] = ["O", "L", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
+                    this.piecesField[this.piecesField.length-1] = ["O", "T", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
+                    this.drawLandedPieces();
+                    this.detectLineCompletions();
+                    // for(let i=0; i<11; i+=1){
+                    //     this.doLineCompletionAnimation();
+                    //     this.drawLandedPieces();
+                    // }
+                },
+                addPieceToLanded: function(){
+                },
+                drawLandedPieces: function(){
+                    for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
+                        for(let x=0, xl=this.piecesField[y].length; x<xl; x+=1){
+                            let tilemapName;
+                            // Background tiles. 
+                            switch(this.piecesField[y][x]){
+                                case " ": { tilemapName = "transparent_tile"; break; }
+                                case "X": { tilemapName = "X_tile"; break; }
+                                case "T": { tilemapName = "T_bgtile"; break; }
+                                case "L": { tilemapName = "L_bgtile"; break; }
+                                case "Z": { tilemapName = "Z_bgtile"; break; }
+                                case "O": { tilemapName = "O_bgtile"; break; }
+                                case "S": { tilemapName = "S_bgtile"; break; }
+                                case "J": { tilemapName = "J_bgtile"; break; }
+                                case "I": { tilemapName = "I_bgtile"; break; }
+                                default: { console.error("drawLandedPieces: Invalid piece value:", this.piecesField[y][x]); return; break; }
+                            };
+                            _GFX.util.tiles.drawTilemap( { 
+                                tsn: "tilesG1", 
+                                x  : x + this.playfield.x + 1, 
+                                y  : y + this.playfield.y + 1, 
+                                li : 2, 
+                                tmn: tilemapName
+                            } );
                         }
-                    );
-                }
+                    }
+                },
+                detectLineCompletions: function(){
+                    let lineNumbersCompleted = [];
+                    for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
+                        if(this.piecesField[y].indexOf(" ") == -1){ lineNumbersCompleted.push({ line: y, count: 0, state:0, prev: this.piecesField[y].slice() } ); }
+                    }
+                    // console.log("updateLineCompletions: lineNumbersCompleted:", lineNumbersCompleted);
+                    this.lineNumbersCompleted = lineNumbersCompleted;
+                    return lineNumbersCompleted.length ? true : false;
+                },
+                doLineCompletionAnimation: function(){
+                    let line;
+                    let allLinesDone = false;
+                    for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
+                        // Save the line number to save some space here.
+                        line = this.lineNumbersCompleted[i].line; 
+
+                        // Change the values on even iterations of count.
+                        if(this.lineNumbersCompleted[i].count % 2 == 0){ this.piecesField[line].fill("X"); }
+                        
+                        // Return the values to their previous values on odd iterations of the count.
+                        else                                           { this.piecesField[line] = this.lineNumbersCompleted[i].prev.slice(); }
+                        
+                        // Increment the count. 
+                        this.lineNumbersCompleted[i].count += 1;
+                        
+                        // If the count is over then remove this line from lineNumbersCompleted.
+                        if(this.lineNumbersCompleted[i].count > 10){ 
+                            // this.lineNumbersCompleted.splice(i, 1); 
+                            // this.piecesField[line].fill(" ");
+                            // this.piecesField[line].splice(line, 1);
+                            // this.piecesField.unshift( Array(10).fill(" ") );
+                            this.piecesField[line].fill("X");
+                            allLinesDone = true;
+                        }
+                    }
+
+                    if(!allLinesDone){ 
+                        // console.log("Lines still remain to be cleared."); 
+                    }
+                    else{ 
+                        console.log("No more lines to clear."); 
+                        for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
+                            // Save the line number to save some space here.
+                            line = this.lineNumbersCompleted[i].line; 
+                            console.log("removing line:", line);
+
+                            console.log( this.piecesField[line], line);
+                            // console.log( this.piecesField[line].splice(line, 1) );
+                            // this.piecesField.unshift( Array(10).fill("T") );
+                            // this.lineNumbersCompleted.splice(i, 1); 
+                        }
+                        this.lineNumbersCompleted = []; 
+                        this.piecesField = this.piecesField.filter(c=>{ 
+                            console.log(c, c.includes("X"));
+                            return ! c.includes("X")
+                        });
+                        this.piecesField.unshift();
+                        this.piecesField.unshift();
+                        this.piecesField.unshift();
+
+                        // Move the pieces down.
+                        console.table(this.lineNumbersCompleted);
+                        console.table(_APP.game.gamestates["gs_play"].playField.single.piecesField);
+                    }
+                },
             },
+            
         },
 
         // Same init for single, multi (p1, p2).
@@ -113,14 +243,15 @@ _APP.game.gamestates["gs_play"] = {
                 // Create the mainKey object if it does not exist.
                 if(!this[mainKey]){ this[mainKey] = {}; }
 
-                // Copy some of the _core values and functions.
+                // Copy some of the _core values.
                 this[mainKey].playfield  = JSON.parse(JSON.stringify(this._core.playfield));
                 this[mainKey].gameStats  = JSON.parse(JSON.stringify(this._core.gameStats));
                 this[mainKey].pieceStats = JSON.parse(JSON.stringify(this._core.pieceStats_text));
-                this[mainKey].pieceStats_update = this._core.pieceStats_update;
-                this[mainKey].pieceStats_draw   = this._core.pieceStats_draw;
-                this[mainKey].gameStats_update  = this._core.gameStats_update;
-                this[mainKey].gameStats_draw    = this._core.gameStats_draw;
+                
+                // Copy the _core functions.
+                for(func in this._core.funcs){
+                    this[mainKey][func] = this._core.funcs[func];
+                }
     
                 // Adjust the playfield.
                 this[mainKey].playfield.x += this._core.home[mainKey].x;
@@ -153,6 +284,15 @@ _APP.game.gamestates["gs_play"] = {
                     // Set the value to 0.
                     this[mainKey].pieceStats_update(keys[i], 0);
                 }
+
+                // Create the piecesField array of arrays for this player. 
+                this[mainKey].piecesField = [];
+                for(let y=0, yl=this[mainKey].playfield.h-2; y<yl; y+=1){
+                    this[mainKey].piecesField.push( Array(this[mainKey].playfield.w-2).fill(" ") );
+                }
+
+                // Create the lineNumbersCompleted array.
+                this[mainKey].lineNumbersCompleted = [];
     
                 // Print the top player label.
                 _GFX.util.tiles.print( { 
@@ -179,6 +319,23 @@ _APP.game.gamestates["gs_play"] = {
                         }
                     )
                 );
+
+                // Draw the playfield (DEBUG).
+                // _APP.game.shared.drawBorderBox_tilemaps(
+                //     _APP.game.shared.createBorderBox_tilemaps( 
+                //         this[mainKey].playfield.x, 
+                //         this[mainKey].playfield.y, 
+                //         this[mainKey].playfield.w, 
+                //         this[mainKey].playfield.h, 
+                //         [], 
+                //         {
+                //             // border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
+                //             border_fg  : { li:2 },
+                //             // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+                //             // inner_text : { li:1, tsn:"tilesTX1" }
+                //         }
+                //     )
+                // );
     
                 // Print the player label for the piece stats.
                 _GFX.util.tiles.print( { 
@@ -213,8 +370,7 @@ _APP.game.gamestates["gs_play"] = {
         },
     },
 
-    // pieces: {
-    // },
+   
 
     inited: false,
 
@@ -247,21 +403,130 @@ _APP.game.gamestates["gs_play"] = {
         // Background - grey.
         // _GFX.util.tiles.fillWithOneTile_tilemap({ tmn:"bg6_tile", x:0, y:0, w:dimensions.cols, h:dimensions.rows, tsn:"tilesBG1", li:0 });
 
+        // TIMERS
+        _APP.game.shared.createGeneralTimer("inputDelay", 1);
+        _APP.game.shared.createGeneralTimer("dropDelay", 1);
+        _APP.game.shared.createGeneralTimer("lineClearDelay", 10);
+
+        // _APP.game.shared.resetGeneralTimer("inputDelay")
+        // _APP.game.shared.resetGeneralTimer("dropDelay")
+        // _APP.game.shared.resetGeneralTimer("lineClearDelay")
+        
+        // _APP.game.shared.checkGeneralTimer("inputDelay")
+        // _APP.game.shared.checkGeneralTimer("dropDelay")
+        // _APP.game.shared.checkGeneralTimer("lineClearDelay")
+        
+        // _APP.game.shared.finishGeneralTimer("inputDelay")
+        // _APP.game.shared.finishGeneralTimer("dropDelay")
+        // _APP.game.shared.finishGeneralTimer("lineClearDelay")
+
         this.inited = true; 
 
         let players = 1;
         // let players = 2;
         this.playField.init(players);
+
+        _APP.game.gamestates["gs_play"].playField.single.addPieceToLanded_debug();
     },
 
     // Main function of this game state. Calls other functions/handles logic, etc.
     main: async function(){
+        // Run init and return if this gamestate is not yet inited.
         if(!this.inited){ this.init(); return; }
 
-        if(_INPUT.util.checkButton("p1", "press", [] )){
-            _APP.game.changeGamestate1("gs_title0");
+        
+        if(_APP.game.shared.checkGeneralTimer("lineClearDelay")){
+            _APP.game.shared.resetGeneralTimer("lineClearDelay");
+            _APP.game.gamestates["gs_play"].playField.single.doLineCompletionAnimation();
+            _APP.game.gamestates["gs_play"].playField.single.drawLandedPieces();
+        }
+
+        // Is gameover? 
+        // if(this.gameover){ 
+            // Change the gamestate.
+            //
+
+            // Return.
+            // return; 
+        // }
+
+        // BUTTON INPUT: PAUSE/UNPAUSE? 
+        if(_INPUT.util.checkButton("p1", "press", "BTN_START" )){
+            // _APP.game.changeGamestate1("gs_title0");
+            
+
+            // Not paused? Pause it.
+            // if(!this.paused){
+                // Copy the current VRAM.
+                //
+
+                // Hide sprites.
+                //
+
+                // Pause the music.
+                //
+    
+                // Set the paused flag. 
+                // this.paused = true;
+    
+                // Return.
+            // }
+            
+            // Already paused? Unpause it.
+            // else{
+                // Clear the paused flag.
+                // this.paused = false;
+                
+                // Restore the previously saved VRAM.
+                //
+
+                // Restore sprites.
+                //
+
+                // Unpause the music.
+                //
+    
+                // Return.
+                // return; 
+            // }
+
             return; 
         }
+
+        // If paused then return; 
+        /*
+        if(this.paused){ return; }
+        */
+
+        // Line being removed?
+        /*
+        if(this.linesBeingRemoved){
+            // Done with clearing animation?
+            //
+
+            // No? Add to the timer.
+        }
+        */
+       
+        // Move the piece down?
+        /*
+        */
+       
+        // BUTTON INPUT
+        /*
+        */
+
+        // BUTTON INPUT: piece rotation
+        /*
+        */
+
+        // BUTTON INPUT: horizontal movement
+        /*
+        */
+
+        // BUTTON INPUT: downward movement (slow drop/quick drop).
+        /*
+        */
     },
 
 };
