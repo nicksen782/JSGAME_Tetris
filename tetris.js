@@ -376,6 +376,7 @@ _APP = {
             if(_JSG.loadedConfig.meta.debug == true){
                 // Move the game's debugDiv to the JSGAME lobby debug div. (debug tab.)
                 this.DOM["lobby_nav_view_debug"].append(this.DOM["app_debugDiv"]);
+                this.DOM["lobby_nav_view_debug"].style.height = "750px";
                 
                 // Unhide the app_debugDiv.
                 this.DOM["app_debugDiv"].classList.remove("hide");

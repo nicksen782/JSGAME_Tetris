@@ -333,7 +333,8 @@ _APP.debug = {
         
                 // Show the default view.
                 // this.showOneView(this.defaultTabKey);
-                this.showOneView("tests");
+                // this.showOneView("tests");
+                this.showOneView("gs_play");
 
                 resolve();
             });
@@ -409,6 +410,20 @@ _APP.debug = {
                 // data =_APP.debug.gs_title2.getVarsObj_vars();
                 // this.generateDebugTable1(data);
             }
+            else if(gamestate1 == "gs_play"){
+                // debug
+                // data =_APP.debug.gs_play.getVarsObj_vars();
+                // this.generateDebugTable1(data);
+
+                // debug
+                if(!_APP.game.gamestates[gamestate1].inited){ console.log("gs_play not inited yet"); }
+                if(_APP.game.gamestates[gamestate1].inited){
+                    data =_APP.debug.gs_play.showPieces();
+                    if(data){ this.generateDebugTable1(data); }
+                    data =_APP.debug.gs_play.showTimers();
+                    if(data){ this.generateDebugTable1(data); }
+                }
+            }
         },
 
         // Create a multi-row table.
@@ -433,6 +448,7 @@ _APP.debug = {
 
                     // Previous data.
                     td        = table.querySelector(`td[key="${key1}"]`);
+                    // labelTd   = td.closest("tr").querySelector("td:nth-child(1)");
                     valueHash = td.getAttribute("valuehash");
                     value     = td.getAttribute("value");
 
@@ -441,9 +457,11 @@ _APP.debug = {
                         td.innerText = rec.toString().trim().padEnd(padEndLen, padEndChar);
                         td.setAttribute("valuehash", recHash)
                         td.setAttribute("value", rec)
+                        // labelTd.classList.add("updated");
                         td.classList.add("updated");
                     }
                     else{
+                        // labelTd.classList.remove("updated");
                         td.classList.remove("updated");
                     }
                 }
@@ -571,6 +589,7 @@ _APP.debug = {
             await this.gs_title0.init(this);
             await this.gs_title1.init(this);
             await this.gs_title2.init(this);
+            await this.gs_play.init(this);
             
             resolve();
         });

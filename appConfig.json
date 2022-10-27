@@ -107,6 +107,8 @@
             },
             "gs_play":{
                 "DOM": {
+                    "timers": "tetris_app_debug_timers",
+                    "pieces": "tetris_app_debug_pieces"
                 }
             }
         },

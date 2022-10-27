@@ -113,20 +113,11 @@ _APP.game.gamestates["gs_play"] = {
     
                 // FUNCTIONS - PIECES LANDED
                 addPieceToLanded_debug: function(){
-                    for(let y=14, yl=this.piecesField.length; y<yl; y+=1){
-                        this.piecesField[y] = [" ", "L", "Z", "O", "S", "J", "Z", "I", "T", " " ];
-                    }
-                    this.piecesField[this.piecesField.length-3] = ["O", "J", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
-                    this.piecesField[this.piecesField.length-2] = ["O", "L", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
-                    this.piecesField[this.piecesField.length-1] = ["O", "T", "Z", "O", "S", "J", "Z", "I", "T", "O" ];
-                    this.drawLandedPieces();
-                    this.detectLineCompletions();
-                    // for(let i=0; i<11; i+=1){
-                    //     this.doLineCompletionAnimation();
-                    //     this.drawLandedPieces();
-                    // }
-                },
-                addPieceToLanded: function(){
+                    this.piecesField[this.piecesField.length-5] = [ "L", "Z", "O", "S", "J", "Z", "I", "T", " ", " " ];
+                    this.piecesField[this.piecesField.length-4] = [ "O", "J", "Z", "O", "S", "I", "Z", "T", "T", "O" ];
+                    this.piecesField[this.piecesField.length-3] = [ "O", "L", "Z", "I", "S", "J", "Z", "I", "T", "O" ];
+                    this.piecesField[this.piecesField.length-2] = [ "O", "T", "Z", "O", "I", "J", "I", "I", "T", "O" ];
+                    this.piecesField[this.piecesField.length-1] = [ " ", "L", "Z", "O", "S", "J", "Z", "I", "T", " " ];
                 },
                 drawLandedPieces: function(){
                     for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
@@ -149,7 +140,7 @@ _APP.game.gamestates["gs_play"] = {
                                 tsn: "tilesG1", 
                                 x  : x + this.playfield.x + 1, 
                                 y  : y + this.playfield.y + 1, 
-                                li : 2, 
+                                li : 1, 
                                 tmn: tilemapName
                             } );
                         }
@@ -181,7 +172,7 @@ _APP.game.gamestates["gs_play"] = {
                         this.lineNumbersCompleted[i].count += 1;
                         
                         // If the count is over then remove this line from lineNumbersCompleted.
-                        if(this.lineNumbersCompleted[i].count > 10){ 
+                        if(this.lineNumbersCompleted[i].count > 7){ 
                             // this.lineNumbersCompleted.splice(i, 1); 
                             // this.piecesField[line].fill(" ");
                             // this.piecesField[line].splice(line, 1);
@@ -195,30 +186,45 @@ _APP.game.gamestates["gs_play"] = {
                         // console.log("Lines still remain to be cleared."); 
                     }
                     else{ 
-                        console.log("No more lines to clear."); 
+                        // The piecesField should end up with the same number of rows that it started with.
+                        // console.log("No more lines to clear."); 
                         for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
-                            // Save the line number to save some space here.
-                            line = this.lineNumbersCompleted[i].line; 
-                            console.log("removing line:", line);
-
-                            console.log( this.piecesField[line], line);
-                            // console.log( this.piecesField[line].splice(line, 1) );
-                            // this.piecesField.unshift( Array(10).fill("T") );
-                            // this.lineNumbersCompleted.splice(i, 1); 
+                            // Add a blank line to the top.
+                            this.piecesField.unshift( Array(10).fill(" ") );
                         }
+                        
+                        // Clear out the lineNumbersCompleted.
                         this.lineNumbersCompleted = []; 
-                        this.piecesField = this.piecesField.filter(c=>{ 
-                            console.log(c, c.includes("X"));
-                            return ! c.includes("X")
-                        });
-                        this.piecesField.unshift();
-                        this.piecesField.unshift();
-                        this.piecesField.unshift();
 
                         // Move the pieces down.
-                        console.table(this.lineNumbersCompleted);
-                        console.table(_APP.game.gamestates["gs_play"].playField.single.piecesField);
+                        // Remove all rows in piecesField where it includes "X".
+                        this.piecesField = this.piecesField.filter(c=>{ 
+                            return ! c.includes("X")
+                        });
+
+                        // console.table(this.lineNumbersCompleted);
+                        // console.table(_APP.game.gamestates["gs_play"].playField.single.piecesField);
                     }
+                },
+                addPieceToLanded: function(){
+                },
+
+                // FUNCTIONS - MOVING PIECES
+                spawnPiece: function(piece){
+                    console.log("spawnPiece:", piece);
+                    switch(piece){
+                        case "T": { tilemapName = "T_sgtile"; break; }
+                        case "L": { tilemapName = "L_sgtile"; break; }
+                        case "Z": { tilemapName = "Z_sgtile"; break; }
+                        case "O": { tilemapName = "O_sgtile"; break; }
+                        case "S": { tilemapName = "S_sgtile"; break; }
+                        case "J": { tilemapName = "J_sgtile"; break; }
+                        case "I": { tilemapName = "I_sgtile"; break; }
+                        default: { console.error("spawnPiece: Invalid piece value:", piece); return; break; }
+                    };
+
+                    this.currPiece = piece;
+                    this.currPieceRotation = 0;
                 },
             },
             
@@ -360,6 +366,9 @@ _APP.game.gamestates["gs_play"] = {
                     w  : 30, h:3, 
                     tsn: "tilesBG1", li:0 
                 });
+
+                this[mainKey].currPiece         = undefined;
+                this[mainKey].currPieceRotation = undefined;
             }
     
             // Draw the piece stats images.
@@ -370,7 +379,11 @@ _APP.game.gamestates["gs_play"] = {
         },
     },
 
-   
+    config: {
+        players          : undefined,
+        paused           : undefined,
+    },
+    unpausedVRAM: undefined,
 
     inited: false,
 
@@ -404,29 +417,26 @@ _APP.game.gamestates["gs_play"] = {
         // _GFX.util.tiles.fillWithOneTile_tilemap({ tmn:"bg6_tile", x:0, y:0, w:dimensions.cols, h:dimensions.rows, tsn:"tilesBG1", li:0 });
 
         // TIMERS
-        _APP.game.shared.createGeneralTimer("inputDelay", 1);
-        _APP.game.shared.createGeneralTimer("dropDelay", 1);
-        _APP.game.shared.createGeneralTimer("lineClearDelay", 10);
+        for(let mainKey of ["single", "p1", "p2"]){
+            _APP.game.shared.createGeneralTimer(mainKey + "inputDelay", 1);
+            _APP.game.shared.createGeneralTimer(mainKey + "dropDelay", 1);
+            _APP.game.shared.createGeneralTimer(mainKey + "lineClearDelay", 8);
+        }
+        // _APP.game.shared.resetGeneralTimer("")
+        // _APP.game.shared.finishGeneralTimer("")
 
-        // _APP.game.shared.resetGeneralTimer("inputDelay")
-        // _APP.game.shared.resetGeneralTimer("dropDelay")
-        // _APP.game.shared.resetGeneralTimer("lineClearDelay")
-        
-        // _APP.game.shared.checkGeneralTimer("inputDelay")
-        // _APP.game.shared.checkGeneralTimer("dropDelay")
-        // _APP.game.shared.checkGeneralTimer("lineClearDelay")
-        
-        // _APP.game.shared.finishGeneralTimer("inputDelay")
-        // _APP.game.shared.finishGeneralTimer("dropDelay")
-        // _APP.game.shared.finishGeneralTimer("lineClearDelay")
+        for(let key in this.config){
+            this.config[key] = undefined;
+        }
 
         this.inited = true; 
 
-        let players = 1;
-        // let players = 2;
-        this.playField.init(players);
+        this.config.paused  = false;
+        this.config.players = 1;
+        // this.players = 2;
 
-        _APP.game.gamestates["gs_play"].playField.single.addPieceToLanded_debug();
+        // let players = 2;
+        this.playField.init(this.config.players);
     },
 
     // Main function of this game state. Calls other functions/handles logic, etc.
@@ -434,80 +444,159 @@ _APP.game.gamestates["gs_play"] = {
         // Run init and return if this gamestate is not yet inited.
         if(!this.inited){ this.init(); return; }
 
+        let mainKey;
+        let pkey   ;
+        for(let p=0; p<this.config.players; p+=1){
+            // Generate the player key to be used here. 
+            if(this.config.players == 1){ mainKey = `single` ; pkey  = `p1`; }
+            else                        { mainKey = `p${p+1}`; pkey  = mainKey; }
+
+            // BUTTON INPUT: PAUSE/UNPAUSE? 
+            if(_INPUT.util.checkButton(pkey, "press", "BTN_START" )){
+                // console.log("BTN_START pressed");
+            
+                // Not paused? Pause it.
+                if(!this.config.paused){
+                    console.log("pausing");
+                    // Copy the current VRAM.
+                    let dimensions = _JSG.loadedConfig.meta.dimensions;
+                    this.unpausedVRAM = _GFX.util.VRAM.getVramRegion({x:0,y:0,w:dimensions.cols,h:dimensions.rows,l:[0,2]});
+                    _GFX.VRAM.clearVram();
+
+                    // Display the pause text.
+                    _APP.game.shared.drawBorderBox_tilemaps(
+                        _APP.game.shared.createBorderBox_tilemaps( 
+                            this.playField[mainKey].playfield.x-5, 
+                            this.playField[mainKey].playfield.y-5, 
+                            this.playField[mainKey].playfield.w-5, 
+                            this.playField[mainKey].playfield.h-5, 
+                            [
+                                "PAUSE"
+                            ], 
+                            {
+                                border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
+                                border_fg  : { li:1 },
+                                inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+                                inner_text : { li:1, tsn:"tilesTX1" }
+                            }
+                        )
+                    );
+
+                    // console.log(this.unpausedVRAM);
+
+                    // Hide sprites.
+                    //
+
+                    // Pause the music.
+                    //
+
+                    // Draw the pause screen.
         
-        if(_APP.game.shared.checkGeneralTimer("lineClearDelay")){
-            _APP.game.shared.resetGeneralTimer("lineClearDelay");
-            _APP.game.gamestates["gs_play"].playField.single.doLineCompletionAnimation();
-            _APP.game.gamestates["gs_play"].playField.single.drawLandedPieces();
-        }
-
-        // Is gameover? 
-        // if(this.gameover){ 
-            // Change the gamestate.
-            //
-
-            // Return.
-            // return; 
-        // }
-
-        // BUTTON INPUT: PAUSE/UNPAUSE? 
-        if(_INPUT.util.checkButton("p1", "press", "BTN_START" )){
-            // _APP.game.changeGamestate1("gs_title0");
-            
-
-            // Not paused? Pause it.
-            // if(!this.paused){
-                // Copy the current VRAM.
-                //
-
-                // Hide sprites.
-                //
-
-                // Pause the music.
-                //
-    
-                // Set the paused flag. 
-                // this.paused = true;
-    
-                // Return.
-            // }
-            
-            // Already paused? Unpause it.
-            // else{
-                // Clear the paused flag.
-                // this.paused = false;
+                    // Set the paused flag. 
+                    this.config.paused = true;
+        
+                    // Return.
+                }
                 
-                // Restore the previously saved VRAM.
+                // Already paused? Unpause it.
+                else{
+                    console.log("unpausing");
+                    // Clear the paused flag.
+                    this.config.paused = false;
+                    
+                    // Restore the previously saved VRAM.
+                    _GFX.util.VRAM.setVramRegion(this.unpausedVRAM);
+                    //
+
+                    // Restore sprites.
+                    //
+
+                    // Unpause the music.
+                    //
+        
+                    // Return.
+                    // return; 
+                }
+
+                // return; 
+            }
+
+            // PAUSED
+            if(this.config.paused){ return; }
+
+            // GAME OVER 
+            // if(this.gameover){ 
+                // Change the gamestate.
                 //
 
-                // Restore sprites.
-                //
-
-                // Unpause the music.
-                //
-    
                 // Return.
                 // return; 
             // }
 
-            return; 
+            // LINE ANIMATION/REMOVAL
+            
+            // Are lines waiting to be animated/removed?
+            if(this.playField[mainKey].lineNumbersCompleted.length){
+                // Is it time to do an animation/removal?
+                if(_APP.game.shared.checkGeneralTimer(mainKey + "lineClearDelay")){
+                    // Do the animation/remove and then draw.
+                    this.playField[mainKey].doLineCompletionAnimation();
+                    this.playField[mainKey].drawLandedPieces();
+
+                    // Reset the timer for the next run.
+                    _APP.game.shared.resetGeneralTimer(mainKey + "lineClearDelay");
+                }
+
+                // Line animations/removals must be completed before other operations can run.
+                return;
+            }
+            else{
+                // Check for line completions.
+                this.playField[mainKey].detectLineCompletions();
+            }
+
+            // PIECE DROP
+            /*
+            if(this.quickDrop || _APP.game.shared.checkGeneralTimer(mainKey + "dropDelay")){
+                // Piece can drop. 
+
+                // Can it drop?: YES
+                if( this.playField[mainKey].canPieceGoDown() ){
+                    // DROP IT.
+                }
+                
+                // Can it drop?: NO
+                else{
+                    // Gameover?: Is this piece at the top? YES
+                    if( this.playField[mainKey].pieceisAtTop() ){
+                        if(this.quickDrop){ this.quickDrop = false; return; }
+                        this.gameover = true; 
+                        
+                        // Gameover animation.
+                        //
+                        
+                        // Clear the playfield.
+                        if( this.playField[mainKey].clearThePlayfield() ){
+
+                        return; 
+                    }
+
+                    // Gameover?: Is this piece at the top? NO
+                    else{
+                        // Land the piece, update pieceField, load the next piece.
+                        //
+                    }
+                }
+
+                // Quick drop? ( Piece must end it's drop before other operations can continue. )
+                if(this.quickDrop){ return; }
+            }
+            */
+
         }
 
-        // If paused then return; 
-        /*
-        if(this.paused){ return; }
-        */
+        return; 
 
-        // Line being removed?
-        /*
-        if(this.linesBeingRemoved){
-            // Done with clearing animation?
-            //
-
-            // No? Add to the timer.
-        }
-        */
-       
         // Move the piece down?
         /*
         */

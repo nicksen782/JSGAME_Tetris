@@ -182,7 +182,16 @@
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_setup2">gs_setup2</div>
 
         <!-- gs_play -->
-        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_play">gs_play</div>
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_play">
+            <div>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.single.spawnPiece("T");'>(S) spawnPiece (T)</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.single.addPieceToLanded_debug();'>(S) addPieceToLanded_debug</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.p1.addPieceToLanded_debug();'>(P1) addPieceToLanded_debug</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.p2.addPieceToLanded_debug();'>(P2) addPieceToLanded_debug</button>
+            </div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_pieces"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_timers"></div>
+        </div>
 
         <!-- gs_highscores -->
         <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_highscores">gs_highscores</div>
