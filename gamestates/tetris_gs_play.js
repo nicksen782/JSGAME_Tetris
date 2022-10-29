@@ -28,6 +28,52 @@ _APP.game.gamestates["gs_play"] = {
     playField: {
         // 
         
+        // Tetriminos spawnIndexs and matrixes of rotations.
+        pieceSpawnIndexes: {
+            "T":2,
+            "L":1,
+            "Z":0,
+            "O":0,
+            "S":0,
+            "J":3,
+            "I":0,
+        },
+        pieces : {
+            "T" : [
+                [ [1,2],[2,2],[3,2],[2,1] ], // T up
+                [ [2,1],[2,2],[3,2],[2,3] ], // T right
+                [ [1,2],[2,2],[3,2],[2,3] ], // T down (spawn)
+                [ [2,1],[1,2],[2,2],[2,3] ]  // T left
+            ] ,
+            "L" : [
+                [ [2,1],[2,2],[2,3],[3,3] ], // L right
+                [ [1,2],[2,2],[3,2],[1,3] ], // L down (SPAWN)
+                [ [1,1],[2,1],[2,2],[2,3] ], // L left
+                [ [3,1],[1,2],[2,2],[3,2] ]  // L up
+            ] ,
+            "Z" : [
+                [ [1,2],[2,2],[2,3],[3,3] ], // Z horizontal (spawn)
+                [ [3,1],[2,2],[3,2],[2,3] ], // Z vertical
+            ] ,
+            "O" : [
+                [ [1,2],[2,2],[1,3],[2,3] ], // O (SPAWN)
+            ] ,
+            "S" : [
+                [ [2,2],[3,2],[1,3],[2,3] ], // S horizontal (SPAWN)
+                [ [2,1],[2,2],[3,2],[3,3] ], // S vertical
+            ] ,
+            "J" : [
+                [ [2,1],[2,2],[1,3],[2,3] ], // J left
+                [ [1,1],[1,2],[2,2],[3,2] ], // J up
+                [ [2,1],[3,1],[2,2],[2,3] ], // J right
+                [ [1,2],[2,2],[3,2],[3,3] ]  // J down (SPAWN)
+            ] ,
+            "I" : [
+                [ [2,0],[2,1],[2,2],[2,3] ], // I vertical (SPAWN)
+                [ [0,2],[1,2],[2,2],[3,2] ], // I horizontal 
+            ]
+        },
+
         // Copy from here.
         _core: {
             // Start positions for the relative drawings.
@@ -207,25 +253,178 @@ _APP.game.gamestates["gs_play"] = {
                     }
                 },
                 addPieceToLanded: function(){
+                    // Convert the currPiece tiles to tiles on layer 1 and remove the currPiece from layer 2.
                 },
 
                 // FUNCTIONS - MOVING PIECES
+                generateRandomPiece: function(){
+                    let keys = ["T","L", "Z","O", "S","J", "I"];
+                    let min = 0;
+                    let max = keys.length -1;
+                    let next = Math.floor(Math.random() * (max - min + 1)) + min;
+                    return keys[next];
+                },
+                spawnNextPiece: function(){
+                    this.spawnPiece(this.nextPiece);
+                },
                 spawnPiece: function(piece){
-                    console.log("spawnPiece:", piece);
+                    // console.log("spawnPiece:", piece);
                     switch(piece){
-                        case "T": { tilemapName = "T_sgtile"; break; }
-                        case "L": { tilemapName = "L_sgtile"; break; }
-                        case "Z": { tilemapName = "Z_sgtile"; break; }
-                        case "O": { tilemapName = "O_sgtile"; break; }
-                        case "S": { tilemapName = "S_sgtile"; break; }
-                        case "J": { tilemapName = "J_sgtile"; break; }
-                        case "I": { tilemapName = "I_sgtile"; break; }
+                        case "T": { tilemapName = "T_sptile"; break; }
+                        case "L": { tilemapName = "L_sptile"; break; }
+                        case "Z": { tilemapName = "Z_sptile"; break; }
+                        case "O": { tilemapName = "O_sptile"; break; }
+                        case "S": { tilemapName = "S_sptile"; break; }
+                        case "J": { tilemapName = "J_sptile"; break; }
+                        case "I": { tilemapName = "I_sptile"; break; }
                         default: { console.error("spawnPiece: Invalid piece value:", piece); return; break; }
                     };
 
-                    this.currPiece = piece;
-                    this.currPieceRotation = 0;
+                    // Save this piece as the currPiece.
+                    this.currPiece         = piece;
+                    this.currPieceTilemap  = tilemapName;
+
+                    // Set the default starting rotation.
+                    this.currPieceRotation = this.parent.pieceSpawnIndexes[piece];
+
+                    // Set the default x and y for this piece.
+                    this.currPieceX        =  2;
+                    this.currPieceY        = -2;
+
+                    // Generate the nextPiece.
+                    this.nextPiece = this.generateRandomPiece();
+
+                    // Draw the currPiece.
+                    this.drawCurrentPiece();
                 },
+                drawCurrentPiece: function(){
+                    let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
+
+                    // DEBUG: Display currPieceX and currPieceY and matrix.
+                    _GFX.util.tiles.fillWithOneTile_tilemap({ 
+                        tmn:"X_tile782", 
+                        // tmn:"X_tile", 
+                        x  : this.currPieceX + (this.playfield.x+1), 
+                        y  : this.currPieceY + (this.playfield.y+1), 
+                        w:5, 
+                        h:5, 
+                        // tsn:"tilesG1", 
+                        tsn:"tilesLOAD", 
+                        li:2 
+                    });
+
+                    // Draw each part of the current piece and rotation.
+                    for(let piece of rec){
+                        // console.log(piece);
+                        _GFX.util.tiles.drawTilemap( { 
+                            tsn: "tilesSP1", 
+                            x  : this.currPieceX + (this.playfield.x+1) + piece[0], 
+                            y  : this.currPieceY + (this.playfield.y+1) + piece[1], 
+                            li : 2, 
+                            tmn: this.currPieceTilemap
+                        } );
+                    }
+                },
+                boundingBoxCollision: function(rect1, rect2){
+                    // Sharing same coordinate.
+                    // if( rect1.x==rect2.x && rect1.y==rect2.y ) { return true; }
+                    if(0){}
+                    // Rect within rect.
+                    else{
+                        return (
+                            rect1.x < rect2.x + rect2.w &&
+                            rect1.x + rect1.w > rect2.x &&
+                            rect1.y < rect2.y + rect2.h &&
+                            rect1.h + rect1.y > rect2.y
+                        );
+                    }
+                },
+
+                // Playfield boundary check. Works for movement. Supports all rotations during movement.
+                boundaryCheck_move: function(dir){
+                    // return true; 
+                    let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
+                    if(rec == undefined){
+                        console.error("rec is undefined. Probably a bad index.", this.parent.pieces[this.currPiece], "rotation index:", this.currPieceRotation);
+                        return false;
+                    }
+                    let rect2 = {
+                        x:this.playfield.x+1, 
+                        y:this.playfield.y+1, 
+                        w:this.playfield.w-2, 
+                        h:this.playfield.h-2
+                    };
+
+                    // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
+                    // We WANT a collision in this case.
+                    for(let piece of rec){
+                        let pieceX = piece[0] + rect2.x + this.currPieceX;
+                        let pieceY = piece[1] + rect2.y + this.currPieceY;
+                        if     (dir == "ROTATE")   {
+                            if( (pieceY) < rect2.y            ){ return false; } // Boundary test: UP
+                            if( (pieceX) < rect2.x            ){ return false; } // Boundary test: LEFT
+                            if( (pieceY) > rect2.y + rect2.h-2){ return false; } // Boundary test: DOWN
+                            if( (pieceX) > rect2.x + rect2.w-2){ return false; } // Boundary test: RIGHT
+                        }
+                        else if(dir == "UP")   {
+                            if( (pieceY) < rect2.y +1){ 
+                                // console.log("BLOCKED:", dir); 
+                                return false; 
+                            }
+                        }
+                        else if(dir == "LEFT") {
+                            if( (pieceX) < rect2.x +1){ 
+                                // console.log("BLOCKED:", dir); 
+                                return false; 
+                            }
+                        }
+                        else if(dir == "DOWN") {
+                            if( (pieceY) > rect2.y + rect2.h-2){ 
+                                // console.log("BLOCKED:", dir); 
+                                return false; 
+                            }
+                        }
+                        else if(dir == "RIGHT"){
+                            if( (pieceX) > rect2.x + rect2.w-2){ 
+                                // console.log("BLOCKED:", dir); 
+                                return false; 
+                            }
+                        }
+                    }
+                    return true; 
+                },
+                // Playfield boundary check. Works for rotations.
+                boundaryCheck_rotate: function(rotationDir){
+                    let pieceRotations = this.parent.pieces[this.currPiece];
+                    let prevRotation = this.currPieceRotation;
+
+                    // BTN_A
+                    if(rotationDir == 1){
+                        // Rotation index bounds check.
+                        if(this.currPieceRotation + 1 < pieceRotations.length){ this.currPieceRotation += 1; }
+                        else                                                  { this.currPieceRotation =  0; }
+                    }
+                    // BTN_B
+                    else if(rotationDir == -1){
+                        // Rotation index bounds check.
+                        if(this.currPieceRotation -1 >= 0){ this.currPieceRotation -= 1; }
+                        else                              { this.currPieceRotation = pieceRotations.length-1; }
+                    }
+
+                    // Try this rotation with no direction check.
+                    let canRotate = this.boundaryCheck_move("ROTATE");
+
+                    // If it can rotate then return true.
+                    if(canRotate){ return true; }
+                    // If it cannot rotate then restore the previous rotation value and return false.
+                    else{
+                        this.currPieceRotation = prevRotation;
+                        return false;
+                    }
+                },
+
+                landedPiecesCheck_move: function(dir){},
+                landedPiecesCheck_rotation: function(rotationDir){},
             },
             
         },
@@ -248,12 +447,15 @@ _APP.game.gamestates["gs_play"] = {
 
                 // Create the mainKey object if it does not exist.
                 if(!this[mainKey]){ this[mainKey] = {}; }
+                
+                // Set the parent.
+                this[mainKey].parent = this;
 
                 // Copy some of the _core values.
                 this[mainKey].playfield  = JSON.parse(JSON.stringify(this._core.playfield));
                 this[mainKey].gameStats  = JSON.parse(JSON.stringify(this._core.gameStats));
                 this[mainKey].pieceStats = JSON.parse(JSON.stringify(this._core.pieceStats_text));
-                
+
                 // Copy the _core functions.
                 for(func in this._core.funcs){
                     this[mainKey][func] = this._core.funcs[func];
@@ -367,6 +569,7 @@ _APP.game.gamestates["gs_play"] = {
                     tsn: "tilesBG1", li:0 
                 });
 
+                this[mainKey].nextPiece         = this[mainKey].generateRandomPiece();
                 this[mainKey].currPiece         = undefined;
                 this[mainKey].currPieceRotation = undefined;
             }
@@ -451,79 +654,6 @@ _APP.game.gamestates["gs_play"] = {
             if(this.config.players == 1){ mainKey = `single` ; pkey  = `p1`; }
             else                        { mainKey = `p${p+1}`; pkey  = mainKey; }
 
-            // BUTTON INPUT: PAUSE/UNPAUSE? 
-            if(_INPUT.util.checkButton(pkey, "press", "BTN_START" )){
-                // console.log("BTN_START pressed");
-            
-                // Not paused? Pause it.
-                if(!this.config.paused){
-                    console.log("pausing");
-                    // Copy the current VRAM.
-                    let dimensions = _JSG.loadedConfig.meta.dimensions;
-                    this.unpausedVRAM = _GFX.util.VRAM.getVramRegion({x:0,y:0,w:dimensions.cols,h:dimensions.rows,l:[0,2]});
-                    _GFX.VRAM.clearVram();
-
-                    // Display the pause text.
-                    _APP.game.shared.drawBorderBox_tilemaps(
-                        _APP.game.shared.createBorderBox_tilemaps( 
-                            this.playField[mainKey].playfield.x-5, 
-                            this.playField[mainKey].playfield.y-5, 
-                            this.playField[mainKey].playfield.w-5, 
-                            this.playField[mainKey].playfield.h-5, 
-                            [
-                                "PAUSE"
-                            ], 
-                            {
-                                border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
-                                border_fg  : { li:1 },
-                                inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
-                                inner_text : { li:1, tsn:"tilesTX1" }
-                            }
-                        )
-                    );
-
-                    // console.log(this.unpausedVRAM);
-
-                    // Hide sprites.
-                    //
-
-                    // Pause the music.
-                    //
-
-                    // Draw the pause screen.
-        
-                    // Set the paused flag. 
-                    this.config.paused = true;
-        
-                    // Return.
-                }
-                
-                // Already paused? Unpause it.
-                else{
-                    console.log("unpausing");
-                    // Clear the paused flag.
-                    this.config.paused = false;
-                    
-                    // Restore the previously saved VRAM.
-                    _GFX.util.VRAM.setVramRegion(this.unpausedVRAM);
-                    //
-
-                    // Restore sprites.
-                    //
-
-                    // Unpause the music.
-                    //
-        
-                    // Return.
-                    // return; 
-                }
-
-                // return; 
-            }
-
-            // PAUSED
-            if(this.config.paused){ return; }
-
             // GAME OVER 
             // if(this.gameover){ 
                 // Change the gamestate.
@@ -533,26 +663,123 @@ _APP.game.gamestates["gs_play"] = {
                 // return; 
             // }
 
+            // BUTTON INPUT: PAUSE/UNPAUSE? 
+            if(_INPUT.util.checkButton(pkey, "press", "BTN_START" )){
+                // Not paused? Pause it.
+                if(!this.config.paused){
+                    // Copy the current VRAM.
+                    let dimensions = _JSG.loadedConfig.meta.dimensions;
+                    this.unpausedVRAM = _GFX.util.VRAM.getVramRegion( { 
+                        x: 0, 
+                        y: 0, 
+                        w: dimensions.cols, 
+                        h: dimensions.rows, 
+                        l: [0, 1, 2] 
+                    } );
+                    _GFX.VRAM.clearVram();
+
+                    // Display the pause text.
+                    _APP.game.shared.drawBorderBox_tilemaps(
+                        _APP.game.shared.createBorderBox_tilemaps( 
+                            ((dimensions.cols/2) - (10/2)) << 0, // x
+                            ((dimensions.rows/2) - (6/2))  << 0, // y
+                            10, // w
+                            6,  // h
+                            [
+                                "",
+                                "  GAME  ",
+                                " PAUSED ",
+                                "",
+                            ], 
+                            {
+                                // border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
+                                border_fg  : { li:1 },
+                                // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+                                inner_text : { li:1, tsn:"tilesTX1" }
+                            }
+                        )
+                    );
+
+                    // Hide sprites.
+                    //
+
+                    // Pause the music.
+                    //
+
+                    // Draw the pause screen.
+
+                    // Set the paused flag. 
+                    this.config.paused = true;
+
+                    // End the loop for this player.
+                    continue;
+                }
+                
+                // Already paused? Unpause it.
+                else{
+                    // Clear the paused flag.
+                    this.config.paused = false;
+                    
+                    // Restore the previously saved VRAM.
+                    _GFX.VRAM.clearVram();
+                    _GFX.util.VRAM.setVramRegion(this.unpausedVRAM);
+                    //
+
+                    // Restore sprites.
+                    //
+
+                    // Unpause the music.
+                    //
+
+                    // End the loop for this player.
+                    continue; 
+                }
+            }
+
+            // PAUSED
+            if(this.config.paused){ 
+                // End the loop for all players.
+                return; 
+            }
+
             // LINE ANIMATION/REMOVAL
             
             // Are lines waiting to be animated/removed?
             if(this.playField[mainKey].lineNumbersCompleted.length){
                 // Is it time to do an animation/removal?
                 if(_APP.game.shared.checkGeneralTimer(mainKey + "lineClearDelay")){
+                    let howManyLines = this.playField[mainKey].lineNumbersCompleted.length; 
+
                     // Do the animation/remove and then draw.
                     this.playField[mainKey].doLineCompletionAnimation();
                     this.playField[mainKey].drawLandedPieces();
 
                     // Reset the timer for the next run.
                     _APP.game.shared.resetGeneralTimer(mainKey + "lineClearDelay");
+
+                    // Lines fully removed? 
+                    if(this.playField[mainKey].lineNumbersCompleted.length == 0){
+                        // Assign points based on the number of lines and the level.
+                        //
+                    }
                 }
 
-                // Line animations/removals must be completed before other operations can run.
-                return;
+                // Line animations/removals must be completed before the player can continue.
+                // End the loop for this player.
+                continue;
             }
             else{
                 // Check for line completions.
                 this.playField[mainKey].detectLineCompletions();
+            }
+
+            // SPAWN NEXT PIECE.
+            if(!this.playField[mainKey].currPiece){
+                // Spawn the nextPiece, generate a new nextPiece, draw the new currPiece.
+                this.playField[mainKey].spawnNextPiece();
+
+                // End the loop for this player. 
+                continue;
             }
 
             // PIECE DROP
@@ -592,30 +819,99 @@ _APP.game.gamestates["gs_play"] = {
                 if(this.quickDrop){ return; }
             }
             */
+           
+            // DEBUG: Free movement of a piece.
+            if( _INPUT.util.checkButton(pkey, "press", ["BTN_UP", "BTN_DOWN", "BTN_LEFT", "BTN_RIGHT", "BTN_A", "BTN_B", "BTN_X", "BTN_Y", "BTN_SL", "BTN_SR"] ) ){
+                let moved = false;
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_UP"]    ) ){ 
+                    //
+                    if(this.playField[mainKey].boundaryCheck_move("UP")){
+                        this.playField[mainKey].currPieceY -= 1;
+                        moved = true;
+                    }
+                    // console.log("Pressed: BTN_UP"); 
+                }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_DOWN"]  ) ){ 
+                    //
+                    if(this.playField[mainKey].boundaryCheck_move("DOWN")){
+                        this.playField[mainKey].currPieceY += 1;
+                        moved = true;
+                    }
+                }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_LEFT"]  ) ){ 
+                    //
+                    if(this.playField[mainKey].boundaryCheck_move("LEFT")){
+                        this.playField[mainKey].currPieceX -= 1;
+                        moved = true;
+                    }
+                }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_RIGHT"] ) ){ 
+                    //
+                    if(this.playField[mainKey].boundaryCheck_move("RIGHT")){
+                        this.playField[mainKey].currPieceX += 1;
+                        moved = true;
+                    }
+                }
 
+                let rotated = false;
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_A"]     ) ){ 
+                    // console.log("Pressed: BTN_A"); 
+                    if(this.playField[mainKey].boundaryCheck_rotate(1)){
+                        rotated = true; 
+                    }
+                }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_B"]     ) ){ 
+                    // console.log("Pressed: BTN_B"); 
+                    if(this.playField[mainKey].boundaryCheck_rotate(-1)){
+                        rotated = true; 
+                    }
+                }
+
+                if(moved || rotated){
+                    // Clear with the transparent_tile.
+                    // DEBUG: Clear with the blacktile.
+                    _GFX.util.tiles.fillWithOneTile_tilemap({ 
+                        tmn:"X_tile", 
+                        x:this.playField[mainKey].playfield.x+1, 
+                        y:this.playField[mainKey].playfield.y+1, 
+                        w:this.playField[mainKey].playfield.w-2, 
+                        h:this.playField[mainKey].playfield.h-2, 
+                        tsn:"tilesG1", 
+                        li:2 
+                    });
+    
+                    // console.log("pos x,y:", this.playField[mainKey].currPieceX, this.playField[mainKey].currPieceY);
+                    this.playField[mainKey].drawCurrentPiece();
+                }
+
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_X"]     ) ){ console.log("Pressed: BTN_X"); }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_Y"]     ) ){ console.log("Pressed: BTN_Y"); }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_SL"]    ) ){ console.log("Pressed: BTN_SL"); _APP.game.gameLoop.loop_restart_sameStates(); return; }
+                if( _INPUT.util.checkButton(pkey, "press", ["BTN_SR"]    ) ){ console.log("Pressed: BTN_SR"); }
+            }
+           
+            // Move the piece down?
+            /*
+            */
+          
+            // BUTTON INPUT
+            /*
+            */
+          
+            // BUTTON INPUT: piece rotation
+            /*
+            */
+          
+            // BUTTON INPUT: horizontal movement
+            /*
+            */
+          
+            // BUTTON INPUT: downward movement (slow drop/quick drop).
+            /*
+            */
+
+            continue; 
         }
-
-        return; 
-
-        // Move the piece down?
-        /*
-        */
-       
-        // BUTTON INPUT
-        /*
-        */
-
-        // BUTTON INPUT: piece rotation
-        /*
-        */
-
-        // BUTTON INPUT: horizontal movement
-        /*
-        */
-
-        // BUTTON INPUT: downward movement (slow drop/quick drop).
-        /*
-        */
     },
 
 };

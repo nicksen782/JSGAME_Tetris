@@ -83,7 +83,14 @@
                     "VRAM2_div"    : "tetris_app_debug_VRAM2_div",
                     "VRAM0_canvas" : "tetris_app_debug_VRAM0_canvas",
                     "VRAM1_canvas" : "tetris_app_debug_VRAM1_canvas",
-                    "VRAM2_canvas" : "tetris_app_debug_VRAM2_canvas"
+                    "VRAM2_canvas" : "tetris_app_debug_VRAM2_canvas",
+                    
+                    "VRAM0_saved_div"   : "tetris_app_debug_VRAM0_saved_div",
+                    "VRAM1_saved_div"   : "tetris_app_debug_VRAM1_saved_div",
+                    "VRAM2_saved_div"   : "tetris_app_debug_VRAM2_saved_div",
+                    "VRAM0_saved_canvas": "tetris_app_debug_VRAM0_saved_canvas",
+                    "VRAM1_saved_canvas": "tetris_app_debug_VRAM1_saved_canvas",
+                    "VRAM2_saved_canvas": "tetris_app_debug_VRAM2_saved_canvas"
                 }
             },
             "gs_title0":{

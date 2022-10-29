@@ -161,6 +161,7 @@ _APP.debug = {
         },
 
         vramCanvases: [],
+        saved_vramCanvases: [],
 
         updateVramLayerDisplay: function(){
             let changeCount = Object.keys(_GFX.VRAM.prevDrawn_changes).length;
@@ -177,6 +178,7 @@ _APP.debug = {
             }
 
             if( !changeCount){ return; }
+            let changedLayers = new Set();
             for(let key in changes){
                 let change = changes[key];
 
@@ -200,11 +202,14 @@ _APP.debug = {
                 // Draw to the destination. 
                 this.vramCanvases[change.layerIndex].ctx.drawImage(tile, (change.x * dimensions.tileWidth), (change.y * dimensions.tileHeight));
 
+                // Add to the changed layers.
+                changedLayers.add(change.layerIndex);
             };
             
-            // this.DOM["VRAM0_div"]
-            // this.DOM["VRAM1_div"]
-            // this.DOM["VRAM2_div"]
+            // Update the hover title for changed canvas layers withthe last change time.
+            for (const val of changedLayers) {
+                this.vramCanvases[val].canvas.title = new Date().toLocaleString();;
+              }
         },
 
         copyCombinedCanvasToClipboard: function(){
@@ -231,6 +236,72 @@ _APP.debug = {
                 navigator.clipboard.write([item]); 
             });
         },
+
+        showSavedVramRegions: function(){
+            // _APP.game.gamestates["gs_play"].unpausedVRAM;
+
+            // Return if the saved vram has not been set yet. 
+            if(_APP.game.gamestates["gs_play"].unpausedVRAM != undefined){
+                if( Object.keys(_APP.game.gamestates["gs_play"].unpausedVRAM).length ){
+                    let dimensions  = _JSG.loadedConfig.meta.dimensions;
+                    let tilesetNames = Object.keys(_GFX.cache);
+                    let tile;
+                    let tileset;
+
+                    // For each layerIndex...
+                    for(layerIndex in _APP.game.gamestates["gs_play"].unpausedVRAM){
+                        let layer = _APP.game.gamestates["gs_play"].unpausedVRAM[layerIndex]; 
+
+                        // Check the lastChange the new lastChange time. Skip if they match. Update if they don't.
+                        if(this.saved_vramCanvases[layer.l].lastChange == layer.lastChange){ continue; } 
+                        
+                        // New data. Update the lastChange.
+                        this.saved_vramCanvases[layer.l].lastChange = layer.lastChange;
+
+                        // Update the hover title for the canvas with the last change time.
+                        this.saved_vramCanvases[layer.l].canvas.title = layer.lastChange.toLocaleString();
+
+                        // Pre-clear the layer.
+                        this.saved_vramCanvases[layer.l].ctx.clearRect(
+                            (0), (0),
+                            (dimensions.tileWidth * dimensions.cols), (dimensions.tileHeight * dimensions.rows)
+                        );
+
+                        // Draw the data in it's entirety. Any not included tile will be transparent.
+
+                        // For each row...
+                        for(yi=0, yl=_APP.game.gamestates["gs_play"].unpausedVRAM[layerIndex].h; yi<yl; yi+=1){
+                            // For each col...
+                            for(xi=0, xl=layer.w; xi<xl; xi+=1){
+                                // Get the vram index from within the copied region.
+                                vramIndex2 = ((yi) * (layer.w *2)) + ((xi) * 2);
+
+                                // Make sure not to send any undefined values. 
+                                if(layer.vram[vramIndex2 + 1] == undefined || layer.vram[vramIndex2 + 0] == undefined){ 
+                                    console.error("showSavedVramRegions: undefined values found: ", layer.vram[vramIndex2 + 0], layer.vram[vramIndex2 + 1]);
+                                    continue; 
+                                }
+
+                                // Get the tileset.
+                                tileset = _GFX.cache[ tilesetNames[ layer.vram[vramIndex2 + 0] ] ].tileset;
+
+                                // Get the tile.
+                                tile = tileset[ layer.vram[vramIndex2 + 1] ].canvas ;
+
+                                // Draw the tile.
+                                this.saved_vramCanvases[layer.l].ctx.drawImage(
+                                    tile, 
+                                    ((layer.x + xi) * dimensions.tileWidth), 
+                                    ((layer.y + yi) * dimensions.tileHeight)
+                                );
+                            }
+                        }
+
+                    }
+                }
+            }
+        },
+
         init: async function(parent){
             return new Promise(async (resolve,reject)=>{
                 // Set parent(s)
@@ -240,34 +311,55 @@ _APP.debug = {
                 await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
                 this.vramCanvases = [
-                    { canvas:this.DOM["VRAM0_canvas"], ctx:this.DOM["VRAM0_canvas"].getContext("2d"), div: this.DOM["VRAM0_div"] },
-                    { canvas:this.DOM["VRAM1_canvas"], ctx:this.DOM["VRAM1_canvas"].getContext("2d"), div: this.DOM["VRAM1_div"] },
-                    { canvas:this.DOM["VRAM2_canvas"], ctx:this.DOM["VRAM2_canvas"].getContext("2d"), div: this.DOM["VRAM2_div"] },
+                    { canvas:this.DOM["VRAM0_canvas"]      , ctx:this.DOM["VRAM0_canvas"]      .getContext("2d") },
+                    { canvas:this.DOM["VRAM1_canvas"]      , ctx:this.DOM["VRAM1_canvas"]      .getContext("2d") },
+                    { canvas:this.DOM["VRAM2_canvas"]      , ctx:this.DOM["VRAM2_canvas"]      .getContext("2d") },
+                ];
+                this.saved_vramCanvases = [
+                    { "lastChange": 0, canvas:this.DOM["VRAM0_saved_canvas"], ctx:this.DOM["VRAM0_saved_canvas"].getContext("2d") },
+                    { "lastChange": 0, canvas:this.DOM["VRAM1_saved_canvas"], ctx:this.DOM["VRAM1_saved_canvas"].getContext("2d") },
+                    { "lastChange": 0, canvas:this.DOM["VRAM2_saved_canvas"], ctx:this.DOM["VRAM2_saved_canvas"].getContext("2d") },
                 ];
 
                 // Init the canvases?
-                for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
-                    // if( ! this.vramCanvases[i].canvas.classList.contains("debug_VRAM_view") ){
-                        if(_JSG.loadedConfig.meta.layers[i].bg_color){
-                            // Set background-color.
-                            this.vramCanvases[i].canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[i].bg_color;
-                            
-                            // Draw background-color.
-                            this.vramCanvases[i].ctx.fillStyle = _JSG.loadedConfig.meta.layers[i].bg_color;
-                            this.vramCanvases[i].ctx.fillRect(0,0, this.vramCanvases[i].canvas.width, this.vramCanvases[i].canvas.height);
-                        }
-                        // Set HTML canvas width and height.
-                        this.vramCanvases[i].canvas.width  = _GFX.canvasLayers[0].canvas.width;
-                        this.vramCanvases[i].canvas.height = _GFX.canvasLayers[0].canvas.height;
-                        
-                        // Set CSS canvas width and height.
-                        this.vramCanvases[i].canvas.style.width  = ((this.vramCanvases[i].canvas.width  * 0.90)<< 0).toString() + "px";
-                        this.vramCanvases[i].canvas.style.height = ((this.vramCanvases[i].canvas.height * 0.90)<< 0).toString() + "px";
+                for(let i=0, l=this.saved_vramCanvases.length; i<l; i+=1){
+                    // Set HTML canvas width and height.
+                    this.saved_vramCanvases[i].canvas.width  = _GFX.canvasLayers[0].canvas.width;
+                    this.saved_vramCanvases[i].canvas.height = _GFX.canvasLayers[0].canvas.height;
+                    
+                    // Set CSS canvas width and height.
+                    // this.saved_vramCanvases[i].canvas.style.width  = ((this.saved_vramCanvases[i].canvas.width  * 0.50)<< 0).toString() + "px";
+                    // this.saved_vramCanvases[i].canvas.style.height = ((this.saved_vramCanvases[i].canvas.height * 0.50)<< 0).toString() + "px";
+                    this.saved_vramCanvases[i].canvas.style.width  = "100%";
+                    this.saved_vramCanvases[i].canvas.style.height = "100%";
+    
+                    // Add the debug_VRAM_view class.
+                    this.saved_vramCanvases[i].canvas.classList.add("debug_VRAM_view");
+                }
 
-                        // Add the debug_VRAM_view class.
-                        this.vramCanvases[i].canvas.classList.add("debug_VRAM_view");
+                for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
+                    if(_JSG.loadedConfig.meta.layers[i].bg_color){
+                        // Set background-color.
+                        this.vramCanvases[i].canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[i].bg_color;
+                        
+                        // Draw background-color.
+                        this.vramCanvases[i].ctx.fillStyle = _JSG.loadedConfig.meta.layers[i].bg_color;
+                        this.vramCanvases[i].ctx.fillRect(0,0, this.vramCanvases[i].canvas.width, this.vramCanvases[i].canvas.height);
                     }
-                // }
+
+                    // Set HTML canvas width and height.
+                    this.vramCanvases[i].canvas.width  = _GFX.canvasLayers[0].canvas.width;
+                    this.vramCanvases[i].canvas.height = _GFX.canvasLayers[0].canvas.height;
+                    
+                    // Set CSS canvas width and height.
+                    // this.vramCanvases[i].canvas.style.width  = ((this.vramCanvases[i].canvas.width  * 0.50)<< 0).toString() + "px";
+                    // this.vramCanvases[i].canvas.style.height = ((this.vramCanvases[i].canvas.height * 0.50)<< 0).toString() + "px";
+                    this.vramCanvases[i].canvas.style.width  = "100%";
+                    this.vramCanvases[i].canvas.style.height = "100%";
+
+                    // Add the debug_VRAM_view class.
+                    this.vramCanvases[i].canvas.classList.add("debug_VRAM_view");
+                }
 
                 this.DOM["VRAM_copy"].addEventListener("click", ()=>{ this.copyCombinedCanvasToClipboard(); }, false);
                 this.DOM["fade_slider"].addEventListener("input", ()=>{
@@ -369,6 +461,7 @@ _APP.debug = {
 
             // Update the separated VRAM displays.
             _APP.debug.tests.updateVramLayerDisplay();
+            _APP.debug.tests.showSavedVramRegions();
 
             // Do not continue if the current gamestate1 has it's inited flag unset.
             if(!_APP.game.gamestates[gamestate1].inited){ return; }

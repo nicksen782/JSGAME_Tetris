@@ -54,7 +54,17 @@ _APP.debug.gs_play = {
             "CONFIG"        : config.join("\n"),
         };
         if(this.gs.playField.single){
-            obj["S : PIECE"         ] = `${this.gs.playField["single"].currPiece || "?"}/${this.gs.playField["single"].currPieceRotation || "0"}`;
+            let rotationArray;
+            obj["S : PIECE"         ] = `X: ${this.gs.playField["single"].currPieceX}, Y: ${this.gs.playField["single"].currPieceY}, C: ${this.gs.playField["single"].currPiece || "?"}, R: ${this.gs.playField["single"].currPieceRotation || "0"}, N: ${this.gs.playField["single"].nextPiece}`;
+            
+            if(this.gs.playField["single"].currPiece){
+                rotationArray = this.gs.playField.pieces[this.gs.playField["single"].currPiece][this.gs.playField["single"].currPieceRotation];
+                obj["S : rotation"      ] = JSON.stringify(rotationArray);
+            }
+            else{
+                obj["S : rotation"      ] = [];
+            }
+            
             obj["S : inputDelay"    ] = (()=>{ let tmp=[]; for(let key in timers.single.inputDelay    ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.inputDelay    [key]}`); } return tmp.join("\n"); })();
             obj["S : dropDelay"     ] = (()=>{ let tmp=[]; for(let key in timers.single.dropDelay     ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.dropDelay     [key]}`); } return tmp.join("\n"); })();
             obj["S : lineClearDelay"] = (()=>{ let tmp=[]; for(let key in timers.single.lineClearDelay){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.lineClearDelay[key]}`); } return tmp.join("\n"); })();
