@@ -124,8 +124,13 @@ _APP.game.gamestates["gs_play"] = {
             // FUNCTIONS
             funcs: {
                 // FUNCTIONS - STATS
-                gameStats_update: function(key, value){
+                gameStats_set: function(key, value){
+                    // EXAMPLE USAGE: gameStats_set("score", 0);
                     this.gameStats[key].value = value;
+                },
+                gameStats_incrementBy: function(key, value){
+                    // EXAMPLE USAGE: gameStats_set("score", 10);
+                    this.gameStats[key].value += value;
                 },
                 gameStats_draw: function(){
                     for(let key in this.gameStats){
@@ -140,8 +145,13 @@ _APP.game.gamestates["gs_play"] = {
                         );
                     }
                 },
-                pieceStats_update: function(key, value){
+                pieceStats_set: function(key, value){
                     this.pieceStats[key].value = value;
+                    this.pieceStats_draw();
+                },
+                pieceStats_increment: function(key, value){
+                    this.pieceStats[key].value += 1;
+                    this.pieceStats_draw();
                 },
                 pieceStats_draw: function(){
                     for(let key in this.pieceStats){
@@ -283,6 +293,7 @@ _APP.game.gamestates["gs_play"] = {
                     // Save this piece as the currPiece.
                     this.currPiece         = piece;
                     this.currPieceTilemap  = tilemapName;
+                    this.pieceStats_increment(this.currPiece);
 
                     // Set the default starting rotation.
                     this.currPieceRotation = this.parent.pieceSpawnIndexes[piece];
@@ -301,17 +312,17 @@ _APP.game.gamestates["gs_play"] = {
                     let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
 
                     // DEBUG: Display currPieceX and currPieceY and matrix.
-                    _GFX.util.tiles.fillWithOneTile_tilemap({ 
-                        tmn:"X_tile782", 
-                        // tmn:"X_tile", 
-                        x  : this.currPieceX + (this.playfield.x+1), 
-                        y  : this.currPieceY + (this.playfield.y+1), 
-                        w:5, 
-                        h:5, 
-                        // tsn:"tilesG1", 
-                        tsn:"tilesLOAD", 
-                        li:2 
-                    });
+                    // _GFX.util.tiles.fillWithOneTile_tilemap({ 
+                    //     tmn:"X_tile782", 
+                    //     // tmn:"X_tile", 
+                    //     x  : this.currPieceX + (this.playfield.x+1), 
+                    //     y  : this.currPieceY + (this.playfield.y+1), 
+                    //     w:4, 
+                    //     h:4, 
+                    //     // tsn:"tilesG1", 
+                    //     tsn:"tilesLOAD", 
+                    //     li:2 
+                    // });
 
                     // Draw each part of the current piece and rotation.
                     for(let piece of rec){
@@ -325,108 +336,110 @@ _APP.game.gamestates["gs_play"] = {
                         } );
                     }
                 },
-                boundingBoxCollision: function(rect1, rect2){
-                    // Sharing same coordinate.
-                    // if( rect1.x==rect2.x && rect1.y==rect2.y ) { return true; }
-                    if(0){}
-                    // Rect within rect.
-                    else{
-                        return (
-                            rect1.x < rect2.x + rect2.w &&
-                            rect1.x + rect1.w > rect2.x &&
-                            rect1.y < rect2.y + rect2.h &&
-                            rect1.h + rect1.y > rect2.y
-                        );
-                    }
-                },
+                // boundingBoxCollision: function(rect1, rect2){
+                //     // Sharing same coordinate.
+                //     // if( rect1.x==rect2.x && rect1.y==rect2.y ) { return true; }
+                //     if(0){}
+                //     // Rect within rect.
+                //     else{
+                //         return (
+                //             rect1.x < rect2.x + rect2.w &&
+                //             rect1.x + rect1.w > rect2.x &&
+                //             rect1.y < rect2.y + rect2.h &&
+                //             rect1.h + rect1.y > rect2.y
+                //         );
+                //     }
+                // },
 
                 // Playfield boundary check. Works for movement. Supports all rotations during movement.
                 boundaryCheck_move: function(dir){
-                    // return true; 
+                    // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
+                    // We WANT a collision in this case.
+
                     let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
-                    if(rec == undefined){
-                        console.error("rec is undefined. Probably a bad index.", this.parent.pieces[this.currPiece], "rotation index:", this.currPieceRotation);
-                        return false;
-                    }
                     let rect2 = {
                         x:this.playfield.x+1, 
                         y:this.playfield.y+1, 
-                        w:this.playfield.w-2, 
-                        h:this.playfield.h-2
+                        w:this.playfield.w-3, 
+                        h:this.playfield.h-3
                     };
 
-                    // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
-                    // We WANT a collision in this case.
+                    // Check all parts of the piece.
                     for(let piece of rec){
+                        // Get the piece x,y and the absolute coords.
                         let pieceX = piece[0] + rect2.x + this.currPieceX;
                         let pieceY = piece[1] + rect2.y + this.currPieceY;
-                        if     (dir == "ROTATE")   {
-                            if( (pieceY) < rect2.y            ){ return false; } // Boundary test: UP
-                            if( (pieceX) < rect2.x            ){ return false; } // Boundary test: LEFT
-                            if( (pieceY) > rect2.y + rect2.h-2){ return false; } // Boundary test: DOWN
-                            if( (pieceX) > rect2.x + rect2.w-2){ return false; } // Boundary test: RIGHT
-                        }
-                        else if(dir == "UP")   {
-                            if( (pieceY) < rect2.y +1){ 
-                                // console.log("BLOCKED:", dir); 
-                                return false; 
-                            }
-                        }
-                        else if(dir == "LEFT") {
-                            if( (pieceX) < rect2.x +1){ 
-                                // console.log("BLOCKED:", dir); 
-                                return false; 
-                            }
-                        }
-                        else if(dir == "DOWN") {
-                            if( (pieceY) > rect2.y + rect2.h-2){ 
-                                // console.log("BLOCKED:", dir); 
-                                return false; 
-                            }
-                        }
-                        else if(dir == "RIGHT"){
-                            if( (pieceX) > rect2.x + rect2.w-2){ 
-                                // console.log("BLOCKED:", dir); 
-                                return false; 
-                            }
-                        }
+
+                        // Check for pieceY - 1 against rect2.y for up.
+                        if     (dir == "UP"    && (pieceY - 1) < rect2.y)          { return false; }
+
+                        // Check for pieceX - 1 against rect2.x for left.
+                        else if(dir == "LEFT"  && (pieceX - 1) < rect2.x)          { return false; }
+                        
+                        // Check for pieceY + 1 against rect2.y for down.
+                        else if(dir == "DOWN"  && (pieceY + 1) > rect2.y + rect2.h){ return false; }
+                        
+                        // Check for pieceX + 1 against rect2.x for right.
+                        else if(dir == "RIGHT" && (pieceX + 1) > rect2.x + rect2.w){ return false; }
                     }
                     return true; 
                 },
+
                 // Playfield boundary check. Works for rotations.
                 boundaryCheck_rotate: function(rotationDir){
-                    let pieceRotations = this.parent.pieces[this.currPiece];
-                    let prevRotation = this.currPieceRotation;
+                    let pieceRotations    = this.parent.pieces[this.currPiece];
+                    let newRotationIndex;
 
                     // BTN_A
                     if(rotationDir == 1){
                         // Rotation index bounds check.
-                        if(this.currPieceRotation + 1 < pieceRotations.length){ this.currPieceRotation += 1; }
-                        else                                                  { this.currPieceRotation =  0; }
+                        if(this.currPieceRotation + 1 < pieceRotations.length){ newRotationIndex = this.currPieceRotation + 1; }
+                        else                                                  { newRotationIndex = 0;                          }
                     }
+
                     // BTN_B
                     else if(rotationDir == -1){
                         // Rotation index bounds check.
-                        if(this.currPieceRotation -1 >= 0){ this.currPieceRotation -= 1; }
-                        else                              { this.currPieceRotation = pieceRotations.length-1; }
+                        if(this.currPieceRotation - 1 >= 0){ newRotationIndex = this.currPieceRotation - 1; }
+                        else                               { newRotationIndex = pieceRotations.length - 1;  }
                     }
 
                     // Try this rotation with no direction check.
-                    let canRotate = this.boundaryCheck_move("ROTATE");
+                    let canRotate = (()=>{
+                        let rec = this.parent.pieces[this.currPiece][newRotationIndex];
+                        let rect2 = {
+                            x:this.playfield.x+1, 
+                            y:this.playfield.y+1, 
+                            w:this.playfield.w-3, 
+                            h:this.playfield.h-3
+                        };
 
-                    // If it can rotate then return true.
-                    if(canRotate){ return true; }
-                    // If it cannot rotate then restore the previous rotation value and return false.
-                    else{
-                        this.currPieceRotation = prevRotation;
-                        return false;
-                    }
+                        // Check all parts of the piece.
+                        for(let piece of rec){
+                            let pieceX = piece[0] + rect2.x + this.currPieceX;
+                            let pieceY = piece[1] + rect2.y + this.currPieceY;
+                            
+                            // Rotations use boundary checks for each piece (all boundary sides.)
+                            if( (pieceY) < rect2.y          ){ return false; } // Boundary test: UP
+                            if( (pieceX) < rect2.x          ){ return false; } // Boundary test: LEFT
+                            if( (pieceY) > rect2.y + rect2.h){ return false; } // Boundary test: DOWN
+                            if( (pieceX) > rect2.x + rect2.w){ return false; } // Boundary test: RIGHT
+                        }
+                        return true; 
+                    })();
+
+                    // If it cannot rotate then return false.
+                    if(!canRotate){ return false; }
+                    
+                    // If it can rotate then assign the new value and return true.
+                    this.currPieceRotation = newRotationIndex;
+                    return true;
                 },
 
                 landedPiecesCheck_move: function(dir){},
                 landedPiecesCheck_rotation: function(rotationDir){},
             },
-            
+
         },
 
         // Same init for single, multi (p1, p2).
@@ -470,7 +483,7 @@ _APP.game.gamestates["gs_play"] = {
                     this[mainKey].gameStats[key].x += this._core.home[mainKey].x ;
                     this[mainKey].gameStats[key].y += this._core.home[mainKey].y ;
                     _GFX.util.tiles.print( { tsn:"tilesTX1", x:this[mainKey].gameStats[key].x, y:this[mainKey].gameStats[key].y, li:1, str:this[mainKey].gameStats[key].label } );
-                    this[mainKey].gameStats_update(key, 0);
+                    this[mainKey].gameStats_set(key, 0);
     
                     // Draw the backgrounds for the game stats.
                     _GFX.util.tiles.fillWithOneTile_tilemap({ 
@@ -490,7 +503,7 @@ _APP.game.gamestates["gs_play"] = {
                     this[mainKey].pieceStats[keys[i]].y += this._core.pieceStats_home[pkey].y;
     
                     // Set the value to 0.
-                    this[mainKey].pieceStats_update(keys[i], 0);
+                    this[mainKey].pieceStats_set(keys[i], 0);
                 }
 
                 // Create the piecesField array of arrays for this player. 
@@ -557,9 +570,6 @@ _APP.game.gamestates["gs_play"] = {
                 // Print the game stats values.
                 this[mainKey].gameStats_draw();
     
-                // Print the piece stats counts.
-                this[mainKey].pieceStats_draw();
-    
                 // Draw the background for the piece stats.
                 _GFX.util.tiles.fillWithOneTile_tilemap({ 
                     tmn: "bg6_tile", 
@@ -572,6 +582,8 @@ _APP.game.gamestates["gs_play"] = {
                 this[mainKey].nextPiece         = this[mainKey].generateRandomPiece();
                 this[mainKey].currPiece         = undefined;
                 this[mainKey].currPieceRotation = undefined;
+
+                this[mainKey].addPieceToLanded_debug();
             }
     
             // Draw the piece stats images.
@@ -868,14 +880,15 @@ _APP.game.gamestates["gs_play"] = {
                 }
 
                 if(moved || rotated){
-                    // Clear with the transparent_tile.
-                    // DEBUG: Clear with the blacktile.
+                    // Clear with the transparent_tile. (overlap the playfield region all-around by one tile.)
                     _GFX.util.tiles.fillWithOneTile_tilemap({ 
-                        tmn:"X_tile", 
-                        x:this.playField[mainKey].playfield.x+1, 
-                        y:this.playField[mainKey].playfield.y+1, 
-                        w:this.playField[mainKey].playfield.w-2, 
-                        h:this.playField[mainKey].playfield.h-2, 
+                        // tmn:"blacktile", 
+                        tmn:"transparent_tile", 
+                        // tmn:"X_tile", 
+                        x:this.playField[mainKey].playfield.x-1, 
+                        y:this.playField[mainKey].playfield.y-1, 
+                        w:this.playField[mainKey].playfield.w+2, 
+                        h:this.playField[mainKey].playfield.h+2, 
                         tsn:"tilesG1", 
                         li:2 
                     });
