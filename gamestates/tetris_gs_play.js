@@ -36,42 +36,179 @@ _APP.game.gamestates["gs_play"] = {
             "O":0,
             "S":0,
             "J":3,
-            "I":0,
+            "I":1,
         },
         pieces : {
-            "T" : [
-                [ [1,2],[2,2],[3,2],[2,1] ], // T up
-                [ [2,1],[2,2],[3,2],[2,3] ], // T right
-                [ [1,2],[2,2],[3,2],[2,3] ], // T down (spawn)
-                [ [2,1],[1,2],[2,2],[2,3] ]  // T left
-            ] ,
-            "L" : [
-                [ [2,1],[2,2],[2,3],[3,3] ], // L right
-                [ [1,2],[2,2],[3,2],[1,3] ], // L down (SPAWN)
-                [ [1,1],[2,1],[2,2],[2,3] ], // L left
-                [ [3,1],[1,2],[2,2],[3,2] ]  // L up
-            ] ,
-            "Z" : [
-                [ [1,2],[2,2],[2,3],[3,3] ], // Z horizontal (spawn)
-                [ [3,1],[2,2],[3,2],[2,3] ], // Z vertical
-            ] ,
-            "O" : [
-                [ [1,2],[2,2],[1,3],[2,3] ], // O (SPAWN)
-            ] ,
-            "S" : [
-                [ [2,2],[3,2],[1,3],[2,3] ], // S horizontal (SPAWN)
-                [ [2,1],[2,2],[3,2],[3,3] ], // S vertical
-            ] ,
-            "J" : [
-                [ [2,1],[2,2],[1,3],[2,3] ], // J left
-                [ [1,1],[1,2],[2,2],[3,2] ], // J up
-                [ [2,1],[3,1],[2,2],[2,3] ], // J right
-                [ [1,2],[2,2],[3,2],[3,3] ]  // J down (SPAWN)
-            ] ,
-            "I" : [
-                [ [2,0],[2,1],[2,2],[2,3] ], // I vertical (SPAWN)
-                [ [0,2],[1,2],[2,2],[3,2] ], // I horizontal 
-            ]
+            getData: function(piece, level){
+                // Return the rotations and the maps (map index will always be 0-9 due to the % 10.)
+                return {
+                    rotations : this[piece].rotations,
+                    tileset_bg: this[piece].tileset_bg,
+                    tileset_sp: this[piece].tileset_sp,
+                    map_bg    : this[piece].maps_bg[level % 10],
+                    map_sp    : this[piece].maps_sp[level % 10],
+                };
+            },
+            "T" : {
+                "rotations": 
+                [
+                    [ [1,2],[2,2],[3,2],[2,1] ], // T up
+                    [ [2,1],[2,2],[3,2],[2,3] ], // T right
+                    [ [1,2],[2,2],[3,2],[2,3] ], // T down (spawn)
+                    [ [2,1],[1,2],[2,2],[2,3] ]  // T left
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "T_sptile_L0", "T_sptile_L1", "T_sptile_L2", "T_sptile_L3", "T_sptile_L4", 
+                    "T_sptile_L5", "T_sptile_L6", "T_sptile_L7", "T_sptile_L8", "T_sptile_L9",
+                ],
+                "maps_bg":[
+                    "T_bgtile_L0", "T_bgtile_L1", "T_bgtile_L2", "T_bgtile_L3", "T_bgtile_L4", 
+                    "T_bgtile_L5", "T_bgtile_L6", "T_bgtile_L7", "T_bgtile_L8", "T_bgtile_L9",
+                ],
+            }, 
+            "L" : {
+                "rotations": 
+                [
+                    [ [2,1],[2,2],[2,3],[3,3] ], // L right
+                    [ [1,2],[2,2],[3,2],[1,3] ], // L down (SPAWN)
+                    [ [1,1],[2,1],[2,2],[2,3] ], // L left
+                    [ [3,1],[1,2],[2,2],[3,2] ]  // L up
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "L_sptile_L0", "L_sptile_L1", "L_sptile_L2", "L_sptile_L3", "L_sptile_L4", 
+                    "L_sptile_L5", "L_sptile_L6", "L_sptile_L7", "L_sptile_L8", "L_sptile_L9",
+                ],
+                "maps_bg":[
+                    "L_bgtile_L0", "L_bgtile_L1", "L_bgtile_L2", "L_bgtile_L3", "L_bgtile_L4", 
+                    "L_bgtile_L5", "L_bgtile_L6", "L_bgtile_L7", "L_bgtile_L8", "L_bgtile_L9",
+                ],
+            }, 
+            "Z" : {
+                "rotations": 
+                [
+                    [ [1,2],[2,2],[2,3],[3,3] ], // Z horizontal (spawn)
+                    [ [3,1],[2,2],[3,2],[2,3] ], // Z vertical
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "Z_sptile_L0", "Z_sptile_L1", "Z_sptile_L2", "Z_sptile_L3", "Z_sptile_L4", 
+                    "Z_sptile_L5", "Z_sptile_L6", "Z_sptile_L7", "Z_sptile_L8", "Z_sptile_L9",
+                ],
+                "maps_bg":[
+                    "Z_bgtile_L0", "Z_bgtile_L1", "Z_bgtile_L2", "Z_bgtile_L3", "Z_bgtile_L4", 
+                    "Z_bgtile_L5", "Z_bgtile_L6", "Z_bgtile_L7", "Z_bgtile_L8", "Z_bgtile_L9",
+                ],
+            }, 
+            "O" : {
+                "rotations": 
+                [
+                    [ [1,2],[2,2],[1,3],[2,3] ], // O (SPAWN)
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "O_sptile_L0", "O_sptile_L1", "O_sptile_L2", "O_sptile_L3", "O_sptile_L4", 
+                    "O_sptile_L5", "O_sptile_L6", "O_sptile_L7", "O_sptile_L8", "O_sptile_L9",
+                ],
+                "maps_bg":[
+                    "O_bgtile_L0", "O_bgtile_L1", "O_bgtile_L2", "O_bgtile_L3", "O_bgtile_L4", 
+                    "O_bgtile_L5", "O_bgtile_L6", "O_bgtile_L7", "O_bgtile_L8", "O_bgtile_L9",
+                ],
+            }, 
+            "S" : {
+                "rotations": 
+                [
+                    [ [2,2],[3,2],[1,3],[2,3] ], // S horizontal (SPAWN)
+                    [ [2,1],[2,2],[3,2],[3,3] ], // S vertical
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "S_sptile_L0", "S_sptile_L1", "S_sptile_L2", "S_sptile_L3", "S_sptile_L4", 
+                    "S_sptile_L5", "S_sptile_L6", "S_sptile_L7", "S_sptile_L8", "S_sptile_L9",
+            ],
+                "maps_bg":[
+                    "S_bgtile_L0", "S_bgtile_L1", "S_bgtile_L2", "S_bgtile_L3", "S_bgtile_L4", 
+                    "S_bgtile_L5", "S_bgtile_L6", "S_bgtile_L7", "S_bgtile_L8", "S_bgtile_L9",
+                ],
+            }, 
+            "J" : {
+                "rotations": 
+                [
+                    [ [2,1],[2,2],[1,3],[2,3] ], // J left
+                    [ [1,1],[1,2],[2,2],[3,2] ], // J up
+                    [ [2,1],[3,1],[2,2],[2,3] ], // J right
+                    [ [1,2],[2,2],[3,2],[3,3] ]  // J down (SPAWN)
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "J_sptile_L0", "J_sptile_L1", "J_sptile_L2", "J_sptile_L3", "J_sptile_L4", 
+                    "J_sptile_L5", "J_sptile_L6", "J_sptile_L7", "J_sptile_L8", "J_sptile_L9",
+                ],
+                "maps_bg":[
+                    "J_bgtile_L0", "J_bgtile_L1", "J_bgtile_L2", "J_bgtile_L3", "J_bgtile_L4", 
+                    "J_bgtile_L5", "J_bgtile_L6", "J_bgtile_L7", "J_bgtile_L8", "J_bgtile_L9",
+                ],
+            }, 
+            "I" : {
+                "rotations": 
+                [
+                    [ [2,0],[2,1],[2,2],[2,3] ], // I vertical
+                    [ [0,2],[1,2],[2,2],[3,2] ], // I horizontal (SPAWN)
+                ] ,
+                "tileset_bg":"tilesG1",
+                "tileset_sp":"tilesSP1",
+                "maps_sp":[
+                    "I_sptile_L0", "I_sptile_L1", "I_sptile_L2", "I_sptile_L3", "I_sptile_L4", 
+                    "I_sptile_L5", "I_sptile_L6", "I_sptile_L7", "I_sptile_L8", "I_sptile_L9",
+                ],
+                "maps_bg":[
+                    "I_bgtile_L0", "I_bgtile_L1", "I_bgtile_L2", "I_bgtile_L3", "I_bgtile_L4", 
+                    "I_bgtile_L5", "I_bgtile_L6", "I_bgtile_L7", "I_bgtile_L8", "I_bgtile_L9",
+                ],
+            }, 
+        },
+        getDropSpeedFramesFromLevel: function(level){
+            // Levels 0 through 9.
+            if(level >= 0 && level <= 9){
+                return this.dropSpeeds.set[level].f;
+            }
+            // Levels above 9 and less than 29.
+            else if(level > 9 && level < 29){
+                return this.dropSpeeds.range.find(rec=>rec.l.indexOf(level) != -1).f;
+            }
+            // Levels equal or above 29.
+            else{
+                return this.dropSpeeds.range.find(rec=>rec.l.indexOf(29) != -1).f;
+            }
+        },
+        // https://meatfighter.com/nintendotetrisai/ (Dropping Tetriminos)
+        dropSpeeds: {
+            set:[
+                { f:48, l:0 },
+                { f:43, l:1 },
+                { f:38, l:2 },
+                { f:33, l:3 },
+                { f:28, l:4 },
+                { f:23, l:5 },
+                { f:18, l:6 },
+                { f:13, l:7 },
+                { f:8 , l:8 },
+                { f:6 , l:9 },
+            ],
+            range:[
+                { f:5 , l:[...Array(12 - 10 + 1).keys()].map(x => x + 10) },
+                { f:4 , l:[...Array(15 - 13 + 1).keys()].map(x => x + 13) },
+                { f:3 , l:[...Array(18 - 16 + 1).keys()].map(x => x + 16) },
+                { f:2 , l:[...Array(28 - 19 + 1).keys()].map(x => x + 19) },
+                { f:1 , l:[29] },
+            ],
         },
 
         // Copy from here.
@@ -178,22 +315,24 @@ _APP.game.gamestates["gs_play"] = {
                 drawLandedPieces: function(){
                     for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
                         for(let x=0, xl=this.piecesField[y].length; x<xl; x+=1){
+                            let tilesetName = "tilesG1";
                             let tilemapName;
+
                             // Background tiles. 
                             switch(this.piecesField[y][x]){
                                 case " ": { tilemapName = "transparent_tile"; break; }
                                 case "X": { tilemapName = "X_tile"; break; }
-                                case "T": { tilemapName = "T_bgtile"; break; }
-                                case "L": { tilemapName = "L_bgtile"; break; }
-                                case "Z": { tilemapName = "Z_bgtile"; break; }
-                                case "O": { tilemapName = "O_bgtile"; break; }
-                                case "S": { tilemapName = "S_bgtile"; break; }
-                                case "J": { tilemapName = "J_bgtile"; break; }
-                                case "I": { tilemapName = "I_bgtile"; break; }
+                                case "T": { tilemapName = this.parent.pieces.getData("T", 0).map_bg; break; }
+                                case "L": { tilemapName = this.parent.pieces.getData("L", 0).map_bg; break; }
+                                case "Z": { tilemapName = this.parent.pieces.getData("Z", 0).map_bg; break; }
+                                case "O": { tilemapName = this.parent.pieces.getData("O", 0).map_bg; break; }
+                                case "S": { tilemapName = this.parent.pieces.getData("S", 0).map_bg; break; }
+                                case "J": { tilemapName = this.parent.pieces.getData("J", 0).map_bg; break; }
+                                case "I": { tilemapName = this.parent.pieces.getData("I", 0).map_bg; break; }
                                 default: { console.error("drawLandedPieces: Invalid piece value:", this.piecesField[y][x]); return; break; }
                             };
                             _GFX.util.tiles.drawTilemap( { 
-                                tsn: "tilesG1", 
+                                tsn: tilesetName, // "tilesG1", 
                                 x  : x + this.playfield.x + 1, 
                                 y  : y + this.playfield.y + 1, 
                                 li : 1, 
@@ -278,29 +417,16 @@ _APP.game.gamestates["gs_play"] = {
                     this.spawnPiece(this.nextPiece);
                 },
                 spawnPiece: function(piece){
-                    // console.log("spawnPiece:", piece);
-                    switch(piece){
-                        case "T": { tilemapName = "T_sptile"; break; }
-                        case "L": { tilemapName = "L_sptile"; break; }
-                        case "Z": { tilemapName = "Z_sptile"; break; }
-                        case "O": { tilemapName = "O_sptile"; break; }
-                        case "S": { tilemapName = "S_sptile"; break; }
-                        case "J": { tilemapName = "J_sptile"; break; }
-                        case "I": { tilemapName = "I_sptile"; break; }
-                        default: { console.error("spawnPiece: Invalid piece value:", piece); return; break; }
-                    };
-
                     // Save this piece as the currPiece.
-                    this.currPiece         = piece;
-                    this.currPieceTilemap  = tilemapName;
+                    this.currPiece = piece;
                     this.pieceStats_increment(this.currPiece);
 
                     // Set the default starting rotation.
                     this.currPieceRotation = this.parent.pieceSpawnIndexes[piece];
 
                     // Set the default x and y for this piece.
-                    this.currPieceX        =  2;
-                    this.currPieceY        = -2;
+                    this.currPieceX =   3;
+                    this.currPieceY =  -2;
 
                     // Generate the nextPiece.
                     this.nextPiece = this.generateRandomPiece();
@@ -309,30 +435,31 @@ _APP.game.gamestates["gs_play"] = {
                     this.drawCurrentPiece();
                 },
                 drawCurrentPiece: function(){
-                    let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
+                    let rec = this.parent.pieces.getData(this.currPiece, 0);
 
-                    // DEBUG: Display currPieceX and currPieceY and matrix.
+                    // // DEBUG: Display currPieceX and currPieceY and matrix.
                     // _GFX.util.tiles.fillWithOneTile_tilemap({ 
                     //     tmn:"X_tile782", 
                     //     // tmn:"X_tile", 
                     //     x  : this.currPieceX + (this.playfield.x+1), 
                     //     y  : this.currPieceY + (this.playfield.y+1), 
-                    //     w:4, 
-                    //     h:4, 
+                    //     w:5, 
+                    //     h:5, 
                     //     // tsn:"tilesG1", 
                     //     tsn:"tilesLOAD", 
                     //     li:2 
                     // });
 
                     // Draw each part of the current piece and rotation.
-                    for(let piece of rec){
+                    for(let piece of rec.rotations[this.currPieceRotation]){
                         // console.log(piece);
                         _GFX.util.tiles.drawTilemap( { 
-                            tsn: "tilesSP1", 
+                            tsn: rec.tileset_sp, // "tilesSP1", 
                             x  : this.currPieceX + (this.playfield.x+1) + piece[0], 
                             y  : this.currPieceY + (this.playfield.y+1) + piece[1], 
                             li : 2, 
-                            tmn: this.currPieceTilemap
+                            // tmn: this.currPieceTilemap
+                            tmn: rec.map_sp
                         } );
                     }
                 },
@@ -356,7 +483,7 @@ _APP.game.gamestates["gs_play"] = {
                     // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
                     // We WANT a collision in this case.
 
-                    let rec = this.parent.pieces[this.currPiece][this.currPieceRotation];
+                    let rec = this.parent.pieces.getData(this.currPiece, 0).rotations[this.currPieceRotation];
                     let rect2 = {
                         x:this.playfield.x+1, 
                         y:this.playfield.y+1, 
@@ -387,7 +514,7 @@ _APP.game.gamestates["gs_play"] = {
 
                 // Playfield boundary check. Works for rotations.
                 boundaryCheck_rotate: function(rotationDir){
-                    let pieceRotations    = this.parent.pieces[this.currPiece];
+                    let pieceRotations = this.parent.pieces.getData(this.currPiece, 0).rotations;
                     let newRotationIndex;
 
                     // BTN_A
@@ -406,7 +533,7 @@ _APP.game.gamestates["gs_play"] = {
 
                     // Try this rotation with no direction check.
                     let canRotate = (()=>{
-                        let rec = this.parent.pieces[this.currPiece][newRotationIndex];
+                        let rec = this.parent.pieces.getData(this.currPiece, 0).rotations[newRotationIndex];
                         let rect2 = {
                             x:this.playfield.x+1, 
                             y:this.playfield.y+1, 
@@ -542,21 +669,21 @@ _APP.game.gamestates["gs_play"] = {
                 );
 
                 // Draw the playfield (DEBUG).
-                // _APP.game.shared.drawBorderBox_tilemaps(
-                //     _APP.game.shared.createBorderBox_tilemaps( 
-                //         this[mainKey].playfield.x, 
-                //         this[mainKey].playfield.y, 
-                //         this[mainKey].playfield.w, 
-                //         this[mainKey].playfield.h, 
-                //         [], 
-                //         {
-                //             // border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg2_tile" },
-                //             border_fg  : { li:2 },
-                //             // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
-                //             // inner_text : { li:1, tsn:"tilesTX1" }
-                //         }
-                //     )
-                // );
+                _APP.game.shared.drawBorderBox_tilemaps(
+                    _APP.game.shared.createBorderBox_tilemaps( 
+                        this[mainKey].playfield.x, 
+                        this[mainKey].playfield.y, 
+                        this[mainKey].playfield.w, 
+                        this[mainKey].playfield.h, 
+                        [], 
+                        {
+                            border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg6_tile" },
+                            border_fg  : { li:2 },
+                            // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+                            // inner_text : { li:1, tsn:"tilesTX1" }
+                        }
+                    )
+                );
     
                 // Print the player label for the piece stats.
                 _GFX.util.tiles.print( { 
@@ -633,8 +760,8 @@ _APP.game.gamestates["gs_play"] = {
 
         // TIMERS
         for(let mainKey of ["single", "p1", "p2"]){
-            _APP.game.shared.createGeneralTimer(mainKey + "inputDelay", 1);
-            _APP.game.shared.createGeneralTimer(mainKey + "dropDelay", 1);
+            _APP.game.shared.createGeneralTimer(mainKey + "inputDelay", 6);
+            _APP.game.shared.createGeneralTimer(mainKey + "dropDelay", _APP.game.gamestates["gs_play"].playField.getDropSpeedFramesFromLevel(0));
             _APP.game.shared.createGeneralTimer(mainKey + "lineClearDelay", 8);
         }
         // _APP.game.shared.resetGeneralTimer("")
@@ -880,15 +1007,15 @@ _APP.game.gamestates["gs_play"] = {
                 }
 
                 if(moved || rotated){
-                    // Clear with the transparent_tile. (overlap the playfield region all-around by one tile.)
+                    // Clear inner-playfield with the transparent_tile.
                     _GFX.util.tiles.fillWithOneTile_tilemap({ 
                         // tmn:"blacktile", 
                         tmn:"transparent_tile", 
                         // tmn:"X_tile", 
-                        x:this.playField[mainKey].playfield.x-1, 
-                        y:this.playField[mainKey].playfield.y-1, 
-                        w:this.playField[mainKey].playfield.w+2, 
-                        h:this.playField[mainKey].playfield.h+2, 
+                        x:this.playField[mainKey].playfield.x+1, 
+                        y:this.playField[mainKey].playfield.y+1, 
+                        w:this.playField[mainKey].playfield.w-2, 
+                        h:this.playField[mainKey].playfield.h-2, 
                         tsn:"tilesG1", 
                         li:2 
                     });

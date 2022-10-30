@@ -58,7 +58,7 @@ _APP.debug.gs_play = {
             obj["S : PIECE"         ] = `X: ${this.gs.playField["single"].currPieceX}, Y: ${this.gs.playField["single"].currPieceY}, C: ${this.gs.playField["single"].currPiece || "?"}, R: ${this.gs.playField["single"].currPieceRotation || "0"}, N: ${this.gs.playField["single"].nextPiece}`;
             
             if(this.gs.playField["single"].currPiece){
-                rotationArray = this.gs.playField.pieces[this.gs.playField["single"].currPiece][this.gs.playField["single"].currPieceRotation];
+                rotationArray = this.gs.playField.pieces[this.gs.playField["single"].currPiece].rotations[this.gs.playField["single"].currPieceRotation]
                 obj["S : rotation"      ] = JSON.stringify(rotationArray);
             }
             else{
