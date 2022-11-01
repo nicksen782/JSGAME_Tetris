@@ -165,6 +165,7 @@
         { "f":"gamestates/tetris_gs_title1.js" , "t":"js"   , "n":"tetris_gs_title1" },
         { "f":"gamestates/tetris_gs_title2.js" , "t":"js"   , "n":"tetris_gs_title2" },
         { "f":"gamestates/tetris_gs_play.js"   , "t":"js"   , "n":"tetris_gs_play"   },
+        { "f":"gamestates/tetris_data.js"      , "t":"js"   , "n":"tetris_data"      },
 
         { "f":"UAM/JSON/tilesBG1.json"         , "t":"json" , "n":"tilesBG1"         },
         { "f":"UAM/JSON/tilesG1.json"          , "t":"json" , "n":"tilesG1"          },

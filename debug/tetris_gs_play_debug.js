@@ -68,18 +68,31 @@ _APP.debug.gs_play = {
             obj["S : inputDelay"    ] = (()=>{ let tmp=[]; for(let key in timers.single.inputDelay    ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.inputDelay    [key]}`); } return tmp.join("\n"); })();
             obj["S : dropDelay"     ] = (()=>{ let tmp=[]; for(let key in timers.single.dropDelay     ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.dropDelay     [key]}`); } return tmp.join("\n"); })();
             obj["S : lineClearDelay"] = (()=>{ let tmp=[]; for(let key in timers.single.lineClearDelay){ tmp.push(`${key.padEnd(10, " ")}: ${timers.single.lineClearDelay[key]}`); } return tmp.join("\n"); })();
+
+            obj["INPUT P1: press  "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["press"]  )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["press"]  )[k]);
+            obj["INPUT P1: held   "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["held"]   )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["held"]   )[k]);
+            obj["INPUT P1: release"] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["release"])).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["release"])[k]);
         }
+        
         if(this.gs.playField.p1){
             obj["P1: PIECE"         ] = `${this.gs.playField["p1"].currPiece || "?"}/${this.gs.playField["p1"].currPieceRotation || "0"}`;
             obj["P1: inputDelay"    ] = (()=>{ let tmp=[]; for(let key in timers.p1.inputDelay    ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p1.inputDelay    [key]}`); } return tmp.join("\n"); })();
             obj["P1: dropDelay"     ] = (()=>{ let tmp=[]; for(let key in timers.p1.dropDelay     ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p1.dropDelay     [key]}`); } return tmp.join("\n"); })();
             obj["P1: lineClearDelay"] = (()=>{ let tmp=[]; for(let key in timers.p1.lineClearDelay){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p1.lineClearDelay[key]}`); } return tmp.join("\n"); })();
+
+            obj["INPUT P1: press  "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["press"]  )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["press"]  )[k]);
+            obj["INPUT P1: held   "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["held"]   )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["held"]   )[k]);
+            obj["INPUT P1: release"] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p1"]["release"])).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p1"]["release"])[k]);
         }
         if(this.gs.playField.p2){
             obj["P2: PIECE"         ] = `${this.gs.playField["p2"].currPiece || "?"}/${this.gs.playField["p2"].currPieceRotation || "0"}`;
             obj["P2: inputDelay"    ] = (()=>{ let tmp=[]; for(let key in timers.p2.inputDelay    ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p2.inputDelay    [key]}`); } return tmp.join("\n"); })();
             obj["P2: dropDelay"     ] = (()=>{ let tmp=[]; for(let key in timers.p2.dropDelay     ){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p2.dropDelay     [key]}`); } return tmp.join("\n"); })();
             obj["P2: lineClearDelay"] = (()=>{ let tmp=[]; for(let key in timers.p2.lineClearDelay){ tmp.push(`${key.padEnd(10, " ")}: ${timers.p2.lineClearDelay[key]}`); } return tmp.join("\n"); })();
+
+            obj["INPUT P2: press  "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p2"]["press"]  )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p2"]["press"]  )[k]);
+            obj["INPUT P2: held   "] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p2"]["held"]   )).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p2"]["held"]   )[k]);
+            obj["INPUT P2: release"] = Object.keys(_INPUT.util.stateByteToObj(_INPUT.states["p2"]["release"])).filter(k => _INPUT.util.stateByteToObj(_INPUT.states["p2"]["release"])[k]);
         }
         return {
             obj   : obj,
@@ -93,12 +106,8 @@ _APP.debug.gs_play = {
         let table = this.DOM.pieces.querySelector("table");
         let obj = {
             "NAME": "SINGLE",
-            // "endDelay.start" : this.gs.endDelay.started,
-            // "endDelay.finish": this.gs.endDelay.finished,
-            // "endDelay:w f"   : `${this.gs.endDelay.frameCount}/${this.gs.endDelay.maxFrames} (ms:${this.gs.endDelay.maxFrames * _APP.game.gameLoop["msFrame"].toFixed(1)})`,
-            // "inited": this.gs.inited,
-            // "test": Math.random(),
         };
+
         if(this.gs.playField){
             if(this.gs.playField.single){
                 obj.lines = {};
@@ -106,13 +115,13 @@ _APP.debug.gs_play = {
                 obj.lines['width'] = this.gs.playField.single.piecesField[0].length;
                 obj.lines['height'] = this.gs.playField.single.piecesField.length;
                 for(let y=0, yl=this.gs.playField.single.piecesField.length; y<yl; y+=1){
-                    obj.lines[`line${ y.toString().padStart(2, "0") }`] = this.gs.playField.single.piecesField[y].join("");
+                    obj.lines[`L${ y.toString().padStart(2, "0") }`] = this.gs.playField.single.piecesField[y].join("");
                 }
                 obj.lines = JSON.stringify(obj.lines,null,1);
             }
         }
         else{
-            console.log("no playfield?", this.gs);
+            console.error("no playfield?", this.gs);
             return false;
         }
 
