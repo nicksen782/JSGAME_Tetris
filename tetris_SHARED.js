@@ -510,7 +510,7 @@ _APP.game.shared = {
         }
     },
 
-    // SPRITES.
+    // TODO: SPRITES.
     sprites: {},
     // Adds a single-tile sprite to a sprite name.
     mapSprite   : function(name, obj){
@@ -532,7 +532,6 @@ _APP.game.shared = {
         };
         
     },
-
     // Updates a single-tile sprite in a sprite name.
     updateSprite: function(name, obj, spriteIndex){
         // Update the property values of a previously mapped sprite. 
@@ -542,7 +541,6 @@ _APP.game.shared = {
         if(obj.li ){ this.sprites[name][spriteIndex].li  = obj.li ; }
         if(obj.tm ){ this.sprites[name][spriteIndex].tm  = obj.tm ; }
     },
-
     // Updates VRAM with the sprite tiles (run before the normal VRAM draw.)
     drawSprites  : function(){
         // Updates VRAM with each sprite in the sprites object.
@@ -553,7 +551,7 @@ _APP.game.shared = {
     generalTimers: {},
 
     // Create a new timer.
-    createGeneralTimer: function(name, maxFrames, step, gamestate){
+    createGeneralTimer: function(name, maxFrames, gamestate){
         // Creates a timer. 
         // Is updated/checked with checkGeneralTimer.
         // A timer must be cleared or recreated after it finishes before it can be reused. (resetGeneralTimer/createGeneralTimer)
@@ -561,14 +559,10 @@ _APP.game.shared = {
         if(gamestate == undefined){ gamestate = _APP.game.gamestate1; }
         if(this.generalTimers[gamestate] == undefined){ this.generalTimers[gamestate] = {}; }
 
-        // Make sure that a step value is set.
-        if(step == undefined){ step = 1; }
-
         this.generalTimers[gamestate][name] = {
             finished  : false,
             maxFrames : maxFrames,
             frameCount: 0,
-            step      : step,
         };
     },
     // Reset a timer to it's initial values.
@@ -585,7 +579,6 @@ _APP.game.shared = {
             finished  : false,
             maxFrames : this.generalTimers[gamestate][name].maxFrames,
             frameCount: 0,
-            step      : this.generalTimers[gamestate][name].step,
         };
     },
     // Sets a timer to values to match the state of being finished.
@@ -602,7 +595,6 @@ _APP.game.shared = {
             finished  : true,
             maxFrames : this.generalTimers[gamestate][name].maxFrames,
             frameCount: this.generalTimers[gamestate][name].maxFrames,
-            step      : this.generalTimers[gamestate][name].step,
         };
     },
     // Checks a timer and updates it's frameCount.
@@ -629,10 +621,7 @@ _APP.game.shared = {
         }
         else{
             // Increment by 1.
-            // this.generalTimers[gamestate][name].frameCount += 1;
-            
-            // Increment by step.
-            this.generalTimers[gamestate][name].frameCount += this.generalTimers[gamestate][name].step;
+            this.generalTimers[gamestate][name].frameCount += 1;
         }
 
         return this.generalTimers[gamestate][name].finished;

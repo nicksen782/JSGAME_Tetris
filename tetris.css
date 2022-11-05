@@ -276,6 +276,10 @@
   margin-bottom: 5px;
   font-size: 12px;
 }
+.tetris_app_debug_div1 tr td:nth-child(1) {
+    font-weight: bold;
+    /* text-decoration: underline; */
+}
 
 /* .tetris_app_debug_div1.gameLoop { background-color: #cdae62; } */
 
@@ -297,8 +301,8 @@
 }
 
 .tetris_app_debug_div1 table td {
-  border: 1px solid black;
-  padding: 2px;
+  /* border: 1px solid black; */
+  /* padding: 2px; */
 }
 
 .tetris_app_debug_div1 td {
@@ -307,7 +311,7 @@
 }
 
 .tetris_app_debug_div1 td.updated {
-  background-color: lightsteelblue;
+  /* background-color: lightsteelblue; */
 }
 
 #tetris_app_debug_gameDebugDiv_timeIt {

@@ -120,22 +120,38 @@ _APP = {
             window.onerror.apply(this, arguments); // call
         }
     },
-    setupDebugGridAndNums_id: null,
+    DEBUG_canvas:undefined,
+    DEBUG_canvas_L1:undefined,
+    DEBUG_canvas_L2:undefined,
+    DEBUG_lastX:undefined,
+    DEBUG_lastY:undefined,
     setupDebugGridAndNums: function(){
         // Match the debug dimensions to the normal play canvases.
         let elem1 = document.getElementById("DEBUG_canvasLayer");
         let elem2 = document.querySelector(".videoModeA_canvasLayer");
-        elem1.width = elem2.width;
+        elem1.width  = elem2.width;
         elem1.height = elem2.height;
+        this.DEBUG_canvas = { canvas:elem1, ctx:elem1.getContext("2d") }; 
 
-        let drawNumbers = function( canvas ){
-            let ctx = canvas.getContext("2d");
-            let tw = _GFX.cache.tilesTX2.json.config.tileWidth;
-            let th = _GFX.cache.tilesTX2.json.config.tileHeight;
-            let rows = _JSG.loadedConfig.meta.dimensions.rows;
-            let cols = _JSG.loadedConfig.meta.dimensions.cols;
+        let canvas1 = document.createElement("canvas");
+        canvas1.width  = elem1.width; canvas1.height = elem1.height;
+        let ctx1 = canvas1.getContext("2d");
+        this.DEBUG_canvas_L1 = { canvas:canvas1, ctx:ctx1 }; 
 
-            // num_00            
+        let canvas2 = document.createElement("canvas");
+        canvas2.width  = elem1.width; canvas2.height = elem1.height;
+        let ctx2 = canvas2.getContext("2d");
+        this.DEBUG_canvas_L2 = { canvas:canvas2, ctx:ctx2 }; 
+
+        let drawNumbers = ()=>{
+            // let canvas = document.getElementById("DEBUG_canvasLayer");
+            let canvas = this.DEBUG_canvas_L1.canvas;
+            let ctx    = this.DEBUG_canvas_L1.ctx;
+            let tw     = _GFX.cache.tilesTX2.json.config.tileWidth;
+            let th     = _GFX.cache.tilesTX2.json.config.tileHeight;
+            let rows   = _JSG.loadedConfig.meta.dimensions.rows;
+            let cols   = _JSG.loadedConfig.meta.dimensions.cols;
+
             let numberTiles = [
                 _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_00[0].orgTilemap[2] ].canvas,
                 _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_01[0].orgTilemap[2] ].canvas,
@@ -179,8 +195,9 @@ _APP = {
                 _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.num_39[0].orgTilemap[2] ].canvas,
             ];
             // let bgTile = _GFX.cache.tilesTX1.tileset[" ".charCodeAt(0) - 32].canvas; // Transparent.
-            let bgTile = _GFX.cache.tilesBG1.tileset[1].canvas; // Black.
-            let gridTile = _GFX.cache.tilesMISC.tileset[ _GFX.cache.tilesMISC.tilemap.grid2[0].orgTilemap[2] ].canvas; // Grid.
+            // let bgTile   = _GFX.cache.tilesBG1 .tileset[_GFX.cache.tilesBG1 .tilemap.transChecked1[0].orgTilemap[2]].canvas; 
+            let bgTile   = _GFX.cache.tilesBG1 .tileset[_GFX.cache.tilesBG1 .tilemap.blacktile[0].orgTilemap[2]].canvas; 
+            let gridTile = _GFX.cache.tilesMISC.tileset[_GFX.cache.tilesMISC.tilemap.grid3[0].orgTilemap[2] ].canvas; // Grid.
 
             let currentNumber = 1;
             for(let x=1; x<cols-1; x+=1){
@@ -188,7 +205,7 @@ _APP = {
                 ctx.globalAlpha = 0.50;
                 ctx.drawImage( bgTile, x*tw, 0*th) ; 
                 ctx.drawImage( bgTile, x*tw, (rows-1)*th) ; 
-                ctx.globalAlpha = 0.50;
+                ctx.globalAlpha = 1;
 
                 // TOP ROW - foreground
                 ctx.drawImage( numberTiles[currentNumber], x*tw, 0*th) ; 
@@ -205,8 +222,8 @@ _APP = {
                 // LEFT and RIGHT COL - background
                 ctx.globalAlpha = 0.50;
                 ctx.drawImage( bgTile, 0*tw, y*th) ; 
-                // ctx.drawImage( bgTile, (rows-1)*tw, y*th) ; 
-                ctx.globalAlpha = 0.50;
+                ctx.drawImage( bgTile, (rows-1)*tw, y*th) ; 
+                ctx.globalAlpha = 1;
                 
                 // LEFT COL - foreground
                 ctx.drawImage( numberTiles[currentNumber], 0*tw, y*th) ; 
@@ -217,8 +234,8 @@ _APP = {
                 currentNumber += 1; if(currentNumber > 39){ currentNumber = 0; }
             }
 
-            ctx.globalAlpha = 0.70;
             // Grid.
+            ctx.globalAlpha = 0.70;
             for (let x=0; x<=(canvas.width/tw)-1; x+=1) {
                 for (let y=0; y<=(canvas.height/th)-1; y+=1) {
                     ctx.drawImage( gridTile, x*tw, y*th) ; 
@@ -226,8 +243,9 @@ _APP = {
             }
             ctx.globalAlpha = 1.0;
 
+            this.DEBUG_canvas.ctx.drawImage(this.DEBUG_canvas_L1.canvas, 0, 0);
         };
-        drawNumbers( document.getElementById("DEBUG_canvasLayer") );
+        drawNumbers();
 
         // Add the click event listener.
         document.getElementById("tetris_app_toggleNumbers").addEventListener("click", ()=>{
@@ -242,30 +260,60 @@ _APP = {
                     elem1.style["z-index"]  = (d.style["z-index"] << 0) + 5;
                 }
             });
-            // if(elem1.classList.contains("active")){
-            //     // console.log("starting");
-            //     clearInterval(this.setupDebugGridAndNums_id);
-            //     document.getElementById("DEBUG_canvasLayer").style.opacity = 0;
-            //     let opacity = 0.75;
-            //     let opacityStep = 0.25;
-            //     this.setupDebugGridAndNums_id = setInterval(()=>{
-            //         document.getElementById("DEBUG_canvasLayer").style.opacity = opacity.toFixed(2);
-            //         // opacity = (Math.min(Math.max(opacity, 0.0), 1.0));
-            //         opacity += opacityStep;
-            //         if((Math.sign(opacityStep) == 1 && opacity > 0.75) || (Math.sign(opacityStep) == -1 && opacity < 0.50) ){ 
-            //             opacityStep *= -1; 
-            //             if(opacity >= 0.75){ opacity += opacityStep; }
-            //             if(opacity < 0.50 ){ opacity += opacityStep; }
-            //         }
-            //     }, 200);
-            // }
-            // else{
-            //     // console.log("stopping");
-            //     clearInterval(this.setupDebugGridAndNums_id);
-            //     document.getElementById("DEBUG_canvasLayer").style.opacity = 0;
-            // }
 
         }, false);
+
+        // Add the mousemove listener.
+        document.getElementById("DEBUG_canvasLayer").addEventListener('mousemove', event => {
+            let canvas = this.DEBUG_canvas.canvas;
+            let ctx    = this.DEBUG_canvas.ctx;
+            let tw     = _GFX.cache.tilesTX2.json.config.tileWidth;
+            let th     = _GFX.cache.tilesTX2.json.config.tileHeight;
+            
+            // Scale the mouse coordinates to canvas coordinates.
+            const mouseX  = event.offsetX - canvas.offsetLeft;
+            const mouseY  = event.offsetY - canvas.offsetTop;
+            const canvasX = Math.floor((mouseX * canvas.width / canvas.clientWidth)/tw);
+            const canvasY = Math.floor((mouseY * canvas.height / canvas.clientHeight)/th);
+
+            // Do not redraw if the box would be in the same position.
+            if(this.DEBUG_lastX == canvasX && this.DEBUG_lastY == canvasY){ return; }
+
+            // Save the previous canvas X and Y values. 
+            this.DEBUG_lastX = canvasX;
+            this.DEBUG_lastY = canvasY;
+
+            // Clear L2.
+            this.DEBUG_canvas_L2.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw a hover indicator on L2.
+            this.DEBUG_canvas_L2.ctx.fillStyle="rgba(244, 67, 54, 0.5)";
+            this.DEBUG_canvas_L2.ctx.strokeStyle="white";
+            this.DEBUG_canvas_L2.ctx.lineWidth=1;
+
+            // Draw to a square.
+            this.DEBUG_canvas_L2.ctx.strokeRect( canvasX*tw, canvasY*th, tw, th );
+            this.DEBUG_canvas_L2.ctx.fillRect  ( canvasX*tw, canvasY*th, tw, th );
+            
+            // Draw to rectangles.
+            // this.DEBUG_canvas_L2.ctx.fillStyle="rgba(255, 0, 0, 0.20)";
+            // this.DEBUG_canvas_L2.ctx.fillRect  ( 0*tw      , canvasY*th, canvasX*tw, th         );
+            // this.DEBUG_canvas_L2.ctx.fillRect  ( canvasX*tw, 0*th      , tw        , canvasY*th );
+            
+            // Draw as cross-hair.
+            this.DEBUG_canvas_L2.ctx.fillStyle="rgba(255, 0, 0, 0.20)";
+            this.DEBUG_canvas_L2.ctx.fillRect  ( 0*tw      , canvasY*th, canvas.width, th            );
+            this.DEBUG_canvas_L2.ctx.fillRect  ( canvasX*tw, 0*th      , tw          , canvas.height );
+
+            // Clear the destination.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Layer 2.
+            ctx.drawImage(this.DEBUG_canvas_L2.canvas, 0,0);
+            
+            // Draw Layer 1.
+            ctx.drawImage(this.DEBUG_canvas_L1.canvas, 0,0);
+        });
 
     },
     OLDinput: {

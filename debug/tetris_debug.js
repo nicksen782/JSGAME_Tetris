@@ -504,17 +504,11 @@ _APP.debug = {
                 // this.generateDebugTable1(data);
             }
             else if(gamestate1 == "gs_play"){
-                // debug
-                // data =_APP.debug.gs_play.getVarsObj_vars();
-                // this.generateDebugTable1(data);
-
-                // debug
-                if(!_APP.game.gamestates[gamestate1].inited){ console.log("gs_play not inited yet"); }
                 if(_APP.game.gamestates[gamestate1].inited){
-                    data =_APP.debug.gs_play.showPieces();
-                    if(data){ this.generateDebugTable1(data); }
-                    data =_APP.debug.gs_play.showTimers();
-                    if(data){ this.generateDebugTable1(data); }
+                    data = _APP.debug.gs_play.vars_config();   if(data){ this.generateDebugTable1(data); }
+                    data = _APP.debug.gs_play.playerData_p1(); if(data){ this.generateDebugTable1(data); }
+                    data = _APP.debug.gs_play.playerData_p2(); if(data){ this.generateDebugTable1(data); }
+                    // data = _APP.debug.gs_play.showPieces();    if(data){ this.generateDebugTable1(data); }
                 }
             }
         },

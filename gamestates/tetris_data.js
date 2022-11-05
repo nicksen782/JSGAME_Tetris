@@ -61,10 +61,10 @@ _APP.gs_play_init = {
             "T" : {
                 "rotations": 
                 [
-                    [ [1,2],[2,2],[3,2],[2,1] ], // T up
-                    [ [2,1],[2,2],[3,2],[2,3] ], // T right
-                    [ [1,2],[2,2],[3,2],[2,3] ], // T down (spawn)
-                    [ [2,1],[1,2],[2,2],[2,3] ]  // T left
+                    [ [1,2], [2,2], [3,2], [2,1] ], // T up
+                    [ [2,1], [2,2], [3,2], [2,3] ], // T right
+                    [ [1,2], [2,2], [3,2], [2,3] ], // T down (spawn)
+                    [ [2,1], [1,2], [2,2], [2,3] ]  // T left
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -80,10 +80,10 @@ _APP.gs_play_init = {
             "L" : {
                 "rotations": 
                 [
-                    [ [2,1],[2,2],[2,3],[3,3] ], // L right
-                    [ [1,2],[2,2],[3,2],[1,3] ], // L down (SPAWN)
-                    [ [1,1],[2,1],[2,2],[2,3] ], // L left
-                    [ [3,1],[1,2],[2,2],[3,2] ]  // L up
+                    [ [2,1], [2,2], [2,3], [3,3] ], // L right
+                    [ [1,2], [2,2], [3,2], [1,3] ], // L down (SPAWN)
+                    [ [1,1], [2,1], [2,2], [2,3] ], // L left
+                    [ [3,1], [1,2], [2,2], [3,2] ]  // L up
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -99,8 +99,8 @@ _APP.gs_play_init = {
             "Z" : {
                 "rotations": 
                 [
-                    [ [1,2],[2,2],[2,3],[3,3] ], // Z horizontal (spawn)
-                    [ [3,1],[2,2],[3,2],[2,3] ], // Z vertical
+                    [ [1,2], [2,2], [2,3], [3,3] ], // Z horizontal (spawn)
+                    [ [3,1], [2,2], [3,2], [2,3] ], // Z vertical
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -116,7 +116,7 @@ _APP.gs_play_init = {
             "O" : {
                 "rotations": 
                 [
-                    [ [1,2],[2,2],[1,3],[2,3] ], // O (SPAWN)
+                    [ [1,2], [2,2], [1,3], [2,3] ], // O (SPAWN)
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -132,8 +132,8 @@ _APP.gs_play_init = {
             "S" : {
                 "rotations": 
                 [
-                    [ [2,2],[3,2],[1,3],[2,3] ], // S horizontal (SPAWN)
-                    [ [2,1],[2,2],[3,2],[3,3] ], // S vertical
+                    [ [2,2], [3,2], [1,3], [2,3] ], // S horizontal (SPAWN)
+                    [ [2,1], [2,2], [3,2], [3,3] ], // S vertical
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -149,10 +149,10 @@ _APP.gs_play_init = {
             "J" : {
                 "rotations": 
                 [
-                    [ [2,1],[2,2],[1,3],[2,3] ], // J left
-                    [ [1,1],[1,2],[2,2],[3,2] ], // J up
-                    [ [2,1],[3,1],[2,2],[2,3] ], // J right
-                    [ [1,2],[2,2],[3,2],[3,3] ]  // J down (SPAWN)
+                    [ [2,1], [2,2], [1,3], [2,3] ], // J left
+                    [ [1,1], [1,2], [2,2], [3,2] ], // J up
+                    [ [2,1], [3,1], [2,2], [2,3] ], // J right
+                    [ [1,2], [2,2], [3,2], [3,3] ]  // J down (SPAWN)
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -168,8 +168,8 @@ _APP.gs_play_init = {
             "I" : {
                 "rotations": 
                 [
-                    [ [2,0],[2,1],[2,2],[2,3] ], // I vertical
-                    [ [0,2],[1,2],[2,2],[3,2] ], // I horizontal (SPAWN)
+                    [ [2,0], [2,1], [2,2], [2,3] ], // I vertical
+                    [ [0,2], [1,2], [2,2], [3,2] ], // I horizontal (SPAWN)
                 ] ,
                 "tileset_bg":"tilesG1",
                 "tileset_sp":"tilesSP1",
@@ -232,15 +232,20 @@ _APP.gs_play_init = {
             },
         },
         _core_funcs_gameStats: {
-            // GAME STATS
+            // GAME STATS ("lines", "level", "score")
+            gameStats_get: function(key){
+                // EXAMPLE USAGE: gameStats_get("lines");
+                return this.gameStats[key].value;
+            },
             gameStats_set: function(key, value){
                 // EXAMPLE USAGE: gameStats_set("score", 0);
                 this.gameStats[key].value = value;
                 this.gameStats_draw_one(key);
             },
             gameStats_incrementBy: function(key, value){
-                // EXAMPLE USAGE: gameStats_set("score", 10);
-                // console.log("gameStats_incrementBy:", key, value);
+                // EXAMPLE USAGE: gameStats_incrementBy("lines", 1);
+                // EXAMPLE USAGE: gameStats_incrementBy("level", 1);
+                // EXAMPLE USAGE: gameStats_incrementBy("score", 10);
                 this.gameStats[key].value += value;
                 this.gameStats_draw_one(key);
             },
@@ -289,280 +294,6 @@ _APP.gs_play_init = {
             },
         },
         _core_funcs_unseparated: {
-            // PIECES LANDED
-
-            addPieceToLanded_debug: function(){
-                this.piecesField[this.piecesField.length-7] = [ " ", " ", "T", "L", "Z", "O", "I", "S", "J", "I" ];
-                this.piecesField[this.piecesField.length-6] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", "O" ];
-                this.piecesField[this.piecesField.length-5] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", "O" ];
-                this.piecesField[this.piecesField.length-4] = [ "O", "O", "O", "S", " ", " ", "S", "O", "O", "O" ];
-                this.piecesField[this.piecesField.length-3] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", "O" ];
-                this.piecesField[this.piecesField.length-2] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", "O" ];
-                this.piecesField[this.piecesField.length-1] = [ "T", "L", "Z", "O", "I", "S", "J", "I", " ", " " ];
-            },
-            pieceisAtTop: function(){
-                // x 15 and 16
-                // y 14
-                let piecesCoords = this.parent.pieces.getData(this.currPiece, 0).rotations[this.currPieceRotation];
-                // console.log("pieceisAtTop:", piecesCoords, "Y:", this.currPieceY, "X:", this.currPieceX);
-                if(this.currPieceY == -2){ return true; }
-                return false;
-            },
-            drawLandedPieces: function(){
-                for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
-                    for(let x=0, xl=this.piecesField[y].length; x<xl; x+=1){
-                        let tilesetName = "tilesG1";
-                        let tilemapName;
-    
-                        // Background tiles. 
-                        switch(this.piecesField[y][x]){
-                            case " ": { tilemapName = "transparent_tile"; break; }
-                            case "X": { tilemapName = "X_tile"; break; }
-                            case "T": { tilemapName = this.parent.pieces.getData("T", 0).map_bg; break; }
-                            case "L": { tilemapName = this.parent.pieces.getData("L", 0).map_bg; break; }
-                            case "Z": { tilemapName = this.parent.pieces.getData("Z", 0).map_bg; break; }
-                            case "O": { tilemapName = this.parent.pieces.getData("O", 0).map_bg; break; }
-                            case "S": { tilemapName = this.parent.pieces.getData("S", 0).map_bg; break; }
-                            case "J": { tilemapName = this.parent.pieces.getData("J", 0).map_bg; break; }
-                            case "I": { tilemapName = this.parent.pieces.getData("I", 0).map_bg; break; }
-                            default: { console.error("drawLandedPieces: Invalid piece value:", this.piecesField[y][x]); return; break; }
-                        };
-                        _GFX.util.tiles.drawTilemap( { 
-                            tsn: tilesetName, // "tilesG1", 
-                            x  : x + this.playfield.x + 1, 
-                            y  : y + this.playfield.y + 1, 
-                            li : 1, 
-                            tmn: tilemapName
-                        } );
-                    }
-                }
-            },
-            detectLineCompletions: function(){
-                let lineNumbersCompleted = [];
-                for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
-                    if(this.piecesField[y].indexOf(" ") == -1){ lineNumbersCompleted.push({ line: y, count: 0, state:0, prev: this.piecesField[y].slice() } ); }
-                }
-                
-                this.lineNumbersCompleted = lineNumbersCompleted;
-                return lineNumbersCompleted.length ? true : false;
-            },
-            doLineCompletionAnimation: function(){
-                let line;
-                let allLinesDone = false;
-                for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
-                    // Save the line number to save some space here.
-                    line = this.lineNumbersCompleted[i].line; 
-    
-                    // Change the values on even iterations of count.
-                    if(this.lineNumbersCompleted[i].count % 2 == 0){ this.piecesField[line].fill("X"); }
-                    
-                    // Return the values to their previous values on odd iterations of the count.
-                    else                                           { this.piecesField[line] = this.lineNumbersCompleted[i].prev.slice(); }
-                    
-                    // Increment the count. 
-                    this.lineNumbersCompleted[i].count += 1;
-                    
-                    // If the count is over then remove this line from lineNumbersCompleted.
-                    if(this.lineNumbersCompleted[i].count > 7){ 
-                        this.piecesField[line].fill("X");
-                        allLinesDone = true;
-                    }
-                }
-    
-                //
-                if(allLinesDone){ 
-                    // The piecesField should end up with the same number of rows that it started with.
-                    
-                    // Determine the points to assign.
-                    let basePoints = [40,100,300,1200];
-                    let points = basePoints[this.lineNumbersCompleted.length-1] * (1+this.gameStats.level.value);
-
-                    // DEBUG - Impossible under normal/correct gameplay.
-                    if(this.lineNumbersCompleted.length > 4){ points = 112233; }
-                    
-                    // Add to score and to lines.
-                    this.gameStats_incrementBy("score", points);
-                    this.gameStats_incrementBy("lines", this.lineNumbersCompleted.length);
-
-                    // Move the pieces down by removing all rows in piecesField where it includes "X".
-                    this.piecesField = this.piecesField.filter(c => { return ! c.includes("X") } );
-                    
-                    // Add empty replacement lines to the top. (Add as many lines are were removed.)
-                    for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
-                        this.piecesField.unshift( Array(10).fill(" ") );
-                    }
-
-                    // Clear out the lineNumbersCompleted.
-                    this.lineNumbersCompleted = []; 
-                }
-            },
-            addPieceToLanded: function(xOffset=0, yOffset=0){
-                // Convert the currPiece tiles to tiles on layer 1 and remove the currPiece from layer 2.
-                
-                // We can get the coordinates of each part of the currPiece.
-                let data = this.getCollisionData(this.currPiece, this.currPieceRotation, xOffset, yOffset);
-                
-                // Add those pieces at the same coordinates to the piecesField as normal tiles.
-                for(let i=0, l=data.length; i<l; i+=1){
-                    let x = data[i].landedCoord[1];
-                    let y = data[i].landedCoord[0];
-                    this.piecesField[y][x] = this.currPiece;
-                }
-
-                // SCORE
-                if(this.quickDrop){ this.gameStats_incrementBy("score", 10 + (10*this.gameStats.level.value+1)); }
-                else              { this.gameStats_incrementBy("score", 5 + (5*this.gameStats.level.value+1));  }
-
-                // Set the currPiece to undefined. 
-                this.currPiece = undefined;
-
-                // Clear the playfield. 
-                this.clearUpperPlayfield();
-            },
-    
-            // MOVING/ROTATING PIECES (AND COLLISION)
-
-            // Converts the specified piece/rotation with the specified x and y offset to data.
-            getCollisionData: function(piece, rotation, xOffset, yOffset){
-                let piecesCoords = this.parent.pieces.getData(piece, 0).rotations[rotation];
-
-                let rect2 = {
-                    x:this.playfield.x+1, y:this.playfield.y+1, 
-                    w:this.playfield.w-3, h:this.playfield.h-3
-                };
-
-                let data = [
-                    {
-                        pieceIndex:     0,
-                        matchingLanded: null,
-                        landedCoord:    [],
-                        pieceCoords:    piecesCoords[0],
-                        inBounds:       false,
-                        oob:            [],
-                    },
-                    {
-                        pieceIndex:     1,
-                        matchingLanded: null,
-                        landedCoord:    [],
-                        pieceCoords:    piecesCoords[1],
-                        inBounds:       false,
-                        oob:            [],
-                    },
-                    {
-                        pieceIndex:     2,
-                        matchingLanded: null,
-                        landedCoord:    [],
-                        pieceCoords:    piecesCoords[2],
-                        inBounds:       false,
-                        oob:            [],
-                    },
-                    {
-                        pieceIndex:     3,
-                        matchingLanded: null,
-                        landedCoord:    [],
-                        pieceCoords:    piecesCoords[3],
-                        inBounds:       false,
-                        oob:            [],
-                    },
-                ];
-                
-                for(let rec of data){
-                    // Get the piece x,y and the absolute coords.
-                    let pieceX = rec.pieceCoords[0] + rect2.x + this.currPieceX;
-                    let pieceY = rec.pieceCoords[1] + rect2.y + this.currPieceY;
-
-                    // Is the piece in bounds?
-                    if( (pieceY + yOffset) < rect2.y )           { rec.oob.push("UP"   ); }
-                    if( (pieceX + xOffset) < rect2.x )           { rec.oob.push("LEFT" ); }
-                    if( (pieceY + yOffset) > rect2.y + rect2.h ) { rec.oob.push("DOWN" ); }
-                    if( (pieceX + xOffset) > rect2.x + rect2.w ) { rec.oob.push("RIGHT"); }
-                    if(!rec.oob.length){ 
-                        // Yes, it is inBounds.
-                        rec.inBounds = true; 
-
-                        // It is safe to get the other values. 
-                        rec.matchingLanded = this.piecesField[ piecesCoords[rec.pieceIndex][1] + this.currPieceY +yOffset][ piecesCoords[rec.pieceIndex][0] + this.currPieceX +xOffset];
-                        rec.landedCoord    = [piecesCoords[rec.pieceIndex][1] + this.currPieceY+yOffset, piecesCoords[rec.pieceIndex][0] + this.currPieceX+xOffset];
-                    }
-                    // else{
-                    //     console.log(rec.pieceIndex, "oob:", JSON.stringify(rec.oob));
-                    // }
-                }
-
-                return data;
-            },
-            // Playfield boundary check. Works for movement. Supports all rotations during movement.
-            checkForCollision_move: function(dir){
-                // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
-                // We WANT a collision within the playfield boundaries in this case.
-    
-                let data;
-                
-                // Determine the required x or y offsets.
-                let xOffset = 0;
-                let yOffset = 0;
-                if     (dir == "UP")   { yOffset = -1; }
-                else if(dir == "LEFT") { xOffset = -1; }
-                else if(dir == "DOWN") { yOffset =  1; }
-                else if(dir == "RIGHT"){ xOffset =  1; }
-                else{ console.error("INVALID DIR", dir); return false; }
-
-                // Get the data. 
-                data = this.getCollisionData(this.currPiece, this.currPieceRotation, xOffset, yOffset);
-
-                // Check the data.
-                for(let rec of data){ 
-                    // Check for inBounds.
-                    if(!rec.inBounds){ return false; } 
-                    
-                    // Check against landed pieces.
-                    if(rec.matchingLanded != " "){ return false; }
-                }
-                return true; 
-            },
-            // Playfield boundary check. Works for rotations.
-            checkForCollision_rotate: function(rotationDir){
-                let pieceRotations = this.parent.pieces.getData(this.currPiece, 0).rotations;
-                let newRotationIndex;
-    
-                // BTN_A
-                if(rotationDir == 1){
-                    // Rotation index bounds check.
-                    if(this.currPieceRotation + 1 < pieceRotations.length){ newRotationIndex = this.currPieceRotation + 1; }
-                    else                                                  { newRotationIndex = 0;                          }
-                }
-    
-                // BTN_B
-                else if(rotationDir == -1){
-                    // Rotation index bounds check.
-                    if(this.currPieceRotation - 1 >= 0){ newRotationIndex = this.currPieceRotation - 1; }
-                    else                               { newRotationIndex = pieceRotations.length - 1;  }
-                }
-    
-                // Try this rotation with no direction check.
-                let canRotate = (()=>{
-                    // Get the data. 
-                    data = this.getCollisionData(this.currPiece, newRotationIndex, 0, 0);
-
-                    // Check the data.
-                    for(let rec of data){ 
-                        // Check for inBounds.
-                        if(!rec.inBounds){ return false; } 
-                        
-                        // Check against landed pieces.
-                        if(rec.matchingLanded != " "){ return false; }
-                    }
-                    return true; 
-                })();
-    
-                // If it cannot rotate then return false.
-                if(!canRotate){ return false; }
-                
-                // If it can rotate then assign the new value and return true.
-                this.currPieceRotation = newRotationIndex;
-                return true;
-            },
-
             // DRAWING/SPAWNING.
             
             generateRandomPiece: function(){
@@ -643,7 +374,7 @@ _APP.gs_play_init = {
                 });
             },
             drawCurrentPiece: function(){
-                let rec = this.parent.pieces.getData(this.currPiece, 0);
+                let rec = this.parent.pieces.getData(this.currPiece, this.gameStats_get("level"));
     
                 // DEBUG: Display currPieceX and currPieceY and matrix.
                 // _GFX.util.tiles.fillWithOneTile_tilemap({ 
@@ -670,9 +401,472 @@ _APP.gs_play_init = {
                 }
             },
         },
-        _core_funcs_landed: {},
-        _core_funcs_moving: {},
+        _core_funcs_landed: {
+            // PIECES LANDED
+
+            // Determine if the piece is at the top.
+            pieceisAtTop: function(){
+                if(this.currPieceY == -2){ return true; }
+                return false;
+            },
+
+            // Draw all pieces that are landed (in piecesField).
+            drawLandedPieces: function(){
+                for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
+                    for(let x=0, xl=this.piecesField[y].length; x<xl; x+=1){
+                        let tilesetName = "tilesG1";
+                        let tilemapName;
+    
+                        // Background tiles. 
+                        switch(this.piecesField[y][x]){
+                            case " ": { tilemapName = "transparent_tile"; break; }
+                            case "X": { tilemapName = "X_tile"; break; }
+                            case "T": { tilemapName = this.parent.pieces.getData("T", this.gameStats_get("level")).map_bg; break; }
+                            case "L": { tilemapName = this.parent.pieces.getData("L", this.gameStats_get("level")).map_bg; break; }
+                            case "Z": { tilemapName = this.parent.pieces.getData("Z", this.gameStats_get("level")).map_bg; break; }
+                            case "O": { tilemapName = this.parent.pieces.getData("O", this.gameStats_get("level")).map_bg; break; }
+                            case "S": { tilemapName = this.parent.pieces.getData("S", this.gameStats_get("level")).map_bg; break; }
+                            case "J": { tilemapName = this.parent.pieces.getData("J", this.gameStats_get("level")).map_bg; break; }
+                            case "I": { tilemapName = this.parent.pieces.getData("I", this.gameStats_get("level")).map_bg; break; }
+                            default: { console.error("drawLandedPieces: Invalid piece value:", this.piecesField[y][x]); return; break; }
+                        };
+                        _GFX.util.tiles.drawTilemap( { 
+                            tsn: tilesetName, // "tilesG1", 
+                            x  : x + this.playfield.x + 1, 
+                            y  : y + this.playfield.y + 1, 
+                            li : 1, 
+                            tmn: tilemapName
+                        } );
+                    }
+                }
+            },
+
+            // Look for completed lines in the piecesField.
+            detectLineCompletions: function(){
+                // Look for lines that do NOT have '" "', meaning a piece is in each position on the line. 
+                let lineNumbersCompleted = [];
+                for(let y=0, yl=this.piecesField.length; y<yl; y+=1){
+                    if(this.piecesField[y].indexOf(" ") == -1){ 
+                        lineNumbersCompleted.push( { 
+                            line : y,                          // Which line in piecesField is this?
+                            count: 0,                          // Used later for animation counts.
+                            prev : this.piecesField[y].slice() // Copy of the line prior to being cleared.
+                        } ); 
+                    }
+                }
+                
+                // Update the number of completed lines. 
+                this.lineNumbersCompleted = lineNumbersCompleted;
+
+                // Return true if there are completed lines. 
+                return lineNumbersCompleted.length ? true : false;
+            },
+
+            // Animation of line completions.
+            doLineCompletionAnimation: function(){
+                let line;
+                let allLinesDone = false;
+                // Go through all completed lines. 
+                for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
+                    // Save the line to save some space here.
+                    line = this.lineNumbersCompleted[i]; 
+    
+                    // Change the values on even iterations of count.
+                    if(line.count % 2 == 0){ this.piecesField[line.line].fill("X"); }
+                    
+                    // Return the values to their previous values on odd iterations of the count.
+                    else                   { this.piecesField[line.line] = line.prev.slice(); }
+                    
+                    // Increment the count. 
+                    line.count += 1;
+                    
+                    // If the count is over then remove this line from lineNumbersCompleted.
+                    if(line.count > 7){ 
+                        this.piecesField[line.line].fill("X");
+                        allLinesDone = true;
+                    }
+                }
+    
+                // If all lines are done animating...
+                if(allLinesDone){ 
+                    // The piecesField should end up with the same number of rows that it started with.
+                    
+                    // Determine the points to assign.
+                    let basePoints = [40,100,300,1200];
+                    let points = basePoints[this.lineNumbersCompleted.length-1] * (1+this.gameStats.level.value);
+
+                    // DEBUG - Impossible under normal/correct gameplay.
+                    if(this.lineNumbersCompleted.length > 4){ points = 112233; }
+                    
+                    // SCORE
+                    if(this.quickDrop){ this.gameStats_incrementBy("score", 10 + (10*this.gameStats.level.value+1)); }
+                    else              { this.gameStats_incrementBy("score", 5 + (5*this.gameStats.level.value+1));  }
+
+                    // Get the lines completed count (before adding the new lines.)
+                    let oldLevel = (this.gameStats_get("lines") / 10) << 0;
+                    
+                    // Add to score and to lines.
+                    this.gameStats_incrementBy("score", points);
+                    this.gameStats_incrementBy("lines", this.lineNumbersCompleted.length);
+                    
+                    // Get the new lines completed count. 
+                    let newLevel = (this.gameStats_get("lines") / 10) << 0;
+
+                    // Increase to the next level?
+                    if(oldLevel != newLevel){
+                        // Reset the drop timer to the delay of the new level.
+                        _APP.game.shared.createGeneralTimer(this.mainKey + "dropDelay", this.parent.dropSpeeds.getDropSpeedFramesFromLevel(newLevel));
+
+                        // Increase the level. 
+                        this.gameStats_incrementBy("level", 1);
+                    }
+
+                    // Move the pieces down by removing all rows in piecesField where it includes "X".
+                    this.piecesField = this.piecesField.filter(c => { return ! c.includes("X") } );
+                    
+                    // Add empty replacement lines to the top. (Add as many lines are were removed.)
+                    for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
+                        this.piecesField.unshift( Array(10).fill(" ") );
+                    }
+
+                    // Clear out the lineNumbersCompleted.
+                    this.lineNumbersCompleted = []; 
+                }
+            },
+
+            // Add the active piece parts to the pieceField.
+            addPieceToLanded: function(xOffset=0, yOffset=0){
+                // Convert the currPiece tiles to tiles on layer 1 and remove the currPiece from layer 2.
+                
+                // We can get the coordinates of each part of the currPiece.
+                let data = this.getCollisionData(this.currPiece, this.currPieceRotation, xOffset, yOffset);
+                
+                // Add those pieces at the same coordinates to the piecesField as normal tiles.
+                for(let i=0, l=data.length; i<l; i+=1){
+                    if(data[i].matchingLanded == null){ 
+                        console.log("Null piece NOT drawn.");
+                        continue; 
+                    }
+                    let x = data[i].landedCoord[1];
+                    let y = data[i].landedCoord[0];
+                    this.piecesField[y][x] = this.currPiece;
+                }
+
+                // Set the currPiece to undefined. 
+                this.currPiece = undefined;
+
+                // Clear the playfield.
+                this.clearUpperPlayfield();
+            },
+    
+            // MOVING/ROTATING PIECES (AND COLLISION)
+
+            // Converts the specified piece/rotation with the specified x and y offset to data.
+            getCollisionData: function(piece, rotation, xOffset, yOffset){
+                let piecesCoords = this.parent.pieces.getData(piece, this.gameStats_get("level")).rotations[rotation];
+
+                let rect2 = {
+                    x:this.playfield.x+1, y:this.playfield.y+1, 
+                    w:this.playfield.w-3, h:this.playfield.h-3
+                };
+
+                // TODO: Wall kick?
+                //
+
+                let data = [
+                    {
+                        pieceIndex:     0,
+                        matchingLanded: null,
+                        landedCoord:    [],
+                        pieceCoords:    piecesCoords[0],
+                        inBounds:       false,
+                        oob:            [],
+                    },
+                    {
+                        pieceIndex:     1,
+                        matchingLanded: null,
+                        landedCoord:    [],
+                        pieceCoords:    piecesCoords[1],
+                        inBounds:       false,
+                        oob:            [],
+                    },
+                    {
+                        pieceIndex:     2,
+                        matchingLanded: null,
+                        landedCoord:    [],
+                        pieceCoords:    piecesCoords[2],
+                        inBounds:       false,
+                        oob:            [],
+                    },
+                    {
+                        pieceIndex:     3,
+                        matchingLanded: null,
+                        landedCoord:    [],
+                        pieceCoords:    piecesCoords[3],
+                        inBounds:       false,
+                        oob:            [],
+                    },
+                ];
+                
+                for(let rec of data){
+                    // Get the piece x,y and the absolute coords.
+                    let pieceX = rec.pieceCoords[0] + rect2.x + this.currPieceX;
+                    let pieceY = rec.pieceCoords[1] + rect2.y + this.currPieceY;
+
+                    // Is the piece in bounds?
+                    if( (pieceY + yOffset) < rect2.y )           { rec.oob.push("UP"   ); }
+                    if( (pieceX + xOffset) < rect2.x )           { rec.oob.push("LEFT" ); }
+                    if( (pieceY + yOffset) > rect2.y + rect2.h ) { rec.oob.push("DOWN" ); }
+                    if( (pieceX + xOffset) > rect2.x + rect2.w ) { rec.oob.push("RIGHT"); }
+                    if(!rec.oob.length){ 
+                        // Yes, it is inBounds.
+                        rec.inBounds = true; 
+
+                        // It is safe to get the other values. 
+                        try{
+                            rec.matchingLanded = 
+                            this.piecesField
+                                [ piecesCoords[rec.pieceIndex][1] + this.currPieceY +yOffset]
+                                [ piecesCoords[rec.pieceIndex][0] + this.currPieceX +xOffset]
+                            ;
+                        }
+                        catch(e){}
+                        rec.landedCoord    = [
+                            piecesCoords[rec.pieceIndex][1] + this.currPieceY+yOffset, 
+                            piecesCoords[rec.pieceIndex][0] + this.currPieceX+xOffset
+                        ];
+                    }
+                    // else{
+                    //     console.log(rec.pieceIndex, "oob:", JSON.stringify(rec.oob));
+                    // }
+                }
+
+                return data;
+            },
+
+            // Playfield/pieceField boundary check. Works for movement. Supports all rotations during movement.
+            checkForCollision_move: function(dir){
+                // For a playfield boundary check it is only required that each piece still be within the playfield after the specified movement.
+                // We WANT a collision within the playfield boundaries in this case.
+    
+                let data;
+                
+                // Determine the required x or y offsets.
+                let xOffset = 0;
+                let yOffset = 0;
+                if     (dir == "UP")   { yOffset = -1; }
+                else if(dir == "LEFT") { xOffset = -1; }
+                else if(dir == "DOWN") { yOffset =  1; }
+                else if(dir == "RIGHT"){ xOffset =  1; }
+                else{ console.error("INVALID DIR", dir); return false; }
+
+                // Get the data. 
+                data = this.getCollisionData(this.currPiece, this.currPieceRotation, xOffset, yOffset);
+
+                // Check the data.
+                for(let rec of data){ 
+                    // Check for inBounds.
+                    if(!rec.inBounds){ return false; } 
+                    
+                    // Check against landed pieces.
+                    if(rec.matchingLanded != " "){ return false; }
+                }
+                return true; 
+            },
+
+            // Playfield/pieceField boundary check. Works for rotations.
+            checkForCollision_rotate: function(rotationDir){
+                let pieceRotations = this.parent.pieces.getData(this.currPiece, this.gameStats_get("level")).rotations;
+                let newRotationIndex;
+    
+                // BTN_A
+                if(rotationDir == 1){
+                    // Rotation index bounds check.
+                    if(this.currPieceRotation + 1 < pieceRotations.length){ newRotationIndex = this.currPieceRotation + 1; }
+                    else                                                  { newRotationIndex = 0;                          }
+                }
+    
+                // BTN_B
+                else if(rotationDir == -1){
+                    // Rotation index bounds check.
+                    if(this.currPieceRotation - 1 >= 0){ newRotationIndex = this.currPieceRotation - 1; }
+                    else                               { newRotationIndex = pieceRotations.length - 1;  }
+                }
+    
+                // Try this rotation with no direction check.
+                let canRotate = (()=>{
+                    // Get the data. 
+                    data = this.getCollisionData(this.currPiece, newRotationIndex, 0, 0);
+
+                    // Check the data.
+                    for(let rec of data){ 
+                        // Check for inBounds.
+                        if(!rec.inBounds){ return false; } 
+                        
+                        // Check against landed pieces.
+                        if(rec.matchingLanded != " "){ return false; }
+                    }
+                    return true; 
+                })();
+    
+                // If it cannot rotate then try for a wallkick. Return false if unable to wallkick.
+                if(!canRotate){ 
+                    // Wall kick?
+                    let canWallFromKickLeft   = (()=>{
+                        // Check the data.
+                        let wallKickFromLeft_data  = this.getCollisionData(this.currPiece, newRotationIndex, 1, 0);
+                        for(let rec of wallKickFromLeft_data){ 
+                            // Check for inBounds.
+                            if(!rec.inBounds){ return false; } 
+                            
+                            // Check against landed pieces.
+                            if(rec.matchingLanded != " "){ return false; }
+                        }
+                        return true; 
+                    })();
+                    let canWallFromKickRight  = (()=>{
+                        let wallKickFromRight_data = this.getCollisionData(this.currPiece, newRotationIndex, -1, 0);
+                        // Check the data.
+                        for(let rec of wallKickFromRight_data){ 
+                            // Check for inBounds.
+                            if(!rec.inBounds){ return false; } 
+                            
+                            // Check against landed pieces.
+                            if(rec.matchingLanded != " "){ return false; }
+                        }
+                        return true; 
+                    })();
+                    let canWallFromKickTop    = (()=>{
+                        let wallKickFromTop_data = this.getCollisionData(this.currPiece, newRotationIndex, 0, 1);
+                        // Check the data.
+                        for(let rec of wallKickFromTop_data){ 
+                            // Check for inBounds.
+                            if(!rec.inBounds){ return false; } 
+                            
+                            // Check against landed pieces.
+                            if(rec.matchingLanded != " "){ return false; }
+                        }
+                        return true; 
+                    })();
+                    let canWallFromKickBottom = (()=>{
+                        let wallKickFromBottom_data = this.getCollisionData(this.currPiece, newRotationIndex, 0, -1);
+                        // Check the data.
+                        for(let rec of wallKickFromBottom_data){ 
+                            // Check for inBounds.
+                            if(!rec.inBounds){ return false; } 
+                            
+                            // Check against landed pieces.
+                            if(rec.matchingLanded != " "){ return false; }
+                        }
+                        return true; 
+                    })();
+
+                    if(canWallFromKickLeft){
+                        // console.log("CAN WALLKICK: LEFT");
+                        this.currPieceX += 1; 
+                        
+                    }
+                    else if(canWallFromKickRight){
+                        // console.log("CAN WALLKICK: RIGHT");
+                        this.currPieceX -= 1; 
+                    }
+                    else if(canWallFromKickTop){
+                        // console.log("CAN WALLKICK: TOP");
+                        this.currPieceY += 1; 
+                    }
+                    else if(canWallFromKickBottom){
+                        // console.log("CAN WALLKICK: BOTTOM");
+                        this.currPieceY -= 1; 
+                    }
+                    else{
+                        // console.log("CANNOT WALLKICK");
+                        return false; 
+                    }
+                }
+                
+                // If it can rotate then assign the new value and return true.
+                this.currPieceRotation = newRotationIndex;
+                return true;
+            },
+        },
         _core_funcs_input: {
+            pauseHandler: function(){
+                // console.log(this.parent.parent.config.paused);
+                if(_INPUT.util.checkButton(this.pkey, "press", "BTN_START" )){
+                    // Not paused? Pause it.
+                    if(!this.parent.parent.config.paused){
+                        // Copy the current VRAM.
+                        let dimensions = _JSG.loadedConfig.meta.dimensions;
+                        this.parent.parent.unpausedVRAM = _GFX.util.VRAM.getVramRegion( { 
+                            x: 0, 
+                            y: 0, 
+                            w: dimensions.cols, 
+                            h: dimensions.rows, 
+                            l: [0, 1, 2] 
+                        } );
+                        // _GFX.VRAM.clearVram();
+
+                        _GFX.util.tiles.fillWithOneTile_tilemap({ tmn:"transChecked3", x:0, y:0, w:dimensions.cols, h:dimensions.rows, tsn:"tilesBG1", li:2 });
+
+                        // Display the pause text.
+                        _APP.game.shared.drawBorderBox_tilemaps(
+                            _APP.game.shared.createBorderBox_tilemaps( 
+                                ((dimensions.cols/2) - (14/2)) << 0, // x
+                                ((dimensions.rows/2) - (6/2))  << 0, // y
+                                14, // w
+                                6,  // h
+                                [
+                                    "",
+                                    "    GAME  ",
+                                    "   PAUSED ",
+                                ], 
+                                {
+                                    border_bg  : { li:1n, tsn:"tilesBG1", tmn: "bg6_tile" },
+                                    border_fg  : { li:2 },
+                                    inner_bg   : { li:1, tsn:"tilesBG1", tmn: "blacktile" },
+                                    inner_text : { li:2, tsn:"tilesTX1" }
+                                }
+                            )
+                        );
+
+                        // Hide sprites.
+                        //
+
+                        // Pause the music.
+                        //
+
+                        // Draw the pause screen.
+
+                        // Set the paused flag. 
+                        this.parent.parent.config.paused = true;
+
+                        // End the loop.
+                        return true; 
+
+                    }
+
+                    // Already paused? Unpause it.
+                    else{
+                        // Clear the paused flag.
+                        this.parent.parent.config.paused = false;
+
+                        // Restore the previously saved VRAM.
+                        _GFX.VRAM.clearVram();
+                        _GFX.util.VRAM.setVramRegion(this.parent.parent.unpausedVRAM);
+                        //
+
+                        // Restore sprites.
+                        //
+
+                        // Unpause the music.
+                        //
+
+                        // End the loop.
+                        return true; 
+                    }
+                }
+            },
+
             gameInputHandler: function(){
                 let data = {
                     movement: false,
@@ -697,37 +891,23 @@ _APP.gs_play_init = {
                     if( data.type.BTN_UP || data.type.BTN_DOWN || data.type.BTN_LEFT || data.type.BTN_RIGHT){
                         // Do not act if a movement was already set.
                         if(!data.movement){
-                            if     (data.type.BTN_UP && data.keys[i] == "press"){
-                                this.quickDrop = !this.quickDrop;
-
-                                // if( this.checkForCollision_move("UP") ){ 
-                                //     this.currPieceY -= 1; 
-                                //     data.movement = true; 
-                                // }
+                            if     (data.type.BTN_UP && data.keys[i] == "press"){ 
+                                this.quickDrop = true; 
                             }
                             else if(data.type.BTN_DOWN){
-                                if( this.checkForCollision_move("DOWN") ){ 
-                                    this.currPieceY += 1; 
-                                    data.movement = true; 
-                                }
+                                if( this.checkForCollision_move("DOWN") ){ this.currPieceY += 1; data.movement = true; }
                             }
                             else if(data.type.BTN_LEFT){
-                                if( this.checkForCollision_move("LEFT") ){ 
-                                    this.currPieceX -= 1; 
-                                    data.movement = true; 
-                                }
+                                if( this.checkForCollision_move("LEFT") ){ this.currPieceX -= 1; data.movement = true; }
                             }
                             else if(data.type.BTN_RIGHT){
-                                if( this.checkForCollision_move("RIGHT") ){ 
-                                    this.currPieceX += 1; 
-                                    data.movement = true; 
-                                }
+                                if( this.checkForCollision_move("RIGHT") ){ this.currPieceX += 1; data.movement = true; }
                             }
                         }
                     }
 
                     // Only allow rotations on press.
-                    else if(data.keys[i] == "press"){
+                    if(data.keys[i] == "press"){
                         if( (data.type.BTN_A || data.type.BTN_X || data.type.BTN_B || data.type.BTN_Y) ){
                             // Do not act if a rotate was already set.
                             if(!data.rotate){
@@ -762,6 +942,7 @@ _APP.gs_play_init = {
 
         // Same init for single, multi (p1, p2).
         init: function(players){
+            // console.log(this);
             for(let p=0; p<players; p+=1){
                 // Generate the player key to be used here. 
                 let mainKey;
@@ -900,9 +1081,6 @@ _APP.gs_play_init = {
                 
                 // Set the initial value for quickDrop.
                 this[mainKey].quickDrop = false;
-
-                // DEBUG
-                // this[mainKey].addPieceToLanded_debug();
             }
     
             // Draw the piece stats images.
@@ -931,7 +1109,12 @@ _APP.gs_play_init = {
             for(key in this.playField._core_funcs_unseparated){ 
                 obj.funcs[key] = this.playField._core_funcs_unseparated[key]; 
             }
-            
+
+            // landed
+            for(key in this.playField._core_funcs_landed){ 
+                obj.funcs[key] = this.playField._core_funcs_landed[key]; 
+            }
+
             // gameStats funcs
             for(key in this.playField._core_funcs_gameStats){ 
                 obj.funcs[key] = this.playField._core_funcs_gameStats[key]; 
