@@ -61,7 +61,7 @@ _APP.game.gamestates["gs_play"] = {
 
         // TIMERS
         for(let mainKey of ["single", "p1", "p2"]){
-            _APP.game.shared.createGeneralTimer(mainKey + "inputDelay", 9);
+            _APP.game.shared.createGeneralTimer(mainKey + "inputDelay", 8);
             _APP.game.shared.createGeneralTimer(mainKey + "dropDelay", this.playField.dropSpeeds.getDropSpeedFramesFromLevel(0));
             _APP.game.shared.createGeneralTimer(mainKey + "lineClearDelay", 8);
         }
@@ -77,33 +77,10 @@ _APP.game.gamestates["gs_play"] = {
         this.config.gameover = false; 
 
         this.config.paused  = false;
-        this.config.players = 1;
-        // this.config.players = 2;
+        // this.config.players = 1;
+        this.config.players = 2;
 
-        // let players = 2;
         this.playField.init(this.config.players);
-    },
-
-    main2: async function(){
-        // Go through the list of players.
-
-        // Check for gameover.
-
-        // Check for pause request.
-
-        // Check for pause is active.
-
-        // Determine line completions.
-
-        // Handle line removals.
-
-        // Spawn next piece if needed.
-
-        // Auto drop
-
-        // Determine gameover. 
-
-        // Act on any other user input.
     },
 
     // Main function of this game state. Calls other functions/handles logic, etc.
@@ -113,16 +90,18 @@ _APP.game.gamestates["gs_play"] = {
 
         let mainKey;
         let pkey   ;
+
+        // Go through the list of players.
         for(let p=0; p<this.config.players; p+=1){
             // Generate the player key to be used here. 
             if(this.config.players == 1){ mainKey = `single` ; pkey  = `p1`; }
             else                        { mainKey = `p${p+1}`; pkey  = mainKey; }
-            
-            
-            // GAME OVER 
+
+            // Check for gameover.
             if(this.config.gameover){ 
                 // Gameover animation.
                 //
+                _APP.game.gameLoop.loop_restart_sameStates(); return; 
 
                 // Fade out (blocking).
                 _GFX.util.fade.fadeOut({ delay: 12, block: true });
@@ -134,64 +113,54 @@ _APP.game.gamestates["gs_play"] = {
                 return; 
             }
 
-            // BUTTON INPUT: PAUSE/UNPAUSE? 
+            // Check for pause request.
             if( this.playField[mainKey].pauseHandler() ){
                 // End the loop for all players since the game is now paused.
                 return;
             }
 
-            // PAUSED
+            // Check for pause is active.
             if(this.config.paused){ 
                 // End the loop for all players.
                 return; 
             }
 
-            // LINE ANIMATION/REMOVAL
-            
-            // Check for line completions.
+            // Determine line completions.
             if(!this.playField[mainKey].lineNumbersCompleted.length){
                 this.playField[mainKey].detectLineCompletions();
             }
 
-            // Are lines waiting to be animated/removed?
+            // Handle line removals.
             if(this.playField[mainKey].lineNumbersCompleted.length){
+                // NOTE: Line animations/removals must be completed before the player can continue.
+
                 // Is it time to do an animation/removal?
                 if(_APP.game.shared.checkGeneralTimer(mainKey + "lineClearDelay")){
-                    let howManyLines = this.playField[mainKey].lineNumbersCompleted.length; 
-
                     // Do the animation/remove and then draw.
                     this.playField[mainKey].doLineCompletionAnimation();
                     this.playField[mainKey].drawLandedPieces();
 
                     // Reset the timer for the next run.
                     _APP.game.shared.resetGeneralTimer(mainKey + "lineClearDelay");
-
-                    // Lines fully removed? 
-                    if(this.playField[mainKey].lineNumbersCompleted.length == 0){
-                        // Assign points based on the number of lines and the level.
-                        //
-                    }
                 }
 
-                // Line animations/removals must be completed before the player can continue.
                 // End the loop for this player.
                 continue;
             }
-            else{
-                // // Check for line completions.
-                // this.playField[mainKey].detectLineCompletions();
-            }
 
-            // SPAWN NEXT PIECE.
+            // Spawn next piece if needed.
             if(!this.playField[mainKey].currPiece){
+                // Add any queued junkLines.
+                if( this.playField[mainKey].addJunkPiecesToPlayfield() ){ continue; }
+
                 // Spawn the nextPiece, generate a new nextPiece, draw the new currPiece.
                 this.playField[mainKey].spawnNextPiece();
-
+                
                 // End the loop for this player. 
                 continue;
             }
 
-            // Auto drop by one?
+            // Auto drop
             if(this.playField[mainKey].quickDrop || _APP.game.shared.checkGeneralTimer(mainKey + "dropDelay")){ 
                 // if(this.playField[mainKey].quickDrop){}
                 _APP.game.shared.resetGeneralTimer(mainKey + "dropDelay");
@@ -203,9 +172,12 @@ _APP.game.gamestates["gs_play"] = {
 
                     // Draw the piece.
                     this.playField[mainKey].drawCurrentPiece();
+
+                    // End the loop for this player. 
+                    continue;
                 }
 
-                // It cannot drop. Determine why.
+                // It cannot drop. Determine why. (gameover/landed piece). 
                 else{
                     // Gameover?: Is this piece at the top?
                     if(this.playField[mainKey].pieceisAtTop()){
@@ -217,6 +189,7 @@ _APP.game.gamestates["gs_play"] = {
 
                         this.config.gameover = true; 
                         
+                        // End the loop for this player. 
                         continue;
                     }
                     //
@@ -228,27 +201,24 @@ _APP.game.gamestates["gs_play"] = {
                     // Clear quickDrop
                     this.playField[mainKey].quickDrop = false;
 
-                    //
-                    // this.playField[mainKey].currPiece = undefined;
-                    // Load the next piece. (Not needed. This will happen on the next frame.)
-                    // this.playField[mainKey].spawnNextPiece();
+                    // End the loop for this player. 
+                    continue;
                 }
             }
+    
+            // Act on any other user input.
+            this.playField[mainKey].gameInputHandler();
 
-            // User input.
-            else{
-                // Handle and act upon input.
-                this.playField[mainKey].gameInputHandler();
-                if(_INPUT.util.checkButton(pkey, "press", "BTN_SL" )){
-                    _APP.game.gameLoop.loop_restart_sameStates(); return; 
-                }
-                if(_INPUT.util.checkButton(pkey, "press", "BTN_SR" )){
-                    this.playField[mainKey].addPieceToLanded(); 
-                }
+            // DEBUG INPUT
+            if(_INPUT.util.checkButton(pkey, "press", "BTN_SL" )){
+                _APP.game.gameLoop.loop_restart_sameStates(); return; 
             }
-
-            continue; 
+            if(_INPUT.util.checkButton(pkey, "press", "BTN_SR" )){
+                // this.playField[mainKey].addPieceToLanded(); 
+                this.playField[mainKey].nextPiece = "I";
+                this.playField[mainKey].drawNextPiece();
+            }
         }
-    },
 
+    },
 };

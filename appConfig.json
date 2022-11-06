@@ -4,7 +4,7 @@
         "autoSwitchToLobbyDebugTab": true,
         "defaultLobbyTab": "lobby",
         "hideLobby": true, 
-        "defaultGameCanvasHeightPercent": 90,
+        "defaultGameCanvasHeightPercent": 100,
         "dimensions":{
             "pointersSize" : 8,
             "tileWidth" : 8,

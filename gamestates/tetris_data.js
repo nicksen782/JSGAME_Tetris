@@ -55,7 +55,8 @@ _APP.gs_play_init = {
             },
 
             // Tetriminos spawnIndexs and matrixes of rotations.
-            pieceSpawnIndexes: { "T":2, "L":1, "Z":0, "O":0, "S":0, "J":3, "I":1 },
+            pieceSpawnIndexes    : { "T":2, "L":1, "Z":0, "O":0, "S":0, "J":3, "I":1 },
+            pieceSpawnIndexesNext: { "T":3, "L":0, "Z":1, "O":0, "S":1, "J":0, "I":1 },
 
             // Pieces/rotations/tilesets/tilemaps.
             "T" : {
@@ -207,6 +208,13 @@ _APP.gs_play_init = {
                 "p1":{ x:1 , y:29 },
                 "p2":{ x:1 , y:30 },
             },
+
+            // Next piece home coords.
+            nextPiece_home: {
+                "single":{ x:22 , y:3 , w:6, h:6 },
+                "p1"    :{ x:13 , y:3 , w:6, h:6 },
+                "p2"    :{ x:13 , y:17, w:6, h:6 },
+            },
     
             // (COPY THIS) Drawn with coords relative to "pieceStats_home". 
             pieceCounter: 0,
@@ -230,6 +238,10 @@ _APP.gs_play_init = {
                 "J": { tsn:"tilesG1" , x:4+(4*5), y:28, li:1, tmn:"J_map_small" },
                 "I": { tsn:"tilesG1" , x:4+(4*6), y:28, li:1, tmn:"I_map_small" },
             },
+
+            // JUNK LINES
+            junkLines : [],
+            prevPiecesField: [],
         },
         _core_funcs_gameStats: {
             // GAME STATS ("lines", "level", "score")
@@ -265,6 +277,39 @@ _APP.gs_play_init = {
                     } 
                 );
             },
+
+            drawNextPiece: function(){
+                // Get the piece data.
+                let rec = this.parent.pieces.getData(this.nextPiece, this.gameStats_get("level"));
+
+                // Clear the piece box.
+                _GFX.util.tiles.fillWithOneTile_tilemap({ 
+                    tmn:"blacktile", 
+                    x:this.nextPiece_home.x+1, y:this.nextPiece_home.y+2, 
+                    w:this.nextPiece_home.w-2, h:this.nextPiece_home.h-3, 
+                    tsn:"tilesBG1", li:1 
+                });
+
+                // Move some pieces around to keep them displayed centered.
+                let rotation = this.parent.pieces.pieceSpawnIndexesNext[this.nextPiece];
+                let x = this.nextPiece_home.x+1;
+                let y = this.nextPiece_home.y+1;
+                if(this.nextPiece == "L"){ x-=1; }
+                if(this.nextPiece == "Z"){ x-=1; }
+                if(this.nextPiece == "S"){ x-=1; }
+                
+                // Draw each part of the current piece and rotation.
+                for(let piece of rec.rotations[rotation]){
+                    // console.log(piece);
+                    _GFX.util.tiles.drawTilemap( { 
+                        tsn: rec.tileset_bg,
+                        x  : x + piece[0], 
+                        y  : y + piece[1], 
+                        li : 1, 
+                        tmn: rec.map_bg
+                    } );
+                }
+            },
         },
         _core_funcs_pieceStats: {
             // PIECE STATS
@@ -293,9 +338,10 @@ _APP.gs_play_init = {
                 );
             },
         },
-        _core_funcs_unseparated: {
+        _core_funcs_play: {
             // DRAWING/SPAWNING.
             
+            // Generate the next piece and try to keep an average piece type distribution.
             generateRandomPiece: function(){
                 let pieceStats = _APP.game.gamestates["gs_play"].playField[this.mainKey].pieceStats;
 
@@ -308,20 +354,26 @@ _APP.gs_play_init = {
                     next = Math.floor(Math.random() * (max - min + 1)) + min;
                     
                     // Avoid division by 0.
-                    if(this.pieceCounter == 0){ console.log("first"); return keys[next]; }
+                    if(this.pieceCounter == 0){ return keys[next]; }
 
+                    // TODO: Avoid getting the same piece twice at earlier frames.
                     // 
-                    // let avg = ((pieceStats[keys[next]].value/this.pieceCounter)*100)<<0;
-                    // if( ! (avg >= 15) ){ return keys[next]; }
-                    if( ! (pieceStats[keys[next]].avg >= 15) ){ return keys[next]; }
+
+                    // Allow this piece if it's usage is not at or above 15% of all pieces and isn't the last piece.
+                    if( 
+                        ! (pieceStats[keys[next]].avg >= 15) &&
+                           keys[next] != this.currPiece 
+                    ){ return keys[next]; }
                 }
 
                 // Could not find a good match. Give the last attempt.
                 return keys[next];
             },
+            // Spawns the next piece.
             spawnNextPiece: function(){
                 this.spawnPiece(this.nextPiece);
             },
+            // Add the specified piece as the active piece and displays it.
             spawnPiece: function(piece){
                 // Save this piece as the currPiece.
                 this.currPiece = piece;
@@ -345,9 +397,13 @@ _APP.gs_play_init = {
                     pieceStats[key].avg = ((pieceStats[key].value/this.pieceCounter)*100)<<0;
                 }
 
+                // Draw the piece into the next piece box.
+                this.drawNextPiece();
+
                 // Draw the currPiece.
                 this.drawCurrentPiece();
             },
+            // Clear the landed pieces from the display.
             clearLowerPlayfield: function(){
                 // Clear inner-playfield with the transparent_tile.
                 _GFX.util.tiles.fillWithOneTile_tilemap({ 
@@ -362,6 +418,7 @@ _APP.gs_play_init = {
                     this.piecesField[i].fill(" ");
                 }
             },
+            // Clear the active piece from the display.
             clearUpperPlayfield: function(){
                 // Clear inner-playfield with the transparent_tile.
                 _GFX.util.tiles.fillWithOneTile_tilemap({ 
@@ -420,7 +477,8 @@ _APP.gs_play_init = {
                         // Background tiles. 
                         switch(this.piecesField[y][x]){
                             case " ": { tilemapName = "transparent_tile"; break; }
-                            case "X": { tilemapName = "X_tile"; break; }
+                            case "X": { tilemapName = "X_tile";           break; }
+                            case "G": { tilemapName = "garbage_tile";     break; }
                             case "T": { tilemapName = this.parent.pieces.getData("T", this.gameStats_get("level")).map_bg; break; }
                             case "L": { tilemapName = this.parent.pieces.getData("L", this.gameStats_get("level")).map_bg; break; }
                             case "Z": { tilemapName = this.parent.pieces.getData("Z", this.gameStats_get("level")).map_bg; break; }
@@ -466,6 +524,7 @@ _APP.gs_play_init = {
             doLineCompletionAnimation: function(){
                 let line;
                 let allLinesDone = false;
+
                 // Go through all completed lines. 
                 for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
                     // Save the line to save some space here.
@@ -509,6 +568,28 @@ _APP.gs_play_init = {
                     this.gameStats_incrementBy("score", points);
                     this.gameStats_incrementBy("lines", this.lineNumbersCompleted.length);
                     
+                    // JUNK LINES
+                    // Determine if this is multiplayer.
+                    let playerKeys = Object.keys(this.parent).filter(d=>["p1", "p2"].indexOf(d) != -1);
+                    if(playerKeys.length){
+                        let junkLines = [];
+
+                        // Go through all completed lines, use their line numbers to pull from prevPiecesField and add to junkLines. 
+                        for(let i=this.lineNumbersCompleted.length-1; i >= 0; i -=1 ){
+                            line = this.lineNumbersCompleted[i]; 
+                            junkLines.push( JSON.parse(JSON.stringify(this.prevPiecesField[line.line])) );
+                        }
+
+                        // Yes, it is multiplayer. Add junk lines to all other players other than this player. 
+                        for(let p=0, pl=playerKeys.length; p<pl; p+=1){
+                            // Don't add junkLins to yourself.
+                            if(this.pkey == playerKeys[p]){ continue; }
+
+                            // Add the junkLines to this player.
+                            this.parent[playerKeys[p]].junkLines.push(...junkLines);
+                        }
+                    }
+
                     // Get the new lines completed count. 
                     let newLevel = (this.gameStats_get("lines") / 10) << 0;
 
@@ -518,7 +599,7 @@ _APP.gs_play_init = {
                         _APP.game.shared.createGeneralTimer(this.mainKey + "dropDelay", this.parent.dropSpeeds.getDropSpeedFramesFromLevel(newLevel));
 
                         // Increase the level. 
-                        this.gameStats_incrementBy("level", 1);
+                        this.gameStats_incrementBy("level", newLevel);
                     }
 
                     // Move the pieces down by removing all rows in piecesField where it includes "X".
@@ -529,6 +610,7 @@ _APP.gs_play_init = {
                         this.piecesField.unshift( Array(10).fill(" ") );
                     }
 
+
                     // Clear out the lineNumbersCompleted.
                     this.lineNumbersCompleted = []; 
                 }
@@ -536,6 +618,8 @@ _APP.gs_play_init = {
 
             // Add the active piece parts to the pieceField.
             addPieceToLanded: function(xOffset=0, yOffset=0){
+                this.prevPiecesField = JSON.parse(JSON.stringify(this.piecesField));
+
                 // Convert the currPiece tiles to tiles on layer 1 and remove the currPiece from layer 2.
                 
                 // We can get the coordinates of each part of the currPiece.
@@ -875,6 +959,10 @@ _APP.gs_play_init = {
                     type    : "",
                 };
                 
+                // Return if the player did not press/hold any buttons this frame. 
+                if(!_INPUT.util.checkButton(this.pkey, ["press", "held"], [])){ return; }
+
+                // Check against press and held.
                 for(let i=0, l=data.keys.length; i<l; i+=1){
                     // Held keys must obey the general timer as a delay.
                     if(data.keys[i] == "held"){
@@ -887,7 +975,7 @@ _APP.gs_play_init = {
                     // Set the type (and input data) for this iteration.
                     data.type = _INPUT.util.stateByteToObj(_INPUT.states[this.pkey][ data.keys[i] ]);
 
-                    // Only allow for movement/rotation button per frame.
+                    // Allow for movement on either press or held.
                     if( data.type.BTN_UP || data.type.BTN_DOWN || data.type.BTN_LEFT || data.type.BTN_RIGHT){
                         // Do not act if a movement was already set.
                         if(!data.movement){
@@ -895,7 +983,11 @@ _APP.gs_play_init = {
                                 this.quickDrop = true; 
                             }
                             else if(data.type.BTN_DOWN){
-                                if( this.checkForCollision_move("DOWN") ){ this.currPieceY += 1; data.movement = true; }
+                                if( this.checkForCollision_move("DOWN") ){ 
+                                    // Reset the dropDelay since the user has just requested a drop.
+                                    _APP.game.shared.resetGeneralTimer(this.mainKey + "dropDelay")
+                                    this.currPieceY += 1; data.movement = true; 
+                                }
                             }
                             else if(data.type.BTN_LEFT){
                                 if( this.checkForCollision_move("LEFT") ){ this.currPieceX -= 1; data.movement = true; }
@@ -924,6 +1016,7 @@ _APP.gs_play_init = {
                     }
                 }
 
+                // Do any actions need to happen?
                 if(data.movement || data.rotate){
                     // Reset the now general timer to restart the delay for held buttons. 
                     _APP.game.shared.resetGeneralTimer(this.mainKey + "inputDelay");
@@ -931,12 +1024,49 @@ _APP.gs_play_init = {
                     // Draw the piece.
                     this.drawCurrentPiece();
                 }
+            },
+        },
+        _core_funcs_unseparated: {
+            // PIECES LANDED
 
-                // // Has any button been pressed by this player?
-                // if(_INPUT.util.checkButton(pkey, ["press"], [])){
-                //     // Set the timer to finished.
-                //     _APP.game.shared.finishGeneralTimer(mainKey + "inputDelay");
-                // }
+            addPieceToLanded_debug: function(){
+                
+                this.prevPiecesField = JSON.parse(JSON.stringify(this.piecesField));
+                this.prevPiecesField[this.piecesField.length-4] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", " " ]
+                this.prevPiecesField[this.piecesField.length-3] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", " " ]
+                this.prevPiecesField[this.piecesField.length-2] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", " " ]
+                this.prevPiecesField[this.piecesField.length-1] = [ "T", "L", "Z", "O", "I", "S", "J", "I", "O", " " ]
+
+                this.piecesField[this.piecesField.length-4] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", " " ];
+                this.piecesField[this.piecesField.length-3] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", " " ];
+                this.piecesField[this.piecesField.length-2] = [ "O", "O", "O", "O", "I", "O", "O", "O", "O", "O" ];
+                this.piecesField[this.piecesField.length-1] = [ "T", "L", "Z", "O", "I", "S", "J", "I", "O", "O" ];
+            },
+
+            // Visual.
+            addJunkPiecesToPlayfield: function(){
+                // If there are junkLines for this player then draw them instead.
+                if(this.junkLines.length){
+                    for(let i=0, il=this.junkLines.length; i<il; i+=1){
+                        // Change the tile used to the garbage_tile.
+                        this.junkLines[i] = this.junkLines[i].map(d=>{ if(d!=" "){ d="G";} return d; });
+                    }
+                    // Add the junkLines to the bottom.
+                    this.piecesField.push(...this.junkLines);
+
+                    // Remove junkLines.length lines from the top.
+                    for(let i=0, il=this.junkLines.length; i<il; i+=1){
+                        this.piecesField.shift();
+                    }
+
+                    // Clear out the junkLines.
+                    this.junkLines = [];
+
+                    this.drawLandedPieces();
+
+                    // End the loop for this player. 
+                    return true;
+                }
             },
         },
 
@@ -964,6 +1094,8 @@ _APP.gs_play_init = {
                 this[mainKey].gameStats    = JSON.parse(JSON.stringify(this._core.gameStats));
                 this[mainKey].pieceStats   = JSON.parse(JSON.stringify(this._core.pieceStats_text));
                 this[mainKey].pieceCounter = this._core.pieceCounter;
+                this[mainKey].prevPiecesField = JSON.parse(JSON.stringify(this._core.prevPiecesField));
+                this[mainKey].junkLines    = JSON.parse(JSON.stringify(this._core.junkLines));
 
                 // Copy the _core functions.
                 for(func in this._core.funcs){ this[mainKey][func] = this._core.funcs[func]; }
@@ -1000,6 +1132,28 @@ _APP.gs_play_init = {
                     this[mainKey].pieceStats[keys[i]].y += this._core.pieceStats_home[pkey].y;
                 }
                 this[mainKey].pieceStats_draw_all();
+
+                // Save the coords for the next piece box.
+                this[mainKey].nextPiece_home = this._core.nextPiece_home[mainKey];
+
+                // Draw the menu for the next piece.
+                _APP.game.shared.drawBorderBox_tilemaps(
+                    _APP.game.shared.createBorderBox_tilemaps( 
+                        this._core.nextPiece_home[mainKey].x, 
+                        this._core.nextPiece_home[mainKey].y, 
+                        this._core.nextPiece_home[mainKey].w, 
+                        this._core.nextPiece_home[mainKey].h, 
+                        ["NEXT"], 
+                        {
+                            border_bg  : { li:0, tsn:"tilesBG1", tmn: "bg6_tile" },
+                            border_fg  : { li:1 },
+                            inner_bg   : { li:0, tsn:"tilesBG1", tmn: "blacktile" },
+                            // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "grid1" },
+                            // inner_bg   : { li:0, tsn:"tilesBG1", tmn: "bg6_tile" },
+                            inner_text : { li:1, tsn:"tilesTX1" }
+                        }
+                    )
+                );
 
                 // Create the piecesField array of arrays for this player. 
                 this[mainKey].piecesField = [];
@@ -1081,6 +1235,11 @@ _APP.gs_play_init = {
                 
                 // Set the initial value for quickDrop.
                 this[mainKey].quickDrop = false;
+
+                // DEBUG
+                // if(pkey == "p1"){
+                //     this[mainKey].addPieceToLanded_debug();
+                // }
             }
     
             // Draw the piece stats images.
@@ -1110,7 +1269,12 @@ _APP.gs_play_init = {
                 obj.funcs[key] = this.playField._core_funcs_unseparated[key]; 
             }
 
-            // landed
+            // Play functions.
+            for(key in this.playField._core_funcs_play){ 
+                obj.funcs[key] = this.playField._core_funcs_play[key]; 
+            }
+
+            // Landed piece functions.
             for(key in this.playField._core_funcs_landed){ 
                 obj.funcs[key] = this.playField._core_funcs_landed[key]; 
             }

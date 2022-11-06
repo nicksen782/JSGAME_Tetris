@@ -68,8 +68,6 @@ _APP = {
         this.DOM["option_size_range"].addEventListener("input", ()=>{
             for(let i=0, l= _GFX.canvasLayers.length; i<l; i+=1){
                 _GFX.canvasLayers[i].canvas.style.height = `${this.DOM["option_size_range"].value}%`; ;
-                _GFX.canvasLayers[i].canvas.style.height = `${this.DOM["option_size_range"].value}%`; ;
-                _GFX.canvasLayers[i].canvas.style.height = `${this.DOM["option_size_range"].value}%`; ;
             }
             document.getElementById("DEBUG_canvasLayer").style.height = `${this.DOM["option_size_range"].value}%`;
 
@@ -78,6 +76,7 @@ _APP = {
         this.DOM["option_size_range"].value     = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}`;
         this.DOM["option_size_value"].innerText = `${_JSG.loadedConfig.meta.defaultGameCanvasHeightPercent}%`;
         this.DOM["option_size_range"].dispatchEvent(new Event("input"));
+        // this.DOM["option_size_range"].dispatchEvent(new Event("change"));
 
         window.onerror = function(msg, url, line, col, error) {
             // Note that col & error are new to the HTML 5 spec and may not be 
@@ -399,15 +398,15 @@ _APP = {
             _APP.DOM["gameDiv"].innerHTML = this.files["tetris_html"]; 
             await _JSG.shared.parseObjectStringDOM(_APP.DOM, true);
 
-            // Create Canvas And Event Listeners.
-            this.init_createCanvasAndEventListeners();
-
             // Gameloop init.
             await _APP.game.gameLoop.init(this);
 
             // Graphics init.
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Graphics.`, "loading");
             await _GFX.init();
+
+            // Create Canvas And Event Listeners.
+            this.init_createCanvasAndEventListeners();
 
             // Input init.
             _JSG.loadingDiv.addMessageChangeStatus(`  ${_JSG.loadedAppKey}: Init: Input.`, "loading");
