@@ -580,6 +580,12 @@ _APP.gs_play_init = {
                             junkLines.push( JSON.parse(JSON.stringify(this.prevPiecesField[line.line])) );
                         }
 
+                        // Ensure that the garbage lines added are one less than the total completed lines.
+                        if(junkLines.length){
+                            // junkLines.pop();   // Remove the last.
+                            junkLines.shift(); // Remove the first.
+                        }
+
                         // Yes, it is multiplayer. Add junk lines to all other players other than this player. 
                         for(let p=0, pl=playerKeys.length; p<pl; p+=1){
                             // Don't add junkLins to yourself.
@@ -588,6 +594,8 @@ _APP.gs_play_init = {
                             // Add the junkLines to this player.
                             this.parent[playerKeys[p]].junkLines.push(...junkLines);
                         }
+
+
                     }
 
                     // Get the new lines completed count. 
