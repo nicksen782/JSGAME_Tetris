@@ -1,0 +1,213 @@
+<div id="tetris_app">
+    <div class="tetris_app_flex_cols">
+        <div class="" id="tetris_app_options">
+            <div>
+                <!-- OPTIONS -->
+                <div class="tetris_app_options_header_container">
+                    <div class="tetris_app_options_header">OPTIONS</div>
+                    <div class="tetris_app_options_header_content">
+                        <div id="tetris_option_size_div" class="slidecontainer">
+                            <table>
+                                <tr>
+                                    <td>Size</td>
+                                    <td>
+                                        <input type="range" min="60" max="100" value="60" class="slider" id="tetris_option_size_range">
+                                    </td>
+                                    <td>
+                                        <span id="tetris_option_size_value">50%</span>
+                                    </td>
+                                </tr>
+                            </table>
+                          </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INPUT -->
+            <div>
+                <div class="tetris_app_options_header_container">
+                    <div class="tetris_app_options_header">INPUT</div>
+                    <div class="tetris_app_options_header_content">
+                        <canvas id="tetris_app_dpad" width="128" height="128"></canvas>
+                    </div>
+                    <button id="tetris_app_toggleNumbers">toggleNumbers</button>
+                </div>
+            </div>
+
+            <!-- TEMP DEBUG -->
+            <!-- <div> -->
+                <!-- <div class="tetris_app_options_header_container"> -->
+                    <!-- <div class="tetris_app_options_header">TEMP TESTS</div> -->
+                    <!-- <div class="tetris_app_options_header_content"> -->
+                        <!-- <button id="tetris_app_tests_fadeIn" >fadeIn</button> -->
+                        <!-- <button id="tetris_app_tests_fadeOut">fadeOut</button> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
+        </div>
+
+        <!-- GAME/INPUT -->
+        <div class="tetris_app_flex_rows">
+            <div class="" id="tetris_app_game">
+                 <!-- DEBUG -->
+                 <canvas width="8" height="8" id="DEBUG_canvasLayer"></canvas>
+
+                 <!-- GAME -->
+                 <!-- CANVASES ARE AUTO-GENERATED -->
+            </div>
+        </div>
+    </div>
+
+</div>    
+
+<!-- HOLDS THE APP'S DEBUG -->
+<div class="hide" id="tetris_app_debugDiv">
+    <div class="tetris_app_debug_nav">
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug1"              view="tetris_app_debug_nav_view_debug1">Tilesets</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_tests"               view="tetris_app_debug_nav_view_tests">TESTS</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_title0"     view="tetris_app_debug_nav_view_debug_gs_title0">gs_title0</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_title1"     view="tetris_app_debug_nav_view_debug_gs_title1">gs_title1</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_title2"     view="tetris_app_debug_nav_view_debug_gs_title2">gs_title2</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_setup1"     view="tetris_app_debug_nav_view_debug_gs_gs_setup1">gs_setup1</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_setup2"     view="tetris_app_debug_nav_view_debug_gs_gs_setup2">gs_setup2</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_play"       view="tetris_app_debug_nav_view_debug_gs_gs_play">gs_play</div>
+        <div class="tetris_app_debug_nav_tab" id="tetris_app_debug_nav_tab_debug_gs_highscores" view="tetris_app_debug_nav_view_debug_gs_gs_highscores">gs_highscores</div>
+    </div>
+    
+    <!-- GAMELOOP AND CORE DATA -->
+    <div id="tetris_app_debug_gameloop_div">
+        <button id="tetris_app_debug_gameLoopVars_togglePauseBtn">GL: Toggle 'running'</button>
+        <!-- <button id="tetris_app_debug_gameLoopVars_stopBtn">stopBtn</button> -->
+        <button id="tetris_app_debug_gameLoopVars_restartBtn">GL: Restart 'gamestate'</button>
+        <button id="tetris_app_debug_gameLoopVars_toggleLoopType_btn">GL: Toggle 'type'</button>
+        <label>
+            Change gamestate: 
+            <select id="tetris_app_debug_gameLoopVars_gamestateSelect"></select>
+        </label>
+        
+        <!-- <button id="tetris_app_debug_fadeUp_btn">fadeUp</button> -->
+        <!-- <button id="tetris_app_debug_fadeDown_btn">fadeDown</button> -->
+
+        <br>
+        <div class="tetris_app_debug_div1 gameLoop block" id="tetris_app_debug_gameDebugDiv_timeIt"></div>
+        <div class="tetris_app_debug_div1 gameLoop" id="tetris_app_debug_gameLoopVars_div1"></div>
+        <div class="tetris_app_debug_div1 gameLoop" id="tetris_app_debug_gameLoopVars_div2"></div>
+        <div class="tetris_app_debug_div1 gameLoop" id="tetris_app_debug_gameLoopVars_div4"></div>
+    </div>
+
+    <div class="tetris_app_debug_views">
+        <!-- TILES AND TILEMAPS -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug1"></div>
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_tests">
+            VRAM LAYER VIEWER <button id="tetris_app_debug_VRAM_copy">Copy Combined to Clipboard</button><br>
+            <table style="width:100%;">
+                <tr>
+                    <td style="background-color:orange; text-align:center; text-decoration:underline;"   colspan="3">VRAM: ACTIVE</td>
+                    <td style="background-color:orangered; text-align:center; text-decoration:underline;" colspan="3">VRAM: SAVED</td>
+                </tr>
+                <tr>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM0_div"><canvas id="tetris_app_debug_VRAM0_canvas"></canvas></div> </td>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM1_div"><canvas id="tetris_app_debug_VRAM1_canvas"></canvas></div> </td>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM2_div"><canvas id="tetris_app_debug_VRAM2_canvas"></canvas></div> </td>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM0_saved_div"><canvas id="tetris_app_debug_VRAM0_saved_canvas"></canvas></div> </td>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM1_saved_div"><canvas id="tetris_app_debug_VRAM1_saved_canvas"></canvas></div> </td>
+                    <td> <div class="tetris_app_debug_div1" id="tetris_app_debug_VRAM2_saved_div"><canvas id="tetris_app_debug_VRAM2_saved_canvas"></canvas></div> </td>
+                </tr>
+            </table>
+            
+            <br>
+
+            setFade:
+            <br>
+            <span id="tetris_app_debug_fade_slider_text">0</span>
+            <input type="range" min="0" max="11" step="1" value="0" id="tetris_app_debug_fade_slider">
+            <br>
+            <br>
+
+            setFade:
+            <br>
+            <button onclick='_GFX.util.fade.setFade({ level: 0 });'>L: 0</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 1 });'>L: 1</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 2 });'>L: 2</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 3 });'>L: 3</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 4 });'>L: 4</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 5 });'>L: 5</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 6 });'>L: 6</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 7 });'>L: 7</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 8 });'>L: 8</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 9 });'>L: 9</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 10 });'>L:10</button>
+            <button onclick='_GFX.util.fade.setFade({ level: 11 });'>L:11</button>
+            <br>
+            <br>
+
+            Chain-fade
+            <br>
+            <table>
+                <tr>
+                    <td>FADE</td>
+                    <td>Non-blocking</td>
+                    <td>Blocking</td>
+                </tr>
+                <tr>
+                    <td>fadeOut</td>
+                    <td> <button onclick='_GFX.util.fade.fadeOut({ delay: 5, block:false });'>fadeOut ({ delay: 5, block:false })</button> </td>
+                    <td> <button onclick='_GFX.util.fade.fadeOut({ delay: 5, block:true });'>fadeOut ({ delay: 5, block:true })</button> </td>
+                </tr>
+                <tr>
+                    <td>fadeIn</td>
+                    <td> <button onclick='_GFX.util.fade.fadeIn({ delay: 5, block:false });'>fadeIn ({ delay: 5, block:false })</button> </td>
+                    <td> <button onclick='_GFX.util.fade.fadeIn({ delay: 5, block:true });'>fadeIn ({ delay: 5, block:true })</button> </td>
+                </tr>
+            </table>
+            <br>
+            <br>
+
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_fadeLevels"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_fadeTiles"></div>
+        </div>
+
+        <!-- GS_TITLE0 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title0">
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_gs0_anim_jsgameLogo"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_gs0_debug_vars"></div>
+        </div>
+        
+        <!-- GS_TITLE1 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title1">
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_lense"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_anim_stars"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_vars"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_vars2"></div>
+        </div>
+        
+        <!-- gs_title2 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_title2">
+            <div class="tetris_app_debug_div1" id="tetris_app_gs2_debug_varsDiv"></div>
+        </div>
+
+        <!-- gs_setup1 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_setup1">gs_setup1</div>
+
+        <!-- gs_setup2 -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_setup2">gs_setup2</div>
+
+        <!-- gs_play -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_play">
+            <div>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.single.spawnPiece("T");'>(S) spawnPiece (T)</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.single.addPieceToLanded_debug();'>(S) addPieceToLanded_debug</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.p1.addPieceToLanded_debug();'>(P1) addPieceToLanded_debug</button>
+                <button onclick='_APP.game.gamestates["gs_play"].playField.p2.addPieceToLanded_debug();'>(P2) addPieceToLanded_debug</button>
+            </div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_data_p1"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_data_p2"></div>
+            <!-- <br> -->
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_config"></div>
+            <div class="tetris_app_debug_div1" id="tetris_app_debug_pieces"></div>
+        </div>
+
+        <!-- gs_highscores -->
+        <div class="tetris_app_debug_view" id="tetris_app_debug_nav_view_debug_gs_highscores">gs_highscores</div>
+    </div>
+</div>

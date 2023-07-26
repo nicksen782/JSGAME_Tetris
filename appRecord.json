@@ -1,0 +1,17 @@
+{
+    "appKey"      : "JSGAME_Tetris",
+    "displayName" : "JSGAME_Tetris",
+    "desc"        : "JSGAME_Tetris",
+    "appPath"     : "games/JSGAME_Tetris",
+    "configFile"  : "games/JSGAME_Tetris/appConfig.json",
+    "repo":{
+        "author_title" : "JSGAME_Tetris",
+        "author_C"     : true,
+        "author_year"  : "2022",
+        "author_name"  : "Nickolas Andersen",
+        "author_handle": "(nicksen782)",
+        "repoType"     : "Github",
+        "repoHref"     : "https://github.com/nicksen782/JSGAME_Tetris/tree/v2",
+        "repoText"     : "nicksen782/JSGAME_Tetris/tree/v2"
+    }
+}

@@ -1,0 +1,481 @@
+/* tetris_app */
+/* tetris_app */
+/* tetris_app */
+#tetris_app {
+  height: 100%;
+  /* opacity:0.5; */
+  outline: none;
+}
+.tetris_fullscreen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: stretch;
+  flex-direction: row;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.tetris_fullscreen #tetris_app_game{
+  /* width: 1700px; */
+  align-items: center;
+} 
+.tetris_fullscreen #tetris_app_game canvas{
+  height:100%;
+} 
+
+#tetris_app.focused {
+  background-color: initial;
+  opacity: 1.00;
+}
+
+#tetris_app .tetris_app_flex_cols {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  height: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-evenly;
+}
+
+#tetris_app .tetris_app_flex_cols #tetris_app_options {
+  height: 100%;
+  background-color: #333333;
+  width: 210px;
+}
+
+#tetris_app .tetris_app_flex_rows {
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  align-items: center;
+  flex-direction: column;
+}
+
+#tetris_app #tetris_app_game {
+  background-color: #333333;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+  position:relative;
+}
+.pixelatedCanvas canvas, 
+.pixelatedCanvas {
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+}
+#tetris_app canvas{
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+} 
+#tetris_app_game canvas{
+  height: 90%;
+  border: 5px solid cornflowerblue;
+  position: absolute;
+}
+
+#tetris_app canvas#tetris_app_game_canvas, 
+#tetris_app canvas#tetris_app_game_spriteLayer, 
+#tetris_app canvas#tetris_app_game_fadeLayer{
+  /* background-color: #222222; */
+  background-color: #202020;
+  height: 90%;
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+  border: 5px solid cornflowerblue;
+  position: absolute;
+}
+#tetris_app_game_canvas{
+    z-index: 5;
+    display: none;
+  }
+#tetris_app_game_spriteLayer{
+  z-index: 10;
+  background-color: unset !important;
+  display: none;
+}
+#tetris_app_game_fadeLayer{
+  z-index: 10;
+  background-color: unset !important;
+  display: none;
+}
+
+#tetris_app canvas#tetris_app_dpad {
+  border: 1px solid white;
+  /* background-color: #222222; */
+  background-color: #202020;
+  /* height: 10%; */
+  /* Older versions of FF          */
+  image-rendering: optimizeSpeed;
+  /* FF 6.0+                       */
+  image-rendering: -moz-crisp-edges;
+  /* Safari                        */
+  image-rendering: -webkit-optimize-contrast;
+  /* OS X & Windows Opera (12.02+) */
+  image-rendering: -o-crisp-edges;
+  /* Awesome future-browsers       */
+  image-rendering: pixelated;
+  /* IE                            */
+  -ms-interpolation-mode: nearest-neighbor;
+  border: 5px solid dimgray;
+}
+
+.tetris_app_options_header_container {
+  background-color: cornflowerblue;
+  padding: 5px;
+  /* text-align: center; */
+  margin-bottom: 5px;
+}
+
+.tetris_app_options_header_content {
+  background-color: aliceblue;
+  padding: 5px;
+  text-align: center;
+}
+
+.tetris_app_options_header {
+  background-color: aliceblue;
+  padding: 5px;
+  text-align: center;
+}
+
+#tetris_app #tetris_app_dpad {
+  /* background-color: blueviolet; */
+  margin: auto;
+}
+
+/* DEBUG NAV */
+/* DEBUG NAV */
+/* DEBUG NAV */
+
+#tetris_app_debugDiv{}
+#tetris_app_debugDiv.hide{ display:none; }
+.tetris_app_debug_nav {
+  min-height: 0.5em;
+  padding: 0.25em;
+  border-bottom: 1px solid black;
+  /* width: 650px; */
+  width: 100%;
+  /* background-color: blue; */
+}
+
+.tetris_app_debug_nav_tab {
+  border: 1px solid black;
+  display: inline-block;
+  vertical-align: top;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: blanchedalmond;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select : none;
+  /* Safari */
+  -khtml-user-select : none;
+  /* Konqueror HTML */
+  -moz-user-select : none;
+  /* Old versions of Firefox */
+  -ms-user-select : none;
+  /* Internet Explorer/Edge */
+  user-select : none;
+  /* Non-prefixed version */
+}
+
+.tetris_app_debug_nav_tab:hover {
+  background-color: greenyellow;
+}
+
+.tetris_app_debug_nav_tab.active {
+  background-color: yellow;
+}
+
+.tetris_app_debug_views {
+}
+
+.tetris_app_debug_view {
+  display: none;
+  padding: 0.25em;
+  background-color: #979da6;
+  min-height: 250px;
+  max-height: 520px;
+  overflow: auto;
+}
+
+.tetris_app_debug_view.active {
+  display: block;
+}
+
+#tetris_app_debug_runIndicator_gameLoop {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: top;
+  background-color: red;
+  text-align: center;
+  padding: 2px;
+  line-height: 16px;
+  font-size: 20px;
+}
+
+#tetris_app_debug_runIndicator_gameLoop.active {
+  background-color: green;
+}
+
+#tetris_app_debug_runIndicator_debug {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: top;
+  background-color: red;
+  padding: 2px;
+  line-height: 16px;
+  font-size: 20px;
+}
+
+#tetris_app_debug_runIndicator_debug.active {
+  background-color: green;
+}
+
+.tetris_app_debug_div1 {
+  display: inline-block;
+  vertical-align: top;
+  background-color: yellowgreen;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.tetris_app_debug_div1 tr td:nth-child(1) {
+    font-weight: bold;
+    /* text-decoration: underline; */
+}
+
+/* .tetris_app_debug_div1.gameLoop { background-color: #cdae62; } */
+
+.tetris_app_debug_div1.gameLoop {
+  background-color: goldenrod;
+/*   font-size: 12px; */
+}
+#tetris_app_debug_gameDebugDiv_timeIt.tetris_app_debug_div1.gameLoop table tbody td {
+  background-color: #979da6;
+/*   font-size: 12px; */
+}
+
+.tetris_app_debug_div1 table {
+}
+
+.tetris_app_debug_div1 table {
+  border-collapse: separate;
+  width: 100%;
+}
+
+.tetris_app_debug_div1 table td {
+  /* border: 1px solid black; */
+  /* padding: 2px; */
+}
+
+.tetris_app_debug_div1 td {
+  font-family: monospace;
+  white-space: pre;
+}
+
+.tetris_app_debug_div1 td.updated {
+  /* background-color: lightsteelblue; */
+}
+
+#tetris_app_debug_gameDebugDiv_timeIt {
+  /* background-color: #979da6; */
+  /* height: 10%; */
+}
+
+#tetris_app_debug_gameDebugDiv_timeIt.block {
+  display: block;
+}
+#tetris_app_debug_gameDebugDiv_timeIt.block td{
+  width: 100px !important;
+  /* overflow: hidden; */
+}
+
+.divPercentRange {
+  height: 1.5em;
+  line-height: 2rem;
+  border: 1px solid black;
+  color: black;
+  overflow: hidden;
+  transition-timing-function: linear !important;
+  transition: width 100ms;
+  font-size: 1.5em;
+  font-size: 0px;
+  /* min-width: 1em; */
+  height: 2rem;
+}
+
+.divPercentRange.divPercentRange_00 {
+  background-color: #00c900;
+  width: 0%;
+  /* border-color: transparent; */
+  font-size: 0px;
+}
+/* .divPercentRange.divPercentRange_00::before{ content: '0'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; } */
+
+.divPercentRange.divPercentRange_10 {
+  background-color: #6fed00;
+  width: 10% ;
+}
+.divPercentRange.divPercentRange_10::before{ content: '1'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_20 {
+  background-color: #98db00;
+  width: 20% ;
+}
+.divPercentRange.divPercentRange_20::before{ content: '2'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_30 {
+  background-color: #b6c700;
+  width: 30% ;
+}
+.divPercentRange.divPercentRange_30::before{ content: '3'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_40 {
+  background-color: #cdb200;
+  width: 40% ;
+}
+.divPercentRange.divPercentRange_40::before{ content: '4'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_50 {
+  background-color: #df9b00;
+  width: 50% ;
+}
+.divPercentRange.divPercentRange_50::before{ content: '5'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_60 {
+  background-color: #ee8200;
+  width: 60% ;
+}
+.divPercentRange.divPercentRange_60::before{ content: '6'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_70 {
+  background-color: #f86600;
+  width: 70% ;
+}
+.divPercentRange.divPercentRange_70::before{ content: '7'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_80 {
+  background-color: #fe4400;
+  width: 80% ;
+}
+.divPercentRange.divPercentRange_80::before{ content: '8'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_90 {
+  background-color: #fe4400;
+  width: 90% ;
+}
+.divPercentRange.divPercentRange_90::before{ content: '9'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+.divPercentRange.divPercentRange_99 {
+  background-color: #ff0000;
+  width: 100%;
+}
+.divPercentRange.divPercentRange_99::before{ content: '10'; font-family: monospace; font-size: 10px; color: white; text-align: center; display: block; mix-blend-mode: difference; }
+
+/* OPTIONS */
+/* OPTIONS */
+/* OPTIONS */
+
+#tetris_option_size_range{}
+#tetris_option_size_value{
+    /* background-color: cadetblue; */
+    width: 5rem;
+    display: inline-block;
+    font-size: 2rem;
+    vertical-align: top;
+}
+#tetris_app .slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+#tetris_app .slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+#tetris_app .slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+#tetris_app .slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+#tetris_app .slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+div#tetris_app_debug_nav_view_tests .tetris_app_debug_div1{
+  background-color:unset;
+}
+
+#DEBUG_canvasLayer{ display:none; }
+#DEBUG_canvasLayer.active{ display:block; }
+
+.videoModeA_canvasLayer{}
+.videoModeA_canvasLayer.debug{}
+
+#tetris_app_debug_fade_slider{
+    width: 650px;
+}
+#tetris_app_debug_fade_slider_text{
+    width: 2em;
+    display: inline-block;
+    /* background-color: blue; */
+}
+.debug_VRAM_view{ border:1px solid black; }
