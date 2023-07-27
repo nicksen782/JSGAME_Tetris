@@ -108,7 +108,7 @@ _APP.debug = {
 
         displayFadedTileset: function(){
             return new Promise(async (resolve, reject) => {
-                if(!_GFX.config.debug.generateAndReturnFadedTiles){ resolve(); return; }
+                if(!_GFX.config.debugGFX.generateAndReturnFadedTiles){ resolve(); return; }
                 let data = _GFX._debug.fadedTileset; 
                 if(!data){ 
                     console.log("The fadedTileset is unavailable.");
@@ -120,7 +120,7 @@ _APP.debug = {
 
                 /*
                     One canvas per faded tileset.
-                    let dimensions  = _JSG.loadedConfig.meta.dimensions;
+                    let dimensions  = _APP.configObj.gfxConfig.dimensions;
                     let tilesetNames = Object.keys(_GFX.cache);
                 */
                 let divCont = document.createElement("div");
@@ -166,7 +166,7 @@ _APP.debug = {
         updateVramLayerDisplay: function(){
             let changeCount = Object.keys(_GFX.VRAM.prevDrawn_changes).length;
             let changes = _GFX.VRAM.prevDrawn_changes;
-            let dimensions  = _JSG.loadedConfig.meta.dimensions;
+            let dimensions  = _APP.configObj.gfxConfig.dimensions;
             let tilesetNames = Object.keys(_GFX.cache);
 
             if(_GFX.VRAM.prevDrawn_clearVram_flag){
@@ -218,12 +218,12 @@ _APP.debug = {
             canvas.height = this.vramCanvases[0].canvas.height;
             let ctx = canvas.getContext("2d");
 
-            if(_JSG.loadedConfig.meta.layers[0].bg_color){
+            if(_APP.configObj.gfxConfig.layers[0].bg_color){
                 // Set background-color.
-                canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[0].bg_color;
+                canvas.style["background-color"] = _APP.configObj.gfxConfig.layers[0].bg_color;
                 
                 // Draw background-color.
-                ctx.fillStyle = _JSG.loadedConfig.meta.layers[0].bg_color;
+                ctx.fillStyle = _APP.configObj.gfxConfig.layers[0].bg_color;
                 ctx.fillRect(0,0, canvas.width, canvas.height);
             }
 
@@ -243,7 +243,7 @@ _APP.debug = {
             // Return if the saved vram has not been set yet. 
             if(_APP.game.gamestates["gs_play"].unpausedVRAM != undefined){
                 if( Object.keys(_APP.game.gamestates["gs_play"].unpausedVRAM).length ){
-                    let dimensions  = _JSG.loadedConfig.meta.dimensions;
+                    let dimensions  = _APP.configObj.gfxConfig.dimensions;
                     let tilesetNames = Object.keys(_GFX.cache);
                     let tile;
                     let tileset;
@@ -307,7 +307,7 @@ _APP.debug = {
                 // Set parent(s)
                 this.parent = parent;
     
-                this.DOM = _JSG.loadedConfig.meta.debugDOM.tests.DOM;
+                this.DOM = _APP.configObj.OLDCONFIG.meta.debugDOM.tests.DOM;
                 await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
                 this.vramCanvases = [
@@ -338,12 +338,12 @@ _APP.debug = {
                 }
 
                 for(let i=0, l=this.vramCanvases.length; i<l; i+=1){
-                    if(_JSG.loadedConfig.meta.layers[i].bg_color){
+                    if(_APP.configObj.gfxConfig.layers[i].bg_color){
                         // Set background-color.
-                        this.vramCanvases[i].canvas.style["background-color"] = _JSG.loadedConfig.meta.layers[i].bg_color;
+                        this.vramCanvases[i].canvas.style["background-color"] = _APP.configObj.gfxConfig.layers[i].bg_color;
                         
                         // Draw background-color.
-                        this.vramCanvases[i].ctx.fillStyle = _JSG.loadedConfig.meta.layers[i].bg_color;
+                        this.vramCanvases[i].ctx.fillStyle = _APP.configObj.gfxConfig.layers[i].bg_color;
                         this.vramCanvases[i].ctx.fillRect(0,0, this.vramCanvases[i].canvas.width, this.vramCanvases[i].canvas.height);
                     }
 
@@ -409,9 +409,9 @@ _APP.debug = {
                 this.parent = parent;
 
                 // Load in the DOM from meta.
-                this.defaultTabKey = _JSG.loadedConfig.meta.debugDOM.nav.defaultTabKey;
-                this.DOM.tabs      = _JSG.loadedConfig.meta.debugDOM.nav.DOM.tabs;
-                this.DOM.views     = _JSG.loadedConfig.meta.debugDOM.nav.DOM.views;
+                this.defaultTabKey = _APP.configObj.OLDCONFIG.meta.debugDOM.nav.defaultTabKey;
+                this.DOM.tabs      = _APP.configObj.OLDCONFIG.meta.debugDOM.nav.DOM.tabs;
+                this.DOM.views     = _APP.configObj.OLDCONFIG.meta.debugDOM.nav.DOM.views;
                 await _JSG.shared.parseObjectStringDOM(this.DOM.tabs, false);
                 await _JSG.shared.parseObjectStringDOM(this.DOM.views, false);
 
@@ -665,7 +665,7 @@ _APP.debug = {
             this.parent = parent;
 
             // Load in the DOM from meta.
-            this.DOM = _JSG.loadedConfig.meta.debugDOM.main.DOM;
+            this.DOM = _APP.configObj.OLDCONFIG.meta.debugDOM.main.DOM;
             await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
             // Init(s).

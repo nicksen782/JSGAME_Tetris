@@ -32,8 +32,6 @@ _APP.game.gamestates["gs_play"] = {
 
     // Run once upon changing to this game state.
     init: async function(){
-        console.log("gs_play init");
-
         //
         if(!_APP.gs_play_init.inited){ _APP.gs_play_init.init(); }
 
@@ -45,7 +43,7 @@ _APP.game.gamestates["gs_play"] = {
 
         // _GFX.util.fade.fadeIn({ delay: 5, block: true });
 
-        let dimensions = _JSG.loadedConfig.meta.dimensions;
+        let dimensions = _APP.configObj.gfxConfig.dimensions;
         
         // Background - / stripe.
         // _GFX.util.tiles.fillWithOneTile_tilemap({ tmn:"bg1_tile", x:0, y:0, w:dimensions.cols, h:dimensions.rows, tsn:"tilesBG1", li:0 });

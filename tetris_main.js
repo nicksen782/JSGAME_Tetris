@@ -13,7 +13,8 @@ _APP.game = {
     new_gamestate2: "",
     prev_gamestate1: "",
     prev_gamestate2: "",
-    gamestate1: "gs_play",
+    // gamestate1: "gs_play",
+    gamestate1: "gs_title0",
     gamestate2: "",
     gamestate1ChangeTriggered: false,
     gamestate2ChangeTriggered: false,
@@ -169,9 +170,9 @@ _APP.game.gameLoop = {
         this.loop_stop();
 
         // DEBUG
-        if(_JSG.loadedConfig.meta.debug){
-            _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
-        };
+        // if(_APP.configObj.gfxConfig.debug){
+        //     _APP.debug.gameLoop.DOM["gamestateSelect"].value = _APP.game.gamestate1;
+        // };
 
         // Trigger gamestate change (re-inits) but keep the same gamestates.
         _APP.game.changeGamestate1( _APP.game.gamestate1 );
@@ -196,27 +197,17 @@ _APP.game.gameLoop = {
 
         // Set the gameLoop.running to false. 
         _APP.game.gameLoop.running = false;
-
-        // DEBUG.
-        if(_JSG.loadedConfig.meta.debug){
-            // console.log("RUNNING DEBUG");
-            _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop");
-            _APP.debug.doDebug(true);
-            _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
-        }
     },
     endOfLoopTasks: function(){
         // Network tasks.
         // Should this client skip the next frame to catch up to the other client?
 
         // DEBUG.
-        if(_JSG.loadedConfig.meta.debug){
-            // console.log("RUNNING DEBUG");
-            _JSG.shared.timeIt.stamp("do_debug", "s", "gameLoop");
-            if(_APP.debug.doDebug){ _APP.debug.doDebug(false); }
-            // _APP.debug.doDebug(false); 
-            _JSG.shared.timeIt.stamp("do_debug", "e", "gameLoop"); 
-        }
+        // if(_APP.configObj.gfxConfig.debug){
+        //     // console.log("RUNNING DEBUG");
+        //     if(_APP.debug.doDebug){ _APP.debug.doDebug(false); }
+        //     // _APP.debug.doDebug(false); 
+        // }
 
         // Request the next frame.
         this.loop_schedule_nextRun();
@@ -231,8 +222,6 @@ _APP.game.gameLoop = {
             
             // Is it time to run the next loop?
             if( (this.delta >= this.msFrame) ){
-                _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); 
-
                 // Update this.lastLoopRun with this timestamp.
                 this.lastLoopRun = this.thisLoopStart - (this.delta % this.msFrame);
 
@@ -253,17 +242,12 @@ _APP.game.gameLoop = {
                 // If processFading returns true then the LOGIC and INPUT should be skipped.
                 this.fadeIsBlocking = await _GFX.fade.processFading();
                 if( this.fadeIsBlocking ){
-                    _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
-                    
                     // Count this as a draw frame if fade frame will be drawn.
                     if(_GFX.fade.framesSinceLastFadeChange == _GFX.fade.framesBetweenFadeChanges){ this.frameDrawCounter += 1; }
 
                     // Draw (the fade level.)
                     await _GFX.VRAM.draw(); 
-                    _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
                     
-                    _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
-
                     // Run the end of loop tasks and schedule the next loop. 
                     this.endOfLoopTasks();
                     return;
@@ -279,12 +263,9 @@ _APP.game.gameLoop = {
                 // Should p1 or p2 input be replaced by data from the other client?
                 
                 // LOGIC
-                _JSG.shared.timeIt.stamp("do_logic", "s", "gameLoop"); 
                 await _APP.game.gamestates[_APP.game.gamestate1].main();
-                _JSG.shared.timeIt.stamp("do_logic", "e", "gameLoop"); 
 
                 // DRAW
-                _JSG.shared.timeIt.stamp("do_draw", "s", "gameLoop"); 
                 
                 // Count this as a draw frame if there are changes. 
                 if(_GFX.VRAM.changesStats.new){ this.frameDrawCounter += 1; }
@@ -294,8 +275,6 @@ _APP.game.gameLoop = {
 
                 // Draw.
                 await _GFX.VRAM.draw(); 
-                _JSG.shared.timeIt.stamp("do_draw", "e", "gameLoop"); 
-                _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop"); 
 
                 // Run the end of loop tasks and schedule the next loop. 
                 this.endOfLoopTasks();
@@ -320,13 +299,6 @@ _APP.game.gameLoop = {
         return new Promise(async (resolve,reject) => {
             this.parent = _APP.game;
 
-            _JSG.shared.timeIt.stamp("full_gameLoop", "s", "gameLoop"); _JSG.shared.timeIt.stamp("full_gameLoop", "e", "gameLoop");
-            _JSG.shared.timeIt.stamp("do_fade"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_fade"      , "e", "gameLoop");
-            _JSG.shared.timeIt.stamp("do_debug"     , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_debug"     , "e", "gameLoop");
-            _JSG.shared.timeIt.stamp("get_input"    , "s", "gameLoop"); _JSG.shared.timeIt.stamp("get_input"    , "e", "gameLoop");
-            _JSG.shared.timeIt.stamp("do_logic"     , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_logic"     , "e", "gameLoop");
-            _JSG.shared.timeIt.stamp("do_draw"      , "s", "gameLoop"); _JSG.shared.timeIt.stamp("do_draw"      , "e", "gameLoop");
-            
             // Calculate the ms required per frame.
             this.msFrame = 1000 / this.fps;
 

@@ -888,7 +888,7 @@ _APP.gs_play_init = {
                     // Not paused? Pause it.
                     if(!this.parent.parent.config.paused){
                         // Copy the current VRAM.
-                        let dimensions = _JSG.loadedConfig.meta.dimensions;
+                        let dimensions = _APP.configObj.gfxConfig.dimensions;
                         this.parent.parent.unpausedVRAM = _GFX.util.VRAM.getVramRegion( { 
                             x: 0, 
                             y: 0, 

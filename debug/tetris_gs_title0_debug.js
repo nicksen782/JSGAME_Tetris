@@ -70,7 +70,7 @@ _APP.debug.gs_title0 = {
             this.gs = _APP.game.gamestates["gs_title0"];
 
             // Load in the DOM from meta.
-            this.DOM = _JSG.loadedConfig.meta.debugDOM.gs_title0.DOM;
+            this.DOM = _APP.configObj.OLDCONFIG.meta.debugDOM.gs_title0.DOM;
             await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
             resolve();

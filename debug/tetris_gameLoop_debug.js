@@ -281,7 +281,7 @@ _APP.debug.gameLoop = {
             // Set parent(s)
             this.parent = parent;
 
-            this.DOM = _JSG.loadedConfig.meta.debugDOM.gameLoop.DOM;
+            this.DOM = _APP.configObj.OLDCONFIG.meta.debugDOM.gameLoop.DOM;
             await _JSG.shared.parseObjectStringDOM(this.DOM, false);
 
             // Event listeners.
