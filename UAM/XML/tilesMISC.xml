@@ -11,6 +11,7 @@
   <map var-name="RAINBOWTEST3" left="28" top="85" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="RAINBOWTEST4" left="29" top="85" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="grid2" left="31" top="85" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="grid3" left="11" top="76" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="num_00" left="26" top="80" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="num_01" left="27" top="80" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="num_02" left="28" top="80" width="1" height="1" mapOutputTo="PROGMEM" /> 

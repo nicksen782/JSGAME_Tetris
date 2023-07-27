@@ -6,11 +6,19 @@
  <maps pointers-size="8">
   <map var-name="transparent_tile" left="0" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="blacktile" left="1" top="0" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="bg1_tile" left="9" top="73" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="bg2_tile" left="9" top="71" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="transChecked1" left="4" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="transChecked2" left="5" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="transChecked3" left="6" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg1_tile" left="9" top="71" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg2_tile" left="9" top="72" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg3_tile" left="9" top="73" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg4_tile" left="9" top="74" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg5_tile" left="11" top="73" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="bg6_tile" left="13" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="empty_square" left="7" top="71" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="grid1" left="11" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
-  <map var-name="X_tile" left="1" top="73" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="empty_square1" left="7" top="73" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="grid1" left="7" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
+  <map var-name="X_tile" left="1" top="73" width="1" height="1" mapOutputTo="SKIPMAP" /> 
   <map var-name="otherPlayerHeight" left="1" top="75" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_top" left="4" top="71" width="1" height="1" mapOutputTo="PROGMEM" /> 
   <map var-name="boardborder_topL" left="3" top="71" width="1" height="1" mapOutputTo="PROGMEM" /> 
