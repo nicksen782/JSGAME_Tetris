@@ -123,6 +123,12 @@
             },
         },
 
+        // CONFIG: Full screen.
+        fullScreenConfig: {
+            listenOnId        : "gameView",
+            idToMakeFullscreen: "wrapper",
+        },
+
         // CONFIG: _APP.game
         gameConfig: {
             enabled: true,
@@ -198,11 +204,7 @@
 
             // Container for the canvas layers.
             outputDiv: "gameView",
-            
-            // Element id to make full screen.
-            // fullScreenElemId: "gameView",
-            fullScreenElemId: "wrapper",
-    
+
             "jsgame_shared_plugins_config":{
                 "videoModeA": {
                     "fadeCreateAtStart": true,
