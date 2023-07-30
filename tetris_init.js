@@ -20,28 +20,65 @@ _APP.game.init = async function(){
     
     // Times:
     if(_GFX.config.debugGFX.returnInitTimes){
-        let ww_data = await _WEBW.videoModeA.video.returnInitTimes_send(true);
-        console.log(
-            `MAIN THREAD GFX INIT TIMINGS` +
-            `\n  generateAndCache_tileSetData: ${_GFX.timeIt("generateAndCache_tileSetData", "get").toFixed(1).padStart(9, " ")} ms` +
-            `\n  generateCanvasLayers        : ${_GFX.timeIt("generateCanvasLayers", "get").toFixed(1).padStart(9, " ")} ms` +
-            `\n  initDraw                    : ${_GFX.timeIt("initDraw", "get").toFixed(1).padStart(9, " ")} ms` +
-            `\n  initVRAM                    : ${_GFX.timeIt("initVRAM", "get").toFixed(1).padStart(9, " ")} ms` +
-            // `\n  initVideo                   : ${_GFX.timeIt("initVideo", "get").toFixed(1).padStart(9, " ")} ms` +
-            `\n  initFade                    : ${_GFX.timeIt("initFade", "get").toFixed(1).padStart(9, " ")} ms` +
-            // `` +
-            ``
-        );
-        console.log(
-            `WEBWORKER THREAD GFX INIT TIMINGS` +
-            `\n  createCtxAndClears     : ${ww_data.createCtxAndClears.toFixed(1).padStart(9, " ")} ms` +
-            `\n  createTilesetCanvases  : ${ww_data.createTilesetCanvases.toFixed(1).padStart(9, " ")} ms` +
-            // `\n  fadeCreateAtStart      : ${ww_data.fadeCreateAtStart.toFixed(1).padStart(9, " ")} ms` +
-            `\n  createFadeValues       : ${ww_data.createFadeValues.toFixed(1).padStart(9, " ")} ms` +
-            `\n  convertAllFadeTilesets : ${ww_data.convertAllFadeTilesets.toFixed(1).padStart(9, " ")} ms` +
-            // `` +
-            ``
-        );
+        setTimeout(async function(){
+            let ww_data = await _WEBW.videoModeA.video.returnInitTimes_send(true);
+            
+            console.log(
+                `GAMELOADER INIT TIMINGS` +
+                `\n  GAMELOADER_init_TOTAL     : ${_GFX.timeIt("GAMELOADER_init_TOTAL", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    GAMELOADER_preInit      : ${_GFX.timeIt("GAMELOADER_preInit", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    GAMELOADER_getAppConfigs: ${_GFX.timeIt("GAMELOADER_getAppConfigs", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    GAMELOADER_loadFiles    : ${_GFX.timeIt("GAMELOADER_loadFiles", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    GAMELOADER_inits        : ${_GFX.timeIt("GAMELOADER_inits"    , "get").toFixed(1).padStart(9, " ")} ms` +
+                // `` +
+                ``
+            );
+
+            console.log(
+                `MAIN THREAD GFX INIT TIMINGS` +
+                `\n  VIDEOMODEA_INIT_TOTAL         : ${_GFX.timeIt("VIDEOMODEA_INIT_TOTAL", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    generateAndCache_tileSetData: ${_GFX.timeIt("generateAndCache_tileSetData", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n      tileSetData_fileDownloads : ${_GFX.timeIt("VIDEOMODEA_generateAndCache_tileSetData_fileDownloads", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    generateCanvasLayers        : ${_GFX.timeIt("generateCanvasLayers", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    initDraw                    : ${_GFX.timeIt("initDraw", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    initVRAM                    : ${_GFX.timeIt("initVRAM", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    initVideo                   : ${_GFX.timeIt("initVideo", "get").toFixed(1).padStart(9, " ")} ms` +
+                `\n    initFade                    : ${_GFX.timeIt("initFade", "get").toFixed(1).padStart(9, " ")} ms` +
+                // `` +
+                ``
+            );
+
+            console.log(
+                `WEBWORKER THREAD GFX INIT TIMINGS` +
+                `\n  createCtxAndClears     : ${ww_data.createCtxAndClears.toFixed(1).padStart(9, " ")} ms` +
+                `\n  createTilesetCanvases  : ${ww_data.createTilesetCanvases.toFixed(1).padStart(9, " ")} ms` +
+                // `\n  fadeCreateAtStart      : ${ww_data.fadeCreateAtStart.toFixed(1).padStart(9, " ")} ms` +
+                `\n  createFadeValues       : ${ww_data.createFadeValues.toFixed(1).padStart(9, " ")} ms` +
+                `\n  convertAllFadeTilesets : ${ww_data.convertAllFadeTilesets.toFixed(1).padStart(9, " ")} ms` +
+                `\n  DEBUG_generateAndReturnFadedTiles : ${ww_data.DEBUG_generateAndReturnFadedTiles.toFixed(1).padStart(9, " ")} ms` +
+                // `` +
+                ``
+            );
+
+            let keys = _APP.utility.timeIt("addFile_timer", "getBySimilarKey");
+            let addFileStr = ``;
+            let maxLen = 0;
+            let totalTimeDownloadingFiles = 0;
+            for(let key of keys){ if(key.length > maxLen){ maxLen = key.length; } }
+            for(let key of keys){
+                let time = _APP.utility.timeIt(key, "get");
+                totalTimeDownloadingFiles += time;
+                let key2 = key.replace("addFile_timer_", "");
+                addFileStr  += `\n  ${key2.padEnd(maxLen-14, " ")}: ${time.toFixed(1).padStart(9, " ")} ms`; 
+            }
+            console.log(
+                `FILE DOWNLOAD TIMINGS`, 
+                addFileStr, 
+                `\n  DOWNLOAD TIME: ${totalTimeDownloadingFiles.toFixed(1).padStart(9, " ")} ms` +
+                // `` +
+                ``
+            );
+        }, 1000);
     }
 
     // // Display the fade tiles in the TESTS tab. 

@@ -140,24 +140,20 @@
             // Used for display.
             appNameText: "JSGAME: Tetris", 
 
+            useSharedPluginLoader: "GAME",
             files:[
-                // { "f":"tetris.css"                     , "t":"css"  , "n":"tetris_css"       },
-                // { "f":"tetris.html"                    , "t":"html" , "n":"tetris_html"      },
-                
-                { "f":"tetris_main.js"                 , "t":"js"   , "n":"tetris_main"      },
-                { "f":"tetris_SHARED.js"               , "t":"js"   , "n":"tetris_SHARED"    },
-                
-                { "f":"gamestates/tetris_gs_title0.js" , "t":"js"   , "n":"tetris_gs_title0" },
-                { "f":"gamestates/tetris_gs_title1.js" , "t":"js"   , "n":"tetris_gs_title1" },
-                { "f":"gamestates/tetris_gs_title2.js" , "t":"js"   , "n":"tetris_gs_title2" },
-                { "f":"gamestates/tetris_gs_play.js"   , "t":"js"   , "n":"tetris_gs_play"   },
-                { "f":"gamestates/tetris_data.js"      , "t":"js"   , "n":"tetris_data"      },
-                
-                { "f":"tetris_init.js"      , "t":"js"   , "n":"tetris_init"      },
+                { "f":"tetris_main.js"                 , "t":"js", "n":"tetris_main"     , syncType: "sync" },
+                { "f":"tetris_SHARED.js"               , "t":"js", "n":"tetris_SHARED"   , syncType: "async" },
+                { "f":"gamestates/tetris_gs_title0.js" , "t":"js", "n":"tetris_gs_title0", syncType: "async" },
+                { "f":"gamestates/tetris_gs_title1.js" , "t":"js", "n":"tetris_gs_title1", syncType: "async" },
+                { "f":"gamestates/tetris_gs_title2.js" , "t":"js", "n":"tetris_gs_title2", syncType: "async" },
+                { "f":"gamestates/tetris_gs_play.js"   , "t":"js", "n":"tetris_gs_play"  , syncType: "async" },
+                { "f":"gamestates/tetris_data.js"      , "t":"js", "n":"tetris_data"     , syncType: "async" },
+                { "f":"tetris_init.js"                 , "t":"js", "n":"tetris_init"     , syncType: "async" },
             ],
             debugFiles:[
-                // { f:"GAME/debug.js" , t:"js"  },
-                // { f:"GAME/debug.css", t:"css" },
+                // { f:"GAME/debug.js" , t:"js" , syncType: "async" },
+                // { f:"GAME/debug.css", t:"css", syncType: "async" },
             ],
     
             // First gamestate1.
@@ -171,20 +167,14 @@
         // CONFIG: _GFX
         gfxConfig: {
             enabled: true,
-            debug  : false,
-    
-            files:[
-                { f:"/SHARED/VIDEO_A/videoModeA.css"     , t:"css" },
-                { f:"/SHARED/VIDEO_A/videoModeA_core.js" , t:"js" },
-                { f:"/SHARED/VIDEO_A/videoModeA_user.js" , t:"js" },
-            ],
-            debugFiles:[
-                // { f:"/SHARED/VIDEO_A/videoModeA_debug.js"  , t:"js"  },
-            ],
-            debugFiles2:[
-                // { f:"/SHARED/VIDEO_A/debug.html", t:"html", destId: "navView_gfx_debug" },
-            ],
-            webWorker: "/SHARED/VIDEO_A/videoModeA_webworker.js",
+            debug  : true,
+            
+            useSharedPluginLoader: "VIDEO_A",
+            files      : _APP.sharedPlugins.VIDEO_A.files,
+            files2     : _APP.sharedPlugins.VIDEO_A.files2,
+            debugFiles : _APP.sharedPlugins.VIDEO_A.debugFiles,
+            debugFiles2: _APP.sharedPlugins.VIDEO_A.debugFiles2,
+            webWorker  : _APP.sharedPlugins.VIDEO_A.webWorker,
 
             // Shared dimensions for each layer.
             dimensions: {
@@ -251,24 +241,13 @@
             enabled: true,
             debug  : false,
     
-            files:[
-                { f: "/SHARED/INPUT_A/inputModeA_core.js"      , t:"js"  },
-                { f: "/SHARED/INPUT_A/inputModeA_user.js"      , t:"js"  },
-                { f: "/SHARED/INPUT_A/inputModeA_mappings.js"  , t:"js"  },
-                { f: "/SHARED/INPUT_A/inputModeA_web.js"       , t:"js"  },
-                { f: "/SHARED/INPUT_A/inputModeA_web.css"      , t:"css" },
-                { f: "/SHARED/INPUT_A/inputModeA_customized.js", t:"js"  },
-            ],
-            files2: [
-                { f: "/SHARED/INPUT_A/inputModeA_web.html"     , t:"html", type:"webConfig" },
-            ],
-            debugFiles:[
-                // { f: "INPUT_A/debug.js" , t:"js"  },
-                // { f: "INPUT_A/debug.css", t:"css" },
-            ],
-            debugFiles2:[
-            ],
-    
+            useSharedPluginLoader: "INPUT_A",
+            files      : _APP.sharedPlugins.INPUT_A.files,
+            files2     : _APP.sharedPlugins.INPUT_A.files2,
+            debugFiles : _APP.sharedPlugins.INPUT_A.debugFiles,
+            debugFiles2: _APP.sharedPlugins.INPUT_A.debugFiles2,
+            webWorker  : _APP.sharedPlugins.INPUT_A.webWorker,
+
             useKeyboard   : true, 
             useGamepads   : true,
             listeningElems: ["gameView", "navView_input"],
@@ -289,18 +268,13 @@
             enabled: false,
             debug  : false,
     
-            files:[
-                // { f:"/SHARED//SOUND_B/soundModeB_core.js", t:"js"  },
-                // { f:"/SHARED//SOUND_B/soundModeB_user.js", t:"js"  },
-                // { f:"/SHARED//SOUND_B/soundModeB.css", t:"css"  },
-            ],
-            debugFiles:[
-                // { f:"/SHARED//SOUND_B/debug.js" , t:"js"  },
-                // { f:"/SHARED//SOUND_B/debug.css", t:"css" },
-            ],
-            debugFiles2:[
-            ],
-    
+            useSharedPluginLoader: "SOUND_B",
+            files      : _APP.sharedPlugins.SOUND_B.files,
+            files2     : _APP.sharedPlugins.SOUND_B.files2,
+            debugFiles : _APP.sharedPlugins.SOUND_B.debugFiles,
+            debugFiles2: _APP.sharedPlugins.SOUND_B.debugFiles2,
+            webWorker  : _APP.sharedPlugins.SOUND_B.webWorker,
+
             interActionNeededId      : "audio_userInputNeeded_container",
             blockLoopIfSoundNotLoaded: false,
         },
@@ -313,5 +287,11 @@
 
         // List of config keys.
         configKeys: ["gfxConfig", "inputConfig", "soundConfig", "gameConfig"],
+    };
+
+    // Custom game file loader.
+    _APP.sharedPlugins.GAME.fileLoadFunc =  async function(){
+        // console.log("CUSTOM");
+        await _APP.sharedPlugins.__util.fileLoadFunc1(_APP.configObj["gameConfig"], _APP.configObj["gameConfig"]);
     };
 })();

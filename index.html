@@ -2,21 +2,70 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>JSGAME: TETRIS</title>
-    
-    <!-- Use's the game's base files. -->
-    <!-- <link   href="BASE/css/ui.css" rel="stylesheet"/> -->
-    <!-- <script src ="BASE/js/ui.js" defer></script> -->
-    <!-- <script src ="BASE/js/gameloop.js" defer></script> -->
-    
-    <!-- Use's JSGAME's base files. -->
-    <link   href="/SHARED/BASEUI_A/css/ui.css" rel="stylesheet"/>
-    <script src ="/SHARED/BASEUI_A/js/gameloader.js" defer></script>
-    <!-- <script src ="/SHARED/BASEUI_A/js/gameloop.js" defer></script> -->
-    
+    <title>...LOADING</title>
 </head>
 
 <body style="background-color: #181818;">
+    <script>
+        (
+            async function(){
+                // _APP.basePath = window.location.pathname.includes('/JSGAME/') ? '/JSGAME' : '';
+                let basePath = window.location.pathname.includes('/JSGAME/') ? '/JSGAME' : '';
+        
+                let files = [
+                    // { f:`${basePath}BASE/css/ui.css`      , t:"css", syncType: "sync"  }, // Use the game's base files. 
+                    // { f:`${basePath}BASE/js/gameloader.js`, t:"js" , syncType: "async" }, // Use the game's base files. 
+                    // { f:`${basePath}BASE/js/gameloop.js`  , t:"js" , syncType: "async" }, // Use the game's base files. 
+                    { f:`${basePath}/SHARED/BASEUI_A/js/gameloader.js`, t:"js" , syncType: "sync"  }, // Use JSGAME's base files.
+                    { f:`${basePath}/SHARED/BASEUI_A/js/gameloop.js`  , t:"js" , syncType: "async" }, // Use JSGAME's base files.
+                    { f:`${basePath}/SHARED/BASEUI_A/css/ui.css`      , t:"css", syncType: "async" }, // Use JSGAME's base files.
+                ];
+                
+                function loadResource(rec) {
+                    return new Promise((resolve, reject) => {
+                        // console.log("This is the rec:", rec);
+                        let element;
+
+                        if (rec.t === 'css') {
+                            element = document.createElement('link');
+                            element.rel = 'stylesheet';
+                            element.href = rec.f;
+                        } 
+                        else if (rec.t === 'js') {
+                            element = document.createElement('script');
+                            element.src = rec.f;
+                            element.defer = true;
+                        } 
+                        else {
+                            console.log("error on this rec:", rec);
+                            reject(`Invalid type: ${rec.t}`);
+                            return;
+                        }
+
+                        element.onload  = resolve;
+                        element.onerror = reject;
+
+                        document.head.appendChild(element);
+                    });
+                }
+
+                let proms = [];
+                for(let rec of files){
+                    try{ 
+                        // loadResource(rec);
+                        if     (rec.syncType == "sync") { await loadResource(rec); }
+                        else if(rec.syncType == "async"){ proms.push( loadResource(rec) ); }
+                    }
+                    catch(e){ console.error('Error loading resource:', e); throw e; }
+                }
+                await Promise.all(proms);
+        
+                //
+                _APP.basePath = basePath;
+            }
+        )();
+    </script>
+
     <!-- Stand-Alone loading indicator. -->
     <div id="loading" style="position:fixed; top:5px; left:5px;">
         LOADING
